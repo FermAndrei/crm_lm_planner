@@ -1,0 +1,34 @@
+{
+  "productType": [
+    {
+      "prodType": "SME Working Capital B",
+      "noOfAccount": 13,
+      "originalAmountGranted": 200402427.06,
+      "outstandingBalance": 104849162.7
+    },
+    {
+      "prodType": "SME Revolving Credit Line",
+      "noOfAccount": 1,
+      "originalAmountGranted": 8100000.0,
+      "outstandingBalance": 4092967.0
+    },
+    {
+      "prodType": "SME Investment B",
+      "noOfAccount": 3,
+      "originalAmountGranted": 19700000.0,
+      "outstandingBalance": 18102530.91
+    },
+    {
+      "prodType": "SME Working Capital Restructured",
+      "noOfAccount": 1,
+      "originalAmountGranted": 20560585.6,
+      "outstandingBalance": 19601571.73
+    },
+    {
+      "prodType": "SME Agri Finance",
+      "noOfAccount": 1,
+      "originalAmountGranted": 500000.0,
+      "outstandingBalance": 68292.0
+    }
+  ]
+}

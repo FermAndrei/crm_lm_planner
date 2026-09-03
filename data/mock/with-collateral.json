@@ -1,0 +1,44 @@
+{
+  "withCollateral": [
+    {
+      "branchBooked": "Panabo",
+      "collateralType": "500",
+      "collateralDescription": "Commercial Real Estate",
+      "sequence": "1021222261.1.1",
+      "cidNo": "1021222261",
+      "acctNumberOfLoan": "1020000042140336",
+      "nameOfBorrower": "GRABATO, FREM DARUNGAO.",
+      "description": "TD NO: 000400501 70 SQM",
+      "dateOfAppraisal": "May 21, 2025",
+      "appraiseValue": 9648000.0,
+      "loanValue": 8200800.0,
+      "collateralCode": "500",
+      "collateralCodeDesc": "Real Estate Mortgage",
+      "reviewDateFqu": "May 11, 2026",
+      "valueDate": "Jan 9, 2025",
+      "expiryDate": "May 21, 2026",
+      "address": "Gensan",
+      "notes": null
+    },
+    {
+      "branchBooked": "General Santos",
+      "collateralType": "502",
+      "collateralDescription": "Residential, Industrial and Commer",
+      "sequence": "1021474681.1.1",
+      "cidNo": "1021474681",
+      "acctNumberOfLoan": "1020000046215926",
+      "nameOfBorrower": "BALTAZAR, JOEL GALICIA.",
+      "description": "TD No.N-1501523 Land 42394 SQM",
+      "dateOfAppraisal": "May 6, 2024",
+      "appraiseValue": 96446000.0,
+      "loanValue": 57867600.0,
+      "collateralCode": "500",
+      "collateralCodeDesc": "Real Estate Mortgage",
+      "reviewDateFqu": null,
+      "valueDate": "May 6, 2024",
+      "expiryDate": "May 6, 2026",
+      "address": "Gensan",
+      "notes": null
+    }
+  ]
+}
