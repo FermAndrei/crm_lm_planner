@@ -19,6 +19,7 @@ interface Breadcrumb {
 }
 import Image from "next/image";
 import Link from "next/link";
+import { SidebarMobileTrigger } from "./sidebar";
 
 // Define which routes are actual pages (leaf nodes)
 const CLICKABLE_ROUTES = new Set([
@@ -124,7 +125,9 @@ export default function Header() {
   return (
     <header className="h-20 px-4 md:px-8 flex items-center justify-between fixed w-full top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#191924]/[0.07] shadow-cloud-nav">
       {/* Left Section - Title & Breadcrumbs */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
+        <SidebarMobileTrigger />
+
         <Link href="/dashboard" className="flex items-center gap-2 group">
           <div className="relative h-14 w-36 sm:w-44">
             <Image
@@ -146,7 +149,7 @@ export default function Header() {
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className="flex items-center gap-3 cursor-pointer p-1.5 sm:p-2 hover:bg-[#FAF9FD] border border-transparent hover:border-[#191924]/6 rounded-full sm:rounded-2xl transition-all"
           >
-            <div className="w-10 h-10 bg-[#346006] rounded-full flex items-center justify-center text-white shadow-md">
+            <div className="w-10 h-10 bg-[#05512A] rounded-full flex items-center justify-center text-white shadow-md">
               <UserIcon size={18} />
             </div>
             <div className="hidden md:block text-left">

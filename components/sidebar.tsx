@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   NotebookText,
   UserRound,
+  Menu,
 } from "lucide-react";
 
 // ============================================================
@@ -104,7 +105,7 @@ export function SidebarTrigger({ className }: { className?: string }) {
     <button
       onClick={toggleSidebar}
       className={cn(
-        "rounded-xl p-2.5",
+        "hidden md:inline-flex rounded-xl p-2.5", // hide on mobile, desktop only
         "text-[#1E4637]",
         "transition-colors duration-200",
         "hover:bg-emerald-50",
@@ -114,9 +115,32 @@ export function SidebarTrigger({ className }: { className?: string }) {
       title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
     >
       <PanelLeft className="size-6" />
-
       <span className="sr-only">
         {isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+      </span>
+    </button>
+  );
+}
+
+export function SidebarMobileTrigger({ className }: { className?: string }) {
+  const { toggleMobile, isMobileOpen } = useSidebar();
+
+  return (
+    <button
+      onClick={toggleMobile}
+      className={cn(
+        "md:hidden rounded-full p-2", // mobile only
+        "text-[#1E4637]",
+        "transition-colors duration-200 mb-2",
+        "hover:bg-emerald-50",
+        "focus:outline-none",
+        className,
+      )}
+      title={isMobileOpen ? "Close Sidebar" : "Open Sidebar"}
+    >
+      <Menu className="size-7 text-[#346006] " />
+      <span className="sr-only">
+        {isMobileOpen ? "Close Sidebar" : "Open Sidebar"}
       </span>
     </button>
   );
@@ -152,9 +176,17 @@ const defaultNavItems: NavItem[] = [
 // NAVIGATION ITEM
 // ============================================================
 
-function NavItemRow({ item }: { item: NavItem }) {
+function NavItemRow({
+  item,
+  onNavigate,
+  expanded,
+}: {
+  item: NavItem;
+  onNavigate?: () => void;
+  expanded?: boolean;
+}) {
   const pathname = usePathname();
-  const { isExpanded } = useSidebar();
+  const { isExpanded: contextExpanded } = useSidebar();
 
   const hasChildren = Boolean(item.items?.length);
 
@@ -207,7 +239,7 @@ function NavItemRow({ item }: { item: NavItem }) {
         <button
           type="button"
           onClick={() => setIsOpen((prev) => !prev)}
-          title={!isExpanded ? item.title : undefined}
+          title={!expanded ? item.title : undefined}
           className={cn(
             "group/btn",
             "flex w-full items-center",
@@ -216,7 +248,7 @@ function NavItemRow({ item }: { item: NavItem }) {
 
             isActive ? activeStyles : normalStyles,
 
-            isExpanded
+            expanded
               ? "h-12 rounded-xl px-2 gap-3"
               : "h-12 rounded-xl px-2 gap-3",
           )}
@@ -240,7 +272,7 @@ function NavItemRow({ item }: { item: NavItem }) {
               "transition-[opacity,max-width,transform]",
               "duration-300 ease-in-out",
 
-              isExpanded
+              expanded
                 ? "max-w-full opacity-100 translate-x-0"
                 : "max-w-0 opacity-0 -translate-x-2",
             )}
@@ -266,7 +298,7 @@ function NavItemRow({ item }: { item: NavItem }) {
             "grid transition-[grid-template-rows,opacity]",
             "duration-300 ease-in-out",
 
-            isOpen && isExpanded
+            isOpen && expanded
               ? "grid-rows-[1fr] opacity-100"
               : "grid-rows-[0fr] opacity-0",
           )}
@@ -280,6 +312,7 @@ function NavItemRow({ item }: { item: NavItem }) {
                   <Link
                     key={child.title}
                     href={child.url}
+                    onClick={onNavigate}
                     className={cn(
                       "flex h-12 items-center gap-3",
                       "rounded-xl px-3",
@@ -311,7 +344,8 @@ function NavItemRow({ item }: { item: NavItem }) {
   return (
     <Link
       href={item.url}
-      title={!isExpanded ? item.title : undefined}
+      onClick={onNavigate}
+      title={!expanded ? item.title : undefined}
       className={cn(
         "flex w-full items-center",
         "transition-[width,height,padding,gap]",
@@ -322,9 +356,7 @@ function NavItemRow({ item }: { item: NavItem }) {
         /*
          * Keep the icon at the same x-position.
          */
-        isExpanded
-          ? "h-12 rounded-xl px-2 gap-3"
-          : "h-12 rounded-xl px-2 gap-3",
+        expanded ? "h-12 rounded-xl px-2 gap-3" : "h-12 rounded-xl px-2 gap-3",
       )}
     >
       {/* ICON */}
@@ -340,7 +372,7 @@ function NavItemRow({ item }: { item: NavItem }) {
           "transition-[opacity,max-width,transform]",
           "duration-300 ease-in-out",
 
-          isExpanded
+          expanded
             ? "max-w-full opacity-100 translate-x-0"
             : "max-w-0 opacity-0 -translate-x-2",
         )}
@@ -356,43 +388,92 @@ function NavItemRow({ item }: { item: NavItem }) {
 // ============================================================
 
 export function Sidebar() {
-  const { isExpanded, setIsHovered } = useSidebar();
+  const { isExpanded, setIsHovered, isMobileOpen, setIsMobileOpen } =
+    useSidebar();
 
   return (
-    <aside
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={cn(
-        "relative shrink-0 h-screen",
-
-        "transition-[width]",
-        "duration-300 ease-in-out",
-
-        isExpanded ? "w-72" : "w-18",
+    <>
+      {/* ================================================== */}
+      {/* MOBILE BACKDROP — click to close                   */}
+      {/* ================================================== */}
+      {isMobileOpen && (
+        <div
+          onClick={() => setIsMobileOpen(false)}
+          className="fixed inset-0 z-30 bg-black/40 md:hidden"
+          aria-hidden="true"
+        />
       )}
-    >
-      <div
-        className={cn(
-          "fixed inset-y-0 left-0 z-40",
-          "flex flex-col",
-          "border-r border-gray-100",
-          "bg-white",
-          "shadow-lg",
-          "overflow-hidden",
-          "p-3 mt-20",
-          "transition-[width]",
-          "duration-300 ease-in-out",
 
+      {/* ================================================== */}
+      {/* DESKTOP SIDEBAR — hidden entirely on mobile         */}
+      {/* ================================================== */}
+      <aside
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={cn(
+          "relative hidden md:block h-screen shrink-0",
+          "transition-[width] duration-300 ease-in-out",
           isExpanded ? "w-72" : "w-18",
         )}
       >
-        <nav className="flex w-full flex-col gap-2">
-          {defaultNavItems.map((item) => (
-            <NavItemRow key={item.title} item={item} />
-          ))}
-        </nav>
-      </div>
-    </aside>
+        <div
+          className={cn(
+            "fixed inset-y-0 left-0 z-40",
+            "flex flex-col",
+            "border-r border-gray-100",
+            "bg-white",
+            "shadow-lg",
+            "overflow-hidden",
+            "p-3 mt-20",
+            "transition-[width]",
+            "duration-300 ease-in-out",
+            isExpanded ? "w-72" : "w-18",
+          )}
+        >
+          <nav className="flex w-full flex-col gap-2">
+            {defaultNavItems.map((item) => (
+              <NavItemRow key={item.title} item={item} expanded={isExpanded} />
+            ))}
+          </nav>
+        </div>
+      </aside>
+
+      {/* ================================================== */}
+      {/* MOBILE DRAWER — slides in over content, no layout   */}
+      {/* ================================================== */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 w-72",
+          "md:hidden",
+          "transition-transform duration-300 ease-in-out",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <div
+          className={cn(
+            "fixed inset-y-0 left-0 z-40",
+            "flex flex-col",
+            "border-r border-gray-100",
+            "bg-white",
+            "shadow-lg",
+            "overflow-hidden",
+            "p-3 mt-20",
+            "duration-300 ease-in-out",
+          )}
+        >
+          <nav className="flex w-full flex-col gap-2">
+            {defaultNavItems.map((item) => (
+              <NavItemRow
+                key={item.title}
+                item={item}
+                expanded={true}
+                onNavigate={() => setIsMobileOpen(false)}
+              />
+            ))}
+          </nav>
+        </div>
+      </aside>
+    </>
   );
 }
 

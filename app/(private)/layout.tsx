@@ -9,12 +9,10 @@ export default function PrivateLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
+    <SidebarProvider>
       <Header />
-      <SidebarProvider>
-        <Sidebar />
-        <SidebarInset className="pt-20 bg-[#FCFDFC]">{children}</SidebarInset>
-      </SidebarProvider>
-    </>
+      <Sidebar />
+      <SidebarInset className="pt-20 bg-[#FCFDFC]">{children}</SidebarInset>
+    </SidebarProvider>
   );
 }
