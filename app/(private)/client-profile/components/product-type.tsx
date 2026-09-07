@@ -42,63 +42,61 @@ export default function ProductTypePage() {
   );
 
   return (
-    <div className="w-300 mx-auto overflow-hidden rounded-xl border border-gray-200 mt-4 bg-white shadow-sm">
-      <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-700">Product Type</h2>
-          <p className="mt-1 text-sm font-medium text-gray-400">
-            Summary of accounts by product type
-          </p>
+    <div className="overflow-hidden">
+      {/* Header Bar */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-[#5a5a70] bg-[#FAF9FD] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
+            {productType.length} Product Classifications
+          </span>
         </div>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto p-4">
-        <table className="w-full min-w-175 border-collapse text-left">
-          <thead>
-            <tr className="border-b border-gray-200  bg-[#05512A] text-white text-[13px] font-semibold uppercase tracking-wide">
-              <th className="whitespace-nowrap px-5 py-3 rounded-tl-lg">
+      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
+        <table className="w-full border-collapse text-left text-sm">
+          <thead className="bg-[#05512A] text-white">
+            <tr className="bg-[#05512A] text-white">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Product Type
               </th>
 
-              <th className="whitespace-nowrap px-5 py-3 text-right">
-                No. of Account
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
+                No. of Accounts
               </th>
 
-              <th className="whitespace-nowrap px-5 py-3 text-right">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 Original Amount Granted
               </th>
 
-              <th className="whitespace-nowrap px-5 py-3 text-right rounded-tr-lg">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 Outstanding Balance
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100 border">
+          <tbody className="divide-y divide-[#F1EEF8]">
             {productType.length > 0 ? (
               productType.map((item, index) => (
                 <tr
                   key={index}
-                  className="group transition-colors hover:bg-emerald-50/40"
+                  className="group transition-colors hover:bg-gray-50"
                 >
-                  <td className="px-5 py-3.5">
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-gray-800">
-                        {item.prodType}
-                      </span>
-                    </div>
+                  <td className="px-4 py-3.5">
+                    <span className="text-xs sm:text-sm font-bold text-[#191924]">
+                      {item.prodType}
+                    </span>
                   </td>
 
-                  <td className="whitespace-nowrap px-5 py-3.5 text-right text-sm font-medium text-gray-700">
+                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-xs sm:text-sm font-semibold text-[#191924]">
                     {formatCurrency(item.noOfAccount)}
                   </td>
 
-                  <td className="whitespace-nowrap px-5 py-3.5 text-right text-sm font-medium text-gray-700">
+                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-xs sm:text-sm font-bold text-[#191924]">
                     ₱ {formatCurrency(item.originalAmountGranted)}
                   </td>
 
-                  <td className="whitespace-nowrap px-5 py-3.5 text-right text-sm font-semibold text-[#1D4D3E]">
+                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-xs sm:text-sm font-extrabold text-[#191924]">
                     ₱ {formatCurrency(item.outstandingBalance)}
                   </td>
                 </tr>
@@ -107,7 +105,7 @@ export default function ProductTypePage() {
               <tr>
                 <td
                   colSpan={4}
-                  className="px-5 py-10 text-center text-sm text-gray-500"
+                  className="px-4 py-10 text-center text-xs font-medium text-[#5a5a70]"
                 >
                   No product type data available.
                 </td>
@@ -116,23 +114,21 @@ export default function ProductTypePage() {
           </tbody>
 
           {/* Footer */}
-          <tfoot>
-            <tr className="border-t-2 border-[#1D4D3E] bg-[#D2E7C4] text-sm font-bold text-[#1D4D3E]">
-              <td className="px-5 py-4 rounded-bl-lg">
-                <span className="text-xs font-black uppercase tracking-wide ">
-                  Total
-                </span>
+          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
+            <tr className="text-xs font-extrabold text-[#191924]">
+              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
+                TOTAL
               </td>
 
-              <td className="whitespace-nowrap px-5 py-4 text-right font-black ">
+              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-sm font-extrabold">
                 {formatCurrency(totalNoOfAcc)}
               </td>
 
-              <td className="whitespace-nowrap px-5 py-4 text-right font-black">
+              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-sm font-extrabold">
                 ₱ {formatCurrency(totalAmountGranted)}
               </td>
 
-              <td className="whitespace-nowrap px-5 py-4 text-right font-black rounded-br-lg">
+              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-sm font-extrabold">
                 ₱ {formatCurrency(totalOutstandingBalance)}
               </td>
             </tr>

@@ -63,16 +63,16 @@ export function TablePagination({
   };
 
   return (
-    <div className="mt-4 flex flex-col items-center justify-between gap-4 border-t border-gray-100 pt-3 md:flex-row">
+    <div className="mt-4 flex flex-col items-center justify-between gap-4 border-t border-[#191924]/8 pt-4 md:flex-row">
       {/* LEFT */}
-      <div className="flex items-center gap-4 text-sm font-medium text-gray-500">
+      <div className="flex items-center gap-4 text-xs font-semibold text-[#5a5a70]">
         <div className="flex items-center gap-2">
-          <span>Items:</span>
+          <span>Items per page:</span>
 
           <select
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="rounded-lg border border-gray-200 bg-white px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#1E4637]"
+            className="rounded-xl border border-[#191924]/10 bg-[#FAF9FD] px-2.5 py-1 text-xs font-bold text-[#191924] focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]/20 cursor-pointer"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>
@@ -81,7 +81,9 @@ export function TablePagination({
         </div>
 
         <span>
-          Showing {startRecord}-{endRecord} of {totalRecords} records
+          Showing <span className="font-bold text-[#191924]">{startRecord}</span>-
+          <span className="font-bold text-[#191924]">{endRecord}</span> of{" "}
+          <span className="font-bold text-[#191924]">{totalRecords}</span> records
         </span>
       </div>
 
@@ -92,9 +94,10 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          title="First page"
         >
-          <ChevronsLeft size={18} />
+          <ChevronsLeft size={16} />
         </button>
 
         {/* Previous */}
@@ -102,15 +105,16 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          title="Previous page"
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={16} />
         </button>
 
         {/* Pages */}
         {getPageNumbers().map((page, index) =>
           page === "..." ? (
-            <span key={`ellipsis-${index}`} className="px-2 text-gray-400">
+            <span key={`ellipsis-${index}`} className="px-2 text-xs font-bold text-[#9a9ab0]">
               ...
             </span>
           ) : (
@@ -118,10 +122,10 @@ export function TablePagination({
               type="button"
               key={page}
               onClick={() => onPageChange(page)}
-              className={`h-10 w-10 rounded-lg text-sm font-bold transition-all ${
+              className={`h-9 w-9 rounded-xl text-xs font-bold transition-all ${
                 page === currentPage
-                  ? "bg-[#1E4637] text-white shadow-lg shadow-green-900/20"
-                  : "text-gray-500 hover:bg-gray-100"
+                  ? "bg-[#191924] text-white shadow-xs"
+                  : "text-[#5a5a70] hover:bg-[#FAF9FD] hover:text-[#191924]"
               }`}
             >
               {page}
@@ -134,9 +138,10 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          title="Next page"
         >
-          <ChevronRight size={18} />
+          <ChevronRight size={16} />
         </button>
 
         {/* Last */}
@@ -144,9 +149,10 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          title="Last page"
         >
-          <ChevronsRight size={18} />
+          <ChevronsRight size={16} />
         </button>
       </div>
     </div>

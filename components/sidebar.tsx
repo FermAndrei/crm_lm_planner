@@ -383,7 +383,7 @@ export function Sidebar() {
           "transition-[width]",
           "duration-300 ease-in-out",
 
-          isExpanded ? "w-72" : "w-[72px]",
+          isExpanded ? "w-72" : "w-18",
         )}
       >
         <nav className="flex w-full flex-col gap-2">

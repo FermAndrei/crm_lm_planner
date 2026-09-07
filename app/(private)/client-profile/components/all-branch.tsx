@@ -90,84 +90,80 @@ export default function AllBranch() {
   };
 
   return (
-    <div className="overflow-hidden -mt-9.5">
-      {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          {/* <h2 className="text-2xl font-bold text-gray-700">
-            All Branch Loan Accounts
-          </h2> */}
-
-          {/* <p className="mt-1 text-base font-medium text-gray-400">
-            {allBranches.length} loan accounts
-          </p> */}
+    <div className="overflow-hidden">
+      {/* Header Bar */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
+            {allBranches.length} Total Accounts
+          </span>
         </div>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="hidden lg:block">
+        <form onSubmit={handleSearch} className="block">
           <div className="relative">
             <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
             />
 
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search accounts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-84 rounded-xl border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-all focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#3a8b62]"
+              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
             />
           </div>
         </form>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
         <table className="w-full border-collapse text-sm">
           {/* HEADER */}
-          <thead>
+          <thead className="bg-[#05512A] text-white">
             <tr className="bg-[#05512A] text-white">
-              <th className="w-12 rounded-tl-lg px-3 py-3">
+              <th className="w-12 px-3 py-3.5 text-center">
                 <span className="sr-only">Expand</span>
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Branch
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Client
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Account
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Product Type
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 Granted
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Term Window
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 DefPrin
               </th>
 
-              <th className="whitespace-nowrap rounded-tr-lg px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-center text-xs font-bold uppercase tracking-wider">
                 Loan Status
               </th>
             </tr>
           </thead>
 
           {/* BODY */}
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[#F1EEF8]">
             {paginatedBranches.map((item, index) => {
               const rowId = `${item.accountNumber}-${index}`;
               const isExpanded = expandedId === rowId;
@@ -177,20 +173,20 @@ export default function AllBranch() {
                   {/* MAIN ROW */}
                   <tr
                     className={cn(
-                      "group transition-all",
+                      "group transition-colors",
                       isExpanded ? "bg-[#F3F9F5]" : "bg-white hover:bg-gray-50",
                     )}
                   >
                     {/* Expand */}
-                    <td className="border-y border-l border-gray-100 px-3 py-3">
+                    <td className="px-3 py-3.5 text-center">
                       <button
                         type="button"
                         onClick={() => toggleRow(rowId)}
                         aria-expanded={isExpanded}
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 transition-all hover:bg-[#E5F2EA] hover:text-[#05582E]"
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#9a9ab0] transition-all hover:bg-[#EBFDF4] hover:text-[#5fa53c]"
                       >
                         <ChevronDown
-                          size={17}
+                          size={16}
                           className={cn(
                             "transition-transform duration-200",
                             isExpanded && "rotate-180",
@@ -200,87 +196,87 @@ export default function AllBranch() {
                     </td>
 
                     {/* Branch */}
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-bold text-[#191924]">
                         {item.branch}
                       </div>
 
-                      <div className="mt-0.5 font-mono text-xs text-gray-400">
+                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
                         {item.brCode}
                       </div>
                     </td>
 
                     {/* Client */}
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
+                    <td className="px-4 py-3.5 align-top">
                       <div
-                        className="max-w-70 truncate font-semibold text-[#05582E]"
+                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
                         title={item.clientName}
                       >
                         {item.clientName}
                       </div>
 
-                      <div className="mt-0.5 font-mono text-xs text-gray-400">
+                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
                         {item.custId}
                       </div>
                     </td>
 
                     {/* Account */}
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs font-semibold text-[#191924]">
                         {item.accountNumber}
                       </div>
                     </td>
 
                     {/* Product */}
-                    <td className="whitespace-nowrap border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="whitespace-nowrap px-4 py-3.5 align-top">
+                      <div className="text-xs font-medium text-[#5a5a70]">
                         {item.prodType}
                       </div>
                     </td>
 
                     {/* Granted */}
-                    <td className="border-y border-gray-100 px-4 py-3 text-left align-top">
-                      <div className="font-mono text-[13px] font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 text-right align-top">
+                      <div className="font-mono text-xs font-bold text-[#191924]">
                         ₱ {formatCurrency(item.originalAmountGranted)}
                       </div>
 
-                      <div className="mt-0.5 font-mono text-xs text-gray-400">
+                      <div className="mt-0.5 font-mono text-[11px] text-[#5a5a70]">
                         {item.interestRate.toFixed(2)}%
                       </div>
                     </td>
 
                     {/* Term */}
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="text-xs font-medium text-[#191924]">
                         {formatDate(item.dateGranted)}
                       </div>
 
-                      <div className="mt-0.5 font-mono text-xs text-gray-400">
+                      <div className="mt-0.5 text-xs text-[#5a5a70]">
                         → {formatDate(item.maturityDate)}
                       </div>
 
-                      <div className="mt-0.5 text-xs text-gray-400">
-                        {item.term ? `${item.term} months` : "No term"}
+                      <div className="mt-0.5 text-[11px] text-[#9a9ab0]">
+                        {item.term ? `${item.term} mos` : "—"}
                       </div>
                     </td>
 
                     {/* DefPrin */}
-                    <td className="border-y border-gray-100 px-4 py-3 text-left align-top">
-                      <div className="font-mono text-[13px] font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 text-right align-top">
+                      <div className="font-mono text-xs font-bold text-[#191924]">
                         ₱ {formatCurrency(item.defPrin)}
                       </div>
                     </td>
 
                     {/* Status */}
-                    <td className="border-y border-r border-gray-100 px-4 py-3 text-center align-top">
+                    <td className="px-4 py-3.5 text-center align-top">
                       <span
                         className={cn(
-                          "inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                          "inline-block rounded-full px-2.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wider",
                           item.loanStatus === "CURRENT"
-                            ? "bg-emerald-50 text-emerald-700"
+                            ? "bg-[#E2F6ED] text-[#12946a]"
                             : item.loanStatus === "EXPIRED"
-                              ? "bg-red-50 text-red-700"
-                              : "bg-gray-50 text-gray-600",
+                              ? "bg-[#FFE3EE] text-[#E0509A]"
+                              : "bg-[#F4F2FA] text-[#5a5a70]",
                         )}
                       >
                         {item.loanStatus}
@@ -370,35 +366,31 @@ export default function AllBranch() {
           </tbody>
 
           {/* FOOTER */}
-          <tfoot>
-            <tr className="border-t border-gray-200 bg-[#D2E7C4] text-xs font-bold text-[#1D4D3E]">
-              <td className="rounded-bl-lg px-3 py-2" />
+          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
+            <tr className="text-xs font-extrabold text-[#191924]">
+              <td className="px-3 py-3.5 text-center" />
 
-              <td className="px-4 py-2">
-                <span className="font-black">TOTAL</span>
+              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
+                TOTAL
               </td>
 
-              <td className="px-4 py-2" />
-
-              <td className="px-4 py-2 text-left">
-                <span className="font-black">
-                  {allBranches.length} accounts
-                </span>
+              <td className="px-4 py-3.5 font-bold text-[#5a5a70]">
+                {allBranches.length} accounts
               </td>
 
-              <td className="px-4 py-2" />
+              <td colSpan={2} className="px-4 py-3.5" />
 
-              <td className="px-4 py-2 text-left font-mono text-sm font-black">
+              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
                 ₱ {formatCurrency(totalOriginalAmount)}
               </td>
 
-              <td className="px-4 py-2" />
+              <td className="px-4 py-3.5" />
 
-              <td className="px-4 py-2 text-left font-mono text-sm font-black">
+              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
                 ₱ {formatCurrency(totalDefPrin)}
               </td>
 
-              <td className="rounded-br-lg px-4 py-2" />
+              <td className="px-4 py-3.5" />
             </tr>
           </tfoot>
         </table>

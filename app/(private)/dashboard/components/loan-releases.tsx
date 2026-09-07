@@ -118,14 +118,14 @@ export function LoanReleases() {
   return (
     <Card className="flex h-full flex-col">
       <CardHeader className="flex justify-between">
-        <CardTitle className="text-lg flex-col flex font-bold text-gray-900 tracking-tight">
-          <div className="flex items-center gap-2">
-            <span className="p-2 rounded-md bg-emerald-50 text-[#05582E]">
+        <CardTitle className="text-lg flex-col flex font-extrabold text-[#191924] tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <span className="p-2.5 rounded-xl bg-emerald-50 text-[#05582E] shadow-sm">
               <BarChart3 size={18} />
             </span>
             <div>
-              <h2>Loan Releases</h2>
-              <p className="text-xs text-gray-500 font-medium">
+              <h2 className="text-[#191924] font-bold">Loan Releases</h2>
+              <p className="text-xs text-[#5a5a70] font-medium">
                 12-Month loan disbursement volume across portfolio accounts
               </p>
             </div>
@@ -133,10 +133,10 @@ export function LoanReleases() {
         </CardTitle>
 
         <div className="hidden lg:block text-right">
-          <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 block">
+          <span className="text-[10px] uppercase tracking-wider font-bold text-[#9a9ab0] block mb-1">
             Total Released
           </span>
-          <span className="text-sm font-black text-[#05582E]">
+          <span className="text-xs font-bold px-3 py-1 bg-[#E2F6ED] text-[#12946a] rounded-full shadow-sm">
             ₱{(totalReleases / 1000000).toFixed(1)}M
           </span>
         </div>
@@ -145,7 +145,7 @@ export function LoanReleases() {
       <CardContent className="flex flex-1 min-h-0">
         <ChartContainer config={chartConfig} className="h-full w-full">
           <BarChart accessibilityLayer data={LOAN_RELEASES_MOCK}>
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={false} stroke="#F1EEF8" />
 
             <XAxis
               dataKey="month"
@@ -164,7 +164,7 @@ export function LoanReleases() {
                       <span className="text-xs text-muted-foreground">
                         {item.payload.monthName}
                       </span>
-                      <span className="font-bold">
+                      <span className="font-bold text-[#191924]">
                         ₱{(Number(value) / 1000000).toFixed(1)}M
                       </span>
                     </div>

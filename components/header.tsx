@@ -18,6 +18,7 @@ interface Breadcrumb {
   isClickable: boolean;
 }
 import Image from "next/image";
+import Link from "next/link";
 
 // Define which routes are actual pages (leaf nodes)
 const CLICKABLE_ROUTES = new Set([
@@ -72,10 +73,10 @@ export default function Header() {
 
     const breadcrumbs: Breadcrumb[] = [
       {
-        href: "/",
+        href: "/dashboard",
         label: "Home",
         isLast: paths.length === 0,
-        isClickable: true, // Home is always clickable
+        isClickable: true,
       },
     ];
 
@@ -121,18 +122,20 @@ export default function Header() {
   };
 
   return (
-    <header className="h-20 px-8 flex items-center justify-between fixed w-full top-0 z-60 bg-white/80 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+    <header className="h-20 px-4 md:px-8 flex items-center justify-between fixed w-full top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#191924]/[0.07] shadow-cloud-nav">
       {/* Left Section - Title & Breadcrumbs */}
       <div className="flex items-center gap-4">
-        <div className="relative h-20 w-50">
-          <Image
-            src="/CARD_SME_Logo.png"
-            alt="Bakawan Logo"
-            fill
-            priority
-            className="object-contain"
-          />
-        </div>
+        <Link href="/dashboard" className="flex items-center gap-2 group">
+          <div className="relative h-14 w-36 sm:w-44">
+            <Image
+              src="/CARD_SME_Logo.png"
+              alt="CARD SME Bank Logo"
+              fill
+              priority
+              className="object-contain"
+            />
+          </div>
+        </Link>
       </div>
 
       {/* Right Section - Search & Profile */}
@@ -141,79 +144,82 @@ export default function Header() {
         <div className="relative" ref={dropdownRef}>
           <div
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center gap-3 cursor-pointer p-2 hover:bg-gray-100 rounded-xl transition-all"
+            className="flex items-center gap-3 cursor-pointer p-1.5 sm:p-2 hover:bg-[#FAF9FD] border border-transparent hover:border-[#191924]/6 rounded-full sm:rounded-2xl transition-all"
           >
-            <div className="w-10 h-10 bg-linear-to-br from-[#1E4637] to-[#2a6b4e] rounded-full flex items-center justify-center text-white shadow-md">
-              <UserIcon size={20} />
+            <div className="w-10 h-10 bg-[#346006] rounded-full flex items-center justify-center text-white shadow-md">
+              <UserIcon size={18} />
             </div>
-            <div className="hidden md:block">
-              <p className="text-sm font-bold text-gray-900 leading-none">
+            <div className="hidden md:block text-left">
+              <p className="text-sm font-bold text-[#191924] leading-none">
                 Ferm
               </p>
-              <p className="text-[10px] text-gray-400 mt-1 uppercase font-semibold">
-                Super Man
+              <p className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">
+                Loan Manager
               </p>
             </div>
             <ChevronDown
-              size={16}
-              className={`text-gray-400 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
+              size={15}
+              className={`text-[#9a9ab0] transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
             />
           </div>
 
           {/* Profile Dropdown Menu */}
           {isProfileOpen && (
-            <div className="absolute right-0 mt-3 w-80 bg-white border border-gray-100 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="h-24 bg-linear-to-br from-[#D9E392] to-[#B5C94B]" />
+            <div className="absolute right-0 mt-3 w-80 bg-white border border-[#191924]/8 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+              {/* Soft Cloud Gradient Banner */}
+              <div className="h-24 bg-linear-to-r from-[#E4E9FF] via-[#FFE3EE] to-[#DDF6EA]" />
 
               <div className="px-6 pb-6 -mt-10">
                 <div className="w-20 h-20 bg-white rounded-full p-1 shadow-md mb-3">
-                  <div className="w-full h-full bg-linear-to-br from-[#1E4637] to-[#2a6b4e] rounded-full flex items-center justify-center text-white">
+                  <div className="w-full h-full bg-[#346006] rounded-full flex items-center justify-center text-white">
                     <UserIcon size={32} />
                   </div>
                 </div>
 
-                <h3 className="text-lg font-bold text-gray-900">Ferm</h3>
-                <p className="text-sm text-gray-500">1</p>
+                <h3 className="text-lg font-bold text-[#191924]">Ferm</h3>
+                <p className="text-xs text-[#5a5a70]">
+                  ferm.andrei@cardsme.bank
+                </p>
 
-                <div className="mt-6 space-y-4">
-                  <div className="flex gap-3">
-                    <UserIcon size={16} className="text-gray-400 mt-1" />
+                <div className="mt-5 space-y-3">
+                  <div className="flex gap-3 items-center">
+                    <UserIcon size={15} className="text-[#9a9ab0]" />
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase">
+                      <p className="text-[10px] font-bold text-[#9a9ab0] uppercase tracking-wider">
                         Role
                       </p>
-                      <p className="text-sm font-semibold text-gray-700">
-                        Super Man
+                      <p className="text-xs font-semibold text-[#191924]">
+                        Portfolio & Loan Manager
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex gap-3">
-                    <Lock size={16} className="text-gray-400 mt-1" />
+                  <div className="flex gap-3 items-center">
+                    <Lock size={15} className="text-[#9a9ab0]" />
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase">
-                        Institution
+                      <p className="text-[10px] font-bold text-[#9a9ab0] uppercase tracking-wider">
+                        Institution ID
                       </p>
-                      <p className="text-sm font-semibold text-gray-700">
-                        1234
+                      <p className="text-xs font-semibold text-[#191924]">
+                        PH1020 - CARD SME HO
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 bg-green-50 rounded-xl p-3">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-sm font-semibold text-green-700">
-                      active
+                  <div className="flex items-center gap-2 bg-[#E2F6ED] rounded-xl p-2.5">
+                    <span className="w-2 h-2 rounded-full bg-[#12946a] animate-pulse" />
+                    <span className="text-xs font-bold text-[#12946a]">
+                      Active · Certified Loan Officer
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-8 space-y-3">
-                  <button className="w-full py-3 border border-[#05582E] text-[#05582E] rounded-xl text-sm font-bold hover:bg-green-50 transition-colors flex items-center justify-center gap-2">
-                    <Settings size={16} /> Change Password
+                <div className="mt-6 space-y-2.5">
+                  <button className="w-full py-2.5 border border-[#191924]/10 text-[#191924] rounded-full text-xs font-bold hover:bg-[#FAF9FD] transition-colors flex items-center justify-center gap-2">
+                    <Settings size={14} /> Account Settings
                   </button>
-                  <button className="w-full py-3 bg-[#1E4637] text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#163529] transition-colors">
-                    <LogOut size={16} /> Logout
+                  <button className="w-full py-2.5 bg-[#191924] text-white rounded-full text-xs font-bold flex items-center justify-center gap-2 hover:bg-[#28283a] transition-colors shadow-sm">
+                    <LogOut size={14} /> Logout
                   </button>
                 </div>
               </div>

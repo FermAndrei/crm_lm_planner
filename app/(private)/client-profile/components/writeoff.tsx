@@ -1,5 +1,6 @@
+"use client";
+
 import { TablePagination } from "@/components/ui/table-pagination";
-import { cn } from "@/lib/utils";
 import { getWriteOff } from "@/services/reports/all-loan.services";
 import { WriteOffDate } from "@/services/types/writeoff/writeoff";
 import { Search } from "lucide-react";
@@ -83,70 +84,68 @@ export default function WriteOff() {
   );
 
   return (
-    <div className="overflow-hidden -mt-9.5">
-      {/* <div className="overflow-hidden rounded-lg border border-gray-100 bg-white p-6 shadow-sm"> */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          {/* <h2 className="text-2xl font-bold text-gray-700">
-            Charged Off Client
-          </h2>
-          <p className="mt-1 text-base font-medium text-gray-400">
-            {writeOffDate.length} Client
-          </p> */}
+    <div className="overflow-hidden">
+      {/* Header Bar */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
+            {writeOffDate.length} Charged Off Accounts
+          </span>
         </div>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="hidden lg:block">
+        <form onSubmit={handleSearch} className="block">
           <div className="relative">
             <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
             />
+
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search accounts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-84 rounded-xl border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-all focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#3a8b62]"
+              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
             />
           </div>
         </form>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
         <table className="w-full border-collapse text-sm">
           {/* Header */}
-          <thead>
+          <thead className="bg-[#05512A] text-white">
             <tr className="bg-[#05512A] text-white">
-              <th className="rounded-tl-lg whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Branch
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Name / CID
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Account Number
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Product Type
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Term Window
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-right text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 Principal Released
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-center text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 Outstanding Principal
               </th>
-              <th className="whitespace-nowrap rounded-tr-lg px-4 py-3 text-center text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-center text-xs font-bold uppercase tracking-wider">
                 Write-off Date
               </th>
             </tr>
@@ -158,54 +157,54 @@ export default function WriteOff() {
               const rowId = `${item.accountNumber}-${index}`;
               return (
                 <React.Fragment key={rowId}>
-                  <tr>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-semibold text-gray-900">
+                  <tr className="group transition-colors hover:bg-gray-50">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-bold text-[#191924]">
                         {item.branch}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
+                    <td className="px-4 py-3.5 align-top">
                       <div
-                        className="max-w-70 truncate font-semibold text-[#05582E]"
+                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
                         title={item.memberName}
                       >
                         {item.memberName}
                       </div>
-                      <div className="mt-0.5 font-mono text-xs text-gray-400">
+                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
                         {item.cid}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs font-semibold text-[#191924]">
                         {item.accountNumber}
                       </div>
                     </td>
-                    <td className="whitespace-nowrap border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="whitespace-nowrap px-4 py-3.5 align-top">
+                      <div className="text-xs font-medium text-[#5a5a70]">
                         {item.productType}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs text-[#191924]">
                         {formatDate(item.dateReleased)}
                       </div>
 
-                      <div className="mt-0.5 font-mono text-xs text-gray-400">
+                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
                         → {formatDate(item.maturityDate)}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 text-right align-top">
-                      <div className="font-mono text-[13px] font-semibold text-gray-900">
-                        ₱ {formatCurrency(item.principalReleased)}.00
+                    <td className="px-4 py-3.5 text-right align-top">
+                      <div className="font-mono text-xs font-bold text-[#191924]">
+                        ₱ {formatCurrency(item.principalReleased)}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 text-right align-top">
-                      <div className="font-mono text-[13px] font-semibold text-gray-900">
-                        ₱ {formatCurrency(item.outstandingPrincipal)}.00
+                    <td className="px-4 py-3.5 text-right align-top">
+                      <div className="font-mono text-xs font-extrabold text-[#E0509A]">
+                        ₱ {formatCurrency(item.outstandingPrincipal)}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-right text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 text-center align-top">
+                      <div className="font-mono text-xs text-[#5a5a70]">
                         {formatDate(item.dateReleased)}
                       </div>
                     </td>
@@ -216,28 +215,25 @@ export default function WriteOff() {
           </tbody>
 
           {/* Footer */}
-          <tfoot>
-            <tr className="border-t border-gray-200 bg-[#D2E7C4] text-xs font-bold text-[#1D4D3E]">
-              <td className="rounded-bl-lg px-3 py-2" />
-
-              <td className="px-4 py-2" />
-
-              <td className="px-4 text-center py-2">
-                <span className="font-black">
-                  {writeOffDate.length} accounts
-                </span>
+          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
+            <tr className="text-xs font-extrabold text-[#191924]">
+              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
+                TOTAL
               </td>
-              <td className="px-4 py-2" />
 
-              <td className="px-4 py-2" />
+              <td className="px-4 py-3.5 font-bold text-[#5a5a70]">
+                {writeOffDate.length} accounts
+              </td>
 
-              <td className="px-4 py-2 text-right font-mono text-sm font-black">
+              <td colSpan={3} className="px-4 py-3.5" />
+
+              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
                 ₱ {formatCurrency(totalPrincipal)}
               </td>
-              <td className="px-4 py-2 text-right font-mono text-sm font-black">
+              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
                 ₱ {formatCurrency(totalOutstandingBalance)}
               </td>
-              <td className="px-4 py-2" />
+              <td className="px-4 py-3.5" />
             </tr>
           </tfoot>
         </table>

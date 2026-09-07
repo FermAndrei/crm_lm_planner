@@ -1,3 +1,5 @@
+"use client";
+
 import ExpandableDetails from "@/components/ui/expandable-details";
 import ExpandableRow from "@/components/ui/expandable-row";
 import { cn } from "@/lib/utils";
@@ -67,84 +69,79 @@ export default function WithCollateral() {
   );
 
   return (
-    <div className="overflow-hidden -mt-9.5">
-      {/*<div className="overflow-hidden rounded-lg border border-gray-100 bg-white p-6 shadow-sm"> */}
-
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          {/* <h2 className="text-2xl font-bold text-gray-700">
-            Charge With Collateral
-          </h2>
-
-          <p className="mt-1 text-base font-medium text-gray-400">
-            {withCollateral.length} loan accounts
-          </p> */}
+    <div className="overflow-hidden">
+      {/* Header Bar */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
+            {withCollateral.length} Collateral Records
+          </span>
         </div>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="hidden lg:block">
+        <form onSubmit={handleSearch} className="block">
           <div className="relative">
             <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
             />
 
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search accounts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-84 rounded-xl border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-all focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#3a8b62]"
+              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
             />
           </div>
         </form>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
         <table className="w-full border-collapse text-sm">
           {/* Header */}
-          <thead>
+          <thead className="bg-[#05512A] text-white">
             <tr className="bg-[#05512A] text-white">
-              <th className="w-12 rounded-tl-lg px-3 py-3">
+              <th className="w-12 px-3 py-3.5 text-center">
                 <span className="sr-only">Expand</span>
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Branch Booked
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Collateral Type
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Collateral Description
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Sequence
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
-                Name / Acc Number
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
+                Borrower / Account
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Date Of Appraisal
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 Appraise Value
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider rounded-tr-lg ">
+              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
                 Loan Value
               </th>
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[#F1EEF8]">
             {withCollateral.map((item, index) => {
               const rowId = `${item.acctNumberOfLoan}-${index}`;
               const isExpanded = expandedId === rowId;
@@ -153,19 +150,19 @@ export default function WithCollateral() {
                 <React.Fragment key={rowId}>
                   <tr
                     className={cn(
-                      "group transition-all",
+                      "group transition-colors",
                       isExpanded ? "bg-[#F3F9F5]" : "bg-white hover:bg-gray-50",
                     )}
                   >
-                    <td className="border-y border-l border-gray-100 px-3 py-3">
+                    <td className="px-3 py-3.5 text-center">
                       <button
                         type="button"
                         onClick={() => toggleRow(rowId)}
                         aria-expanded={isExpanded}
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 transition-all hover:bg-[#E5F2EA] hover:text-[#05582E]"
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#9a9ab0] transition-all hover:bg-[#EBFDF4] hover:text-[#5fa53c]"
                       >
                         <ChevronDown
-                          size={17}
+                          size={16}
                           className={cn(
                             "transition-transform duration-200",
                             isExpanded && "rotate-180",
@@ -173,50 +170,49 @@ export default function WithCollateral() {
                         />
                       </button>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-bold text-[#191924]">
                         {item.branchBooked}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs font-semibold text-[#191924]">
                         {item.collateralCode}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="max-w-70 truncate font-semibold text-[#05582E]">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="max-w-70 truncate font-semibold text-[#191924]">
                         {item.collateralDescription}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs text-[#5a5a70]">
                         {item.sequence}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
+                    <td className="px-4 py-3.5 align-top">
                       <div
-                        className="max-w-70 truncate font-semibold text-[#05582E]"
+                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
                         title={item.nameOfBorrower}
                       >
                         {item.nameOfBorrower}
                       </div>
-
-                      <div className="mt-0.5 font-mono text-xs text-gray-400">
-                        {item.cidNo}
+                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
+                        {item.acctNumberOfLoan}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-mono text-[13px] text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs text-[#191924]">
                         {formatDate(item.dateOfAppraisal)}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 text-leftf align-top">
-                      <div className="font-mono text-[13px] font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 text-right align-top">
+                      <div className="font-mono text-xs font-bold text-[#191924]">
                         ₱ {formatCurrency(item.appraiseValue)}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 text-leftf align-top">
-                      <div className="font-mono text-[13px] font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 text-right align-top">
+                      <div className="font-mono text-xs font-extrabold text-[#191924]">
                         ₱ {formatCurrency(item.loanValue)}
                       </div>
                     </td>
@@ -224,19 +220,21 @@ export default function WithCollateral() {
 
                   <ExpandableRow isExpanded={isExpanded} colSpan={9}>
                     <ExpandableDetails
-                      title="Charge W/ Collateral"
+                      title="Collateral Details"
                       fields={[
-                        { label: "Branch Booked", value: item.branchBooked },
                         {
-                          label: "Collateral Type",
-                          value: item.collateralType,
+                          label: "Branch Booked",
+                          value: item.branchBooked,
+                        },
+                        {
+                          label: "Collateral Code",
+                          value: item.collateralCode,
                         },
                         {
                           label: "Collateral Description",
                           value: item.collateralDescription,
                         },
                         { label: "Sequence", value: item.sequence },
-                        { label: "CID No.", value: item.cidNo },
                         {
                           label: "Account Number",
                           value: item.acctNumberOfLoan,
@@ -245,16 +243,17 @@ export default function WithCollateral() {
                           label: "Name of Borrower",
                           value: item.nameOfBorrower,
                         },
-                        { label: "Description", value: item.description },
                         {
                           label: "Date of Appraisal",
-                          value: item.dateOfAppraisal,
+                          value: formatDate(item.dateOfAppraisal),
                         },
-                        { label: "Appraise Value", value: item.appraiseValue },
-                        { label: "Loan Value", value: item.loanValue },
                         {
-                          label: "Collateral Code",
-                          value: item.collateralCode,
+                          label: "Appraise Value",
+                          value: `₱ ${formatCurrency(item.appraiseValue)}`,
+                        },
+                        {
+                          label: "Loan Value",
+                          value: `₱ ${formatCurrency(item.loanValue)}`,
                         },
                         {
                           label: "Collateral Code Desc.",
@@ -274,31 +273,27 @@ export default function WithCollateral() {
           </tbody>
 
           {/* Footer */}
-          <tfoot>
-            <tr className="border-t border-gray-200 bg-[#D2E7C4] text-xs font-bold text-[#1D4D3E]">
-              <td className="rounded-bl-lg px-3 py-2" />
+          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
+            <tr className="text-xs font-extrabold text-[#1D4D3E]">
+              <td className="px-3 py-3.5 text-center" />
 
-              <td className="px-3 py-2" />
-
-              <td className="px-4 py-2" />
-
-              <td className="px-4 py-2" />
-
-              <td className="px-4 py-2" />
-
-              <td className="px-4 py-2 text-left">
-                <span className="font-black">
-                  {withCollateral.length} accounts
-                </span>
+              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
+                TOTAL
               </td>
 
-              <td className=" px-4 py-2" />
+              <td colSpan={3} className="px-4 py-3.5" />
 
-              <td className="px-4 py-2 text-left font-mono text-sm font-black">
+              <td className="px-4 py-3.5 font-bold text-[#5a5a70]">
+                {withCollateral.length} accounts
+              </td>
+
+              <td className="px-4 py-3.5" />
+
+              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
                 ₱ {formatCurrency(totalAppraiseValue)}
               </td>
 
-              <td className="px-4 py-2 text-left font-mono text-sm font-black rounded-br-lg">
+              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
                 ₱ {formatCurrency(totalLoanValue)}
               </td>
             </tr>

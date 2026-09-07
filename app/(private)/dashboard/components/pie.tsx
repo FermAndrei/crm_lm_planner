@@ -1,13 +1,7 @@
 "use client";
 
-import { Cell, Label, Pie, PieChart, ResponsiveContainer } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Cell, Label, Pie, PieChart } from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
@@ -38,7 +32,7 @@ const chartData: creditRatio[] = [
     creditName: "OPB",
     creditCount: 16,
     percentage: 84,
-    color: "#064E3B",
+    color: "#12946a",
   },
 ];
 
@@ -57,31 +51,36 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ChartPieSimple() {
-  const totalClients = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.creditCount, 0);
-  }, []);
+  const pastDueRatio =
+    chartData.find((d) => d.creditName === "Past Due")?.percentage ?? 16;
+
   return (
-    <Card className="h-full min-w-full">
+    <Card className="flex h-full w-full flex-col">
       <CardHeader>
-        <CardTitle className="flex justify-between gap-2 text-lg font-bold tracking-tight text-gray-900">
-          <div className="flex items-center gap-2">
-            <span className="p-2 rounded-md bg-amber-50 text-amber-700">
+        <CardTitle className="flex justify-between items-center gap-2 text-lg font-extrabold tracking-tight text-[#191924]">
+          <div className="flex items-center gap-2.5">
+            <span className="p-2.5 rounded-xl bg-[#FFF3DC] text-[#b0700f] shadow-sm">
               <ShieldAlert size={18} />
             </span>
             <div>
-              <h2>Past Due / OPB</h2>
-              <p className="text-xs text-gray-500 font-medium">
+              <h2 className="text-[#191924] font-bold">Past Due / OPB</h2>
+              <p className="text-xs text-[#5a5a70] font-medium">
                 Credit risk ratio & loan portfolio health
               </p>
             </div>
           </div>
+          <div>
+            <span className="text-xs font-bold px-3 py-1 bg-[#fff3dc] text-[#b0700f] rounded-full shadow-sm">
+              84% Current
+            </span>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="flex min-h-0 flex-1">
-        <div className="grid w-full grid-cols-1 items-center">
+        <div className="grid w-full grid-cols-1 items-center gap-4">
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[280px] w-full"
+            className="mx-auto aspect-square max-h-[260px] w-full"
           >
             <PieChart>
               <ChartTooltip
@@ -93,8 +92,9 @@ export function ChartPieSimple() {
                 dataKey="creditCount"
                 nameKey="creditName"
                 innerRadius={80}
-                outerRadius={120}
-                strokeWidth={5}
+                outerRadius={115}
+                strokeWidth={4}
+                stroke="#FFFFFF"
               >
                 {chartData.map((item) => (
                   <Cell key={item.id} fill={item.color} />
@@ -112,17 +112,17 @@ export function ChartPieSimple() {
                         >
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) - 12}
-                            className="fill-muted-foreground text-base font-semibold"
+                            y={(viewBox.cy || 0) - 10}
+                            className="fill-[#5a5a70] text-xs font-bold uppercase tracking-wider"
                           >
                             Past Due Ratio
                           </tspan>
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 14}
-                            className="fill-foreground text-3xl font-bold"
+                            y={(viewBox.cy || 0) + 16}
+                            className="fill-[#191924] text-3xl font-extrabold tracking-tight"
                           >
-                            {totalClients.toLocaleString()}%
+                            {pastDueRatio}%
                           </tspan>
                         </text>
                       );
@@ -134,29 +134,29 @@ export function ChartPieSimple() {
           </ChartContainer>
           <div className="grid grid-cols-2 gap-3">
             {/* OPB Card */}
-            <div className="p-3 rounded-lg border text-center transition-all bg-emerald-50 border-emerald-300">
+            <div className="p-3 rounded-2xl border text-center transition-all bg-[#E2F6ED]/70 border-[#12946a]/20 shadow-xs">
               <div className="flex items-center justify-between mb-1">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-gray-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#05582E]" />
+                <span className="flex items-center gap-1.5 text-xs font-bold text-[#12946a]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#12946a]" />
                   OPB (84%)
                 </span>
               </div>
-              <p className="text-base font-black text-gray-900">₱90.0M</p>
-              <p className="text-[10px] font-semibold text-emerald-700 mt-0.5">
+              <p className="text-base font-extrabold text-[#191924]">₱90.0M</p>
+              <p className="text-[10px] font-semibold text-[#12946a] mt-0.5">
                 16 Active Loans
               </p>
             </div>
 
             {/* Past Due Card */}
-            <div className="p-3 rounded-lg border text-center transition-all bg-amber-50 border-amber-300">
+            <div className="p-3 rounded-2xl border text-center transition-all bg-[#FFF3DC]/70 border-[#b0700f]/20 shadow-xs">
               <div className="flex items-center justify-between mb-1">
-                <span className="flex items-center gap-1.5 text-xs font-bold text-gray-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                <span className="flex items-center gap-1.5 text-xs font-bold text-[#b0700f]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#b0700f]" />
                   Past Due (16%)
                 </span>
               </div>
-              <p className="text-base font-black text-amber-600">₱27.5M</p>
-              <p className="text-[10px] font-semibold text-amber-800 mt-0.5">
+              <p className="text-base font-extrabold text-[#191924]">₱27.5M</p>
+              <p className="text-[10px] font-semibold text-[#b0700f] mt-0.5">
                 3 Accounts Warning
               </p>
             </div>

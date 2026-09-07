@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  CartesianGrid,
-  LabelList,
-  Line,
-  LineChart,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
@@ -37,34 +30,34 @@ const chartData = [
 const chartConfig = {
   value: {
     label: "Loan Release",
-    color: "#006B4F",
+    color: "#6C4CF1",
   },
 } satisfies ChartConfig;
 
 export function ChartLineLinear() {
   const totalReleases = chartData.reduce((sum, item) => sum + item.value, 0);
   return (
-    <Card className="flex h-120 flex-col">
+    <Card className="flex h-120 min-w-full flex-col">
       <CardHeader>
-        <CardTitle className="flex justify-between gap-2 text-lg font-bold tracking-tight text-gray-900">
-          <div className="flex items-center gap-2">
-            <span className="rounded-md bg-red-50 p-2 text-red-700">
+        <CardTitle className="flex justify-between gap-2 text-lg font-extrabold tracking-tight text-[#191924]">
+          <div className="flex items-center gap-2.5">
+            <span className="rounded-xl bg-[#E4E9FF] p-2.5 text-[#4F46E5] shadow-sm">
               <TrendingUp size={18} />
             </span>
 
             <div className="min-w-0">
-              <h2>Outstanding Balance</h2>
-              <p className="text-xs font-medium text-gray-500">
+              <h2 className="text-[#191924] font-bold">Outstanding Balance</h2>
+              <p className="text-xs font-medium text-[#5a5a70]">
                 Credit risk ratio & loan portfolio health
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100">
-              <span className="text-[10px] uppercase font-bold text-emerald-800 tracking-wider block">
+            <div className="hidden lg:block text-right">
+              <span className="text-[10px] uppercase tracking-wider font-bold text-[#9a9ab0] block">
                 Total Balance
               </span>
-              <span className="text-sm sm:text-base font-black text-[#05582E] font-mono">
+              <span className="text-xs font-bold px-3 py-1 bg-[#e4e9ff] text-[#4f46e5] rounded-full shadow-sm">
                 ₱
                 {totalReleases.toLocaleString("en-PH", {
                   minimumFractionDigits: 2,
@@ -133,7 +126,7 @@ export function ChartLineLinear() {
             <Line
               dataKey="value"
               type="linear"
-              stroke="var(--color-value)"
+              stroke="#006B4A"
               strokeWidth={3}
               dot={{ r: 4 }}
               activeDot={{ r: 6 }}

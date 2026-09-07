@@ -13,7 +13,7 @@ export default function PrivateLayout({
       <Header />
       <SidebarProvider>
         <Sidebar />
-        <SidebarInset className="pt-20">{children}</SidebarInset>
+        <SidebarInset className="pt-20 bg-[#FCFDFC]">{children}</SidebarInset>
       </SidebarProvider>
     </>
   );

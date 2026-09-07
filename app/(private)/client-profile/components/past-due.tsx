@@ -48,75 +48,75 @@ export default function PastDue() {
   };
 
   return (
-    <div className="overflow-hidden -mt-9.5">
-      {/* <div className="overflow-hidden rounded-lg border border-gray-100 bg-white p-6 shadow-sm"> */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          {/* <h2 className="text-2xl font-bold text-gray-700">By Past Due</h2>
-          <p className="mt-1 text-base font medium text-gray-400">
-            {pastDue.length} loan accounts
-          </p> */}
+    <div className="overflow-hidden">
+      {/* Header Bar */}
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
+            {pastDue.length} Past Due Accounts
+          </span>
         </div>
 
         {/* Search */}
-        <form onSubmit={handleSearch} className="hidden lg:block">
+        <form onSubmit={handleSearch} className="block">
           <div className="relative">
             <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
             />
+
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search accounts..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-84 rounded-xl border border-gray-200 bg-gray-50 py-2 pl-10 pr-4 text-sm transition-all focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#3a8b62]"
+              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
             />
           </div>
         </form>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
         <table className="w-full border-collapse text-sm">
           {/* Header */}
-          <thead>
+          <thead className="bg-[#05512A] text-white">
             <tr className="bg-[#05512A] text-white">
-              <th className="w-12 rounded-tl-lg px-3 py-3">
+              <th className="w-12 px-3 py-3.5 text-center">
                 <span className="sr-only">Expand</span>
               </th>
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Branch
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
-                Cid
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
+                CID
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Member Name
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Account Number
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Product Type
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Date Released
               </th>
 
-              <th className="whitespace-nowrap px-4 py-3 text-left text-xs font-black uppercase tracking-wider rounded-tr-lg">
+              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
                 Maturity Date
               </th>
             </tr>
           </thead>
 
           {/* Body */}
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[#F1EEF8]">
             {pastDue.map((item, index) => {
               const rowId = `${item.cid}-${index}`;
               const isExpanded = expandedId === rowId;
@@ -126,72 +126,74 @@ export default function PastDue() {
                   {/* Main Row */}
                   <tr
                     className={cn(
-                      "group transition-all",
-                      isExpanded ? "bg-[#F3F9F5]" : "bg-white hover:bg-gray=50",
+                      "group transition-colors",
+                      isExpanded ? "bg-[#F3F9F5]" : "bg-white hover:bg-gray-50",
                     )}
                   >
-                    <td className="border-y border-l border-gray-100 p-3">
+                    <td className="px-3 py-3.5 text-center">
                       <button
                         type="button"
                         onClick={() => toggleRow(rowId)}
                         aria-expanded={isExpanded}
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-gray-400 transition-all hover:bg-[#E5F2EA] hover:text-[#05582E]"
+                        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#9a9ab0] transition-all hover:bg-[#EBFDF4] hover:text-[#5fa53c]"
                       >
                         <ChevronDown
-                          size={17}
+                          size={16}
                           className={cn(
                             "transition-transform duration-200",
                             isExpanded && "rotate-180",
                           )}
-                        ></ChevronDown>
+                        />
                       </button>
                     </td>
 
                     {/* Branch */}
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-bold text-[#191924]">
                         {item.branch}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
-                      <div className="font-semibold text-gray-900">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs text-[#5a5a70]">
                         {item.cid}
                       </div>
                     </td>
 
-                    <td className="border-y border-gray-100 px-4 py-3 align-top">
+                    <td className="px-4 py-3.5 align-top">
                       <div
-                        className="maw-w-70 truncate font-semibold text-[#05582E]"
+                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
                         title={item.memberName}
                       >
                         {item.memberName}
                       </div>
                     </td>
 
-                    <td className="border-y border-gray-100 px-4 py-3">
-                      <span className="font-mono text-[13px]">
+                    <td className="px-4 py-3.5 align-top">
+                      <span className="font-mono text-xs font-semibold text-[#191924]">
                         {item.accountNumber}
                       </span>
                     </td>
 
-                    <td className="border-y border-gray-100 px-4 py-3 whitespace-nowrap">
-                      {item.productType}
+                    <td className="whitespace-nowrap px-4 py-3.5 align-top">
+                      <span className="text-xs font-medium text-[#5a5a70]">
+                        {item.productType}
+                      </span>
                     </td>
 
-                    <td className="border-y border-gray-100 px-4 py-3">
-                      <div className="font-mono text-[13px]">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs text-[#191924]">
                         {formatDate(item.dateReleased)}
                       </div>
                     </td>
-                    <td className="border-y border-gray-100 px-4 py-3">
-                      <div className="font-mono text-[13px]">
+                    <td className="px-4 py-3.5 align-top">
+                      <div className="font-mono text-xs text-[#5a5a70]">
                         {formatDate(item.maturityDate)}
                       </div>
                     </td>
                   </tr>
 
                   {/* Expanded Row */}
-                  <ExpandableRow isExpanded={isExpanded} colSpan={9}>
+                  <ExpandableRow isExpanded={isExpanded} colSpan={8}>
                     <ExpandableDetails
                       title="Past Due Details"
                       fields={[
@@ -214,11 +216,11 @@ export default function PastDue() {
                         },
                         {
                           label: "Date Released",
-                          value: item.dateReleased,
+                          value: formatDate(item.dateReleased),
                         },
                         {
                           label: "Maturity Date",
-                          value: item.maturityDate,
+                          value: formatDate(item.maturityDate),
                         },
                         {
                           label: "Principal Release",

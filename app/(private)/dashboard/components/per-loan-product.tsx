@@ -27,8 +27,7 @@ const chartData: LoanProductBreakdown[] = [
     productName: "SME Working Capital B",
     clientCount: 42,
     percentage: 42,
-    // amountFormatted: "₱42.00M",
-    color: "#00BD7D",
+    color: "#12946a",
     value: 42,
   },
   {
@@ -36,7 +35,6 @@ const chartData: LoanProductBreakdown[] = [
     productName: "SME Revolving Credit Line",
     clientCount: 8,
     percentage: 8,
-    // amountFormatted: "₱8.00M",
     color: "#0284C7",
     value: 8,
   },
@@ -45,8 +43,7 @@ const chartData: LoanProductBreakdown[] = [
     productName: "SME Investment B",
     clientCount: 12,
     percentage: 12,
-    // amountFormatted: "₱12.00M",
-    color: "#8B5CF6",
+    color: "#6C4CF1",
     value: 12,
   },
   {
@@ -54,7 +51,6 @@ const chartData: LoanProductBreakdown[] = [
     productName: "SME Working Capital Restructured",
     clientCount: 13,
     percentage: 13,
-    // amountFormatted: "₱13.00M",
     color: "#F59E0B",
     value: 13,
   },
@@ -63,8 +59,7 @@ const chartData: LoanProductBreakdown[] = [
     productName: "SME Agri Finance",
     clientCount: 25,
     percentage: 25,
-    // amountFormatted: "₱25.00M",
-    color: "#064E3B",
+    color: "#047857",
     value: 25,
   },
 ];
@@ -84,20 +79,20 @@ export function PerLoanProduct() {
     <Card className="flex h-full w-full flex-col">
       {/* Header */}
       <CardHeader>
-        <CardTitle className="flex justify-between gap-2 text-lg font-bold tracking-tight text-gray-900">
-          <div className="flex items-center gap-2">
-            <span className="rounded-md bg-blue-50 text-blue-700 p-2">
+        <CardTitle className="flex justify-between items-center gap-2 text-lg font-extrabold tracking-tight text-[#191924]">
+          <div className="flex items-center gap-2.5">
+            <span className="rounded-xl bg-[#FFE3EE] text-[#E0509A] p-2.5 shadow-sm">
               <ChartPie size={18} />
             </span>
             <div>
-              <h2>Per Loan Product</h2>
-              <p className="text-xs font-medium text-gray-500">
+              <h2 className="text-[#191924] font-bold">Per Loan Product</h2>
+              <p className="text-xs font-medium text-[#5a5a70]">
                 Portfolio distribution by product type
               </p>
             </div>
           </div>
           <div>
-            <span className="text-xs font-bold px-3 py-1 bg-gray-50 rounded-full text-gray-600 border border-gray-100">
+            <span className="text-xs font-bold px-3 py-1 bg-[#ffe3ee] text-[#e0509a] rounded-full shadow-sm">
               {chartData.length} Products
             </span>
           </div>
@@ -108,7 +103,7 @@ export function PerLoanProduct() {
         <div className="grid w-full grid-cols-1 items-center gap-6 md:grid-cols-2">
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square w-full"
+            className="mx-auto aspect-square max-h-65 w-full"
           >
             <PieChart>
               <ChartTooltip
@@ -121,8 +116,9 @@ export function PerLoanProduct() {
                 dataKey="value"
                 nameKey="productName"
                 innerRadius={80}
-                outerRadius={120}
-                strokeWidth={5}
+                outerRadius={115}
+                strokeWidth={4}
+                stroke="#FFFFFF"
               >
                 {chartData.map((item) => (
                   <Cell key={item.id} fill={item.color} />
@@ -140,15 +136,15 @@ export function PerLoanProduct() {
                         >
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) - 12}
-                            className="fill-muted-foreground text-base font-semibold"
+                            y={(viewBox.cy || 0) - 10}
+                            className="fill-[#5a5a70] text-xs font-bold uppercase tracking-wider"
                           >
                             Active Clients
                           </tspan>
                           <tspan
                             x={viewBox.cx}
-                            y={(viewBox.cy || 0) + 14}
-                            className="fill-foreground text-3xl font-bold"
+                            y={(viewBox.cy || 0) + 16}
+                            className="fill-[#191924] text-3xl font-extrabold tracking-tight"
                           >
                             {totalClients.toLocaleString()}
                           </tspan>
@@ -162,36 +158,34 @@ export function PerLoanProduct() {
               </Pie>
             </PieChart>
           </ChartContainer>
-          <div className="flex min-w-0 flex-col gap-2.5">
+          <div className="flex min-w-0 flex-col gap-2">
             {chartData.map((item) => (
               <div
                 key={item.id}
-                className="flex cursor-pointer items-center justify-between rounded-lg border bg-slate-50/30 p-3 shadow-sm transition-all duration-200 hover:translate-x-1"
+                className="flex items-center justify-between rounded-xl border border-[#191924]/8 bg-slate-50/20 p-2.5 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <span
-                    className="h-3.5 w-3.5 shrink-0 rounded-lg shadow-xs"
+                    className="h-3.5 w-3.5 shrink-0 rounded-md shadow-xs"
                     style={{
                       backgroundColor: item.color,
                     }}
                   />
                   <div className="min-w-0 truncate">
-                    <h4 className="truncate text-xs font-bold text-gray-900">
+                    <h4 className="truncate text-xs font-bold text-[#191924]">
                       {item.productName}
                     </h4>
 
-                    <p className="font-mono text-[11px] text-gray-400">
+                    <p className="font-mono text-[11px] text-[#5a5a70]">
                       {item.clientCount} active client
                       {item.clientCount !== 1 ? "s" : ""}
                     </p>
                   </div>
                 </div>
-                <div className="shrink-0 text-right">
-                  <div className="flex items-center justify-end gap-1.5">
-                    <span className="text-xs font-black text-gray-900">
-                      {item.percentage}%
-                    </span>
-                  </div>
+                <div className="shrink-0 text-right pl-2">
+                  <span className="text-xs font-extrabold text-[#191924]">
+                    {item.percentage}%
+                  </span>
                 </div>
               </div>
             ))}

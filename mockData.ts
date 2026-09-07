@@ -83,7 +83,7 @@ export const DASHBOARD_STATS: DashboardStat[] = [
     id: "2",
     label: "Outstanding Balance",
     value: "117.5M",
-    color: "green",
+    color: "red",
     remarks: "Year-to-date total balance",
     change: "+8.4%",
   },
