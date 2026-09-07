@@ -80,7 +80,7 @@ export function ChartPieSimple() {
         <div className="grid w-full grid-cols-1 items-center gap-4">
           <ChartContainer
             config={chartConfig}
-            className="mx-auto aspect-square max-h-[260px] w-full"
+            className="mx-auto aspect-square max-h-65 w-full"
           >
             <PieChart>
               <ChartTooltip
