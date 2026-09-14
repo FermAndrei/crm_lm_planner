@@ -63,7 +63,7 @@ export function ChartPieSimple() {
               <ShieldAlert size={18} />
             </span>
             <div>
-              <h2 className="text-[#191924] font-bold">Past Due / OPB</h2>
+              <h2 className="text-[#191924] font-bold">Past Due</h2>
               <p className="text-xs text-[#5a5a70] font-medium">
                 Credit risk ratio & loan portfolio health
               </p>

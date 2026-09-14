@@ -24,8 +24,8 @@ export default function DashBoard() {
                 </h1>
               </div>
               <p className="text-xs sm:text-sm text-[#5a5a70] font-medium mt-0.5">
-                Real-time loan disbursement analytics, PAR monitoring, and risk
-                ratios across 12 branches.
+                LM Planner provides real-time analytics and summary views for
+                handle units, centers, and client statuses in one place.
               </p>
             </div>
           </div>
@@ -47,18 +47,18 @@ export default function DashBoard() {
         <StatCards />
         <div className="flex flex-1 flex-col gap-4 mt-4 pt-0">
           <div className="grid items-stretch gap-4 grid-cols-15">
-            <div className="col-span-15 h-110 lg:col-span-8">
+            <div className="col-span-15 h-110 min-[1260px]:col-span-8">
               <LoanReleases />
             </div>
-            <div className="col-span-15 h-110 lg:col-span-7">
+            <div className="col-span-15 h-110 min-[1260px]:col-span-7">
               <PerLoanProduct />
             </div>
           </div>
           <div className="grid items-stretch gap-4 grid-cols-15">
-            <div className="col-span-15 lg:col-span-5">
+            <div className="col-span-15 md:col-span-8 lg:col-span-6 ">
               <ChartPieSimple />
             </div>
-            <div className="col-span-15 lg:col-span-10">
+            <div className="col-span-15 md:col-span-7 lg:col-span-9 ">
               <ChartLineLinear />
             </div>
           </div>
