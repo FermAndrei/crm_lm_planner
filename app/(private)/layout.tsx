@@ -10,9 +10,11 @@ export default function PrivateLayout({
 }) {
   return (
     <SidebarProvider>
-      <Header />
       <Sidebar />
-      <SidebarInset className="pt-20 bg-[#FCFDFC]">{children}</SidebarInset>
+      <SidebarInset className="bg-[#F7F7F8]">
+        <Header />
+        {children}
+      </SidebarInset>
     </SidebarProvider>
   );
 }

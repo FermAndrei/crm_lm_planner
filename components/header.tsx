@@ -9,17 +9,21 @@ import {
   Lock,
   User as UserIcon,
   Settings,
+  ChevronRight,
+  House,
+  Home,
 } from "lucide-react";
 
 interface Breadcrumb {
   href: string;
-  label: string;
+  label: React.ReactNode;
   isLast: boolean;
   isClickable: boolean;
 }
 import Image from "next/image";
 import Link from "next/link";
 import { SidebarMobileTrigger } from "./sidebar";
+import DateAndTime from "./ui/date-time";
 
 // Define which routes are actual pages (leaf nodes)
 const CLICKABLE_ROUTES = new Set([
@@ -74,8 +78,8 @@ export default function Header() {
 
     const breadcrumbs: Breadcrumb[] = [
       {
-        href: "/dashboard",
-        label: "Home",
+        href: "/homepage",
+        label: <Home size={16} className="text-[#1E6E25]" />,
         isLast: paths.length === 0,
         isClickable: true,
       },
@@ -87,10 +91,10 @@ export default function Header() {
       let label = path.charAt(0).toUpperCase() + path.slice(1);
 
       // Custom labels for specific paths
-      if (path === "ui-test") label = "UI Components";
-      if (path === "error-handler") label = "Error Handler";
-      if (path === "stay-tuned") label = "Stay Tuned";
-      if (path === "dashboard") label = "Dashboard";
+      // if (path === "ui-test") label = "UI Components";
+      // if (path === "error-handler") label = "Error Handler";
+      // if (path === "stay-tuned") label = "Stay Tuned";
+      // if (path === "dashboard") label = "Dashboard";
 
       // Determine if this breadcrumb should be clickable
       const isClickable =
@@ -123,12 +127,12 @@ export default function Header() {
   };
 
   return (
-    <header className="h-20 px-4 md:px-8 flex items-center justify-between fixed w-full top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#191924]/[0.07] shadow-cloud-nav">
+    <header className="h-19 min-h-19 px-4 md:px-8 flex items-center justify-between w-full bg-[#F7F7F8] backdrop-blur-md border-b border-[#191924]/[0.07] shadow-cloud-nav">
       {/* Left Section - Title & Breadcrumbs */}
-      <div className="flex items-center gap-2 md:gap-4">
-        <SidebarMobileTrigger />
+      <div className="flex items-center gap-2">
+        {/* <SidebarMobileTrigger /> */}
 
-        <Link href="/dashboard" className="flex items-center gap-2 group">
+        {/* <Link href="/dashboard" className="flex items-center gap-2 group">
           <div className="relative h-14 w-36 sm:w-44">
             <Image
               src="/CARD_SME_Logo.png"
@@ -138,11 +142,37 @@ export default function Header() {
               className="object-contain"
             />
           </div>
-        </Link>
+        </Link> */}
+        {breadcrumbs.map((crumb, idx) => (
+          <React.Fragment
+            key={`${String(crumb.href)}-${String(crumb.label)}-${idx}`}
+          >
+            {idx > 0 && <ChevronRight size={14} className="text-gray-300" />}
+
+            {crumb.isLast ? (
+              <span className="text-[#1E6E25] font-medium text-sm flex items-center">
+                {crumb.label}
+              </span>
+            ) : crumb.isClickable ? (
+              <Link
+                href={crumb.href}
+                className="text-gray-500 hover:text-[#1E4637] transition-colors text-sm flex items-center"
+              >
+                {crumb.label}
+              </Link>
+            ) : (
+              <span className="text-gray-400 text-sm cursor-default flex items-center">
+                {crumb.label}
+              </span>
+            )}
+          </React.Fragment>
+        ))}
       </div>
 
       {/* Right Section - Search & Profile */}
       <div className="flex items-center gap-4">
+        <DateAndTime />
+
         {/* Profile Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <div

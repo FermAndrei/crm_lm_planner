@@ -19,11 +19,12 @@ export interface UserProfile {
 export interface DashboardStat {
   id: string;
   label: string;
-  value: string | number;
+  value: number;
   remarks: string;
   // trend: string;
   color: string;
   change: string;
+  suffix?: string;
 }
 
 export interface ActiveProject {
@@ -74,7 +75,7 @@ export const DASHBOARD_STATS: DashboardStat[] = [
   {
     id: "1",
     label: "Total Active Clients",
-    value: "19",
+    value: 19,
     color: "blue",
     remarks: "+3 new accounts this quarter",
     change: "+18.7%",
@@ -82,7 +83,8 @@ export const DASHBOARD_STATS: DashboardStat[] = [
   {
     id: "2",
     label: "Outstanding Balance",
-    value: "117.5M",
+    value: 117.5,
+    suffix: "M",
     color: "red",
     remarks: "Year-to-date total balance",
     change: "+8.4%",
@@ -90,7 +92,8 @@ export const DASHBOARD_STATS: DashboardStat[] = [
   {
     id: "3",
     label: "Total Amount Release for the Month",
-    value: "2.5M",
+    value: 2.5,
+    suffix: "M",
     color: "emerald",
     remarks: "83.3% of ₱3.0M monthly quota",
     change: "+12.0%",
@@ -98,7 +101,8 @@ export const DASHBOARD_STATS: DashboardStat[] = [
   {
     id: "4",
     label: "PAR Rate",
-    value: "5.25%",
+    value: 5.25,
+    suffix: "%",
     color: "purple",
     remarks: "Below 6.0% bank threshold",
     change: "-0.45%",
@@ -106,7 +110,8 @@ export const DASHBOARD_STATS: DashboardStat[] = [
   {
     id: "5",
     label: "Total Amount of Past Due Account",
-    value: "27.5M",
+    value: 27.5,
+    suffix: "M",
     color: "amber",
     remarks: "16.0% of total portfolio balance",
     change: "-2.1%",

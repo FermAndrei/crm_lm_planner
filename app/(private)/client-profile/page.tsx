@@ -36,7 +36,7 @@ export default function ClientProfilePage() {
               verification, and charge-off ledgers.
             </p>
           </div>
-          <DateAndTime />
+          {/* <DateAndTime /> */}
         </div>
 
         {/* Segment Filter Tabs */}

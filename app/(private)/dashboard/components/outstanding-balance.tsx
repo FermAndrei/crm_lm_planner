@@ -13,7 +13,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
@@ -29,190 +28,73 @@ import {
   LineChartIcon,
   PieChartIcon,
 } from "lucide-react";
-
+import React from "react";
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import React from "react";
-
-export const description = "Loan releases chart";
-
-type LoanReleasesMock = {
+type OutstandingBalanceMock = {
   id: number;
   month: string;
-  monthName: string;
-  amount: number;
-  amountFormatted: string;
-  target: number;
-  isPeak?: boolean;
+  value: number;
   color: string;
 };
 
-const pieColors = [
-  "#83AF87",
-  "#76A77A",
-  "#8CB590",
-  "#5D9762",
-  "#6DA171",
-  "#4D8C53",
-  "#639B68",
-  "#1E6E25",
-  "#377E3D",
-  "#1fad2f",
-  "#3fa24a",
-  "#0f5718",
-];
-
-const chartData: LoanReleasesMock[] = [
-  {
-    id: 1,
-    month: "Jan",
-    monthName: "Month 1 (Jan)",
-    amount: 49200000,
-    amountFormatted: "₱49.2M",
-    target: 30000000,
-    isPeak: true,
-    color: pieColors[0],
-  },
-  {
-    id: 2,
-    month: "Feb",
-    monthName: "Month 2 (Feb)",
-    amount: 38000000,
-    amountFormatted: "₱38.0M",
-    target: 10000000,
-    color: pieColors[1],
-  },
-  {
-    id: 3,
-    month: "Mar",
-    monthName: "Month 3 (Mar)",
-    amount: 25100000,
-    amountFormatted: "₱25.1M",
-    target: 12000000,
-    color: pieColors[2],
-  },
-  {
-    id: 4,
-    month: "Apr",
-    monthName: "Month 4 (Apr)",
-    amount: 30200000,
-    amountFormatted: "₱30.2M",
-    target: 8000000,
-    color: pieColors[3],
-  },
-  {
-    id: 5,
-    month: "May",
-    monthName: "Month 5 (May)",
-    amount: 39000000,
-    amountFormatted: "₱39.0M",
-    target: 8000000,
-    color: pieColors[4],
-  },
-  {
-    id: 6,
-    month: "Jun",
-    monthName: "Month 6 (Jun)",
-    amount: 20000000,
-    amountFormatted: "₱20.0M",
-    target: 10000000,
-    color: pieColors[5],
-  },
-  {
-    id: 7,
-    month: "Jul",
-    monthName: "Month 7 (Jul)",
-    amount: 7500000,
-    amountFormatted: "₱7.5M",
-    target: 8000000,
-    color: pieColors[6],
-  },
-  {
-    id: 8,
-    month: "Aug",
-    monthName: "Month 8 (Aug)",
-    amount: 48900000,
-    amountFormatted: "₱48.9M",
-    target: 30000000,
-    isPeak: true,
-    color: pieColors[7],
-  },
-  {
-    id: 9,
-    month: "Sep",
-    monthName: "Month 9 (Sep)",
-    amount: 9200000,
-    amountFormatted: "₱9.2M",
-    target: 10000000,
-    color: pieColors[8],
-  },
-  {
-    id: 10,
-    month: "Oct",
-    monthName: "Month 10 (Oct)",
-    amount: 5800000,
-    amountFormatted: "₱5.8M",
-    target: 8000000,
-    color: pieColors[9],
-  },
-  {
-    id: 11,
-    month: "Nov",
-    monthName: "Month 11 (Nov)",
-    amount: 10000000,
-    amountFormatted: "₱10.0M",
-    target: 8000000,
-    color: pieColors[10],
-  },
-  {
-    id: 12,
-    month: "Dec",
-    monthName: "Month 12 (Dec)",
-    amount: 20500000,
-    amountFormatted: "₱20.5M",
-    target: 15000000,
-    color: pieColors[11],
-  },
+const chartData: OutstandingBalanceMock[] = [
+  { id: 1, month: "Jan", value: 19630967.25, color: "#83AF87" },
+  { id: 2, month: "Feb", value: 6338503.93, color: "#76A77A" },
+  { id: 3, month: "Mar", value: 16565669.47, color: "#8CB590" },
+  { id: 4, month: "Apr", value: 28290238.35, color: "#5D9762" },
+  { id: 5, month: "May", value: 44753530.94, color: "#6DA171" },
+  { id: 6, month: "Jun", value: 28963594.3, color: "#4D8C53" },
+  { id: 7, month: "Jul", value: 0, color: "#639B68" },
+  { id: 8, month: "Aug", value: 0, color: "#1E6E25" },
+  { id: 9, month: "Sep", value: 0, color: "#377E3D" },
+  { id: 10, month: "Oct", value: 0, color: "#1fad2f" },
+  { id: 11, month: "Nov", value: 0, color: "#3fa24a" },
+  { id: 12, month: "Dec", value: 0, color: "#0f5718" },
 ];
 
 const chartConfig = {
-  amount: {
-    label: "Loan Releases",
-    color: "#00BD7D",
+  value: {
+    label: "Loan Release",
+    color: "#6C4CF1",
   },
 } satisfies ChartConfig;
 
-const formatAmount = (amount: number) => {
-  if (amount >= 1_000_000) {
-    return `₱${(amount / 1_000_000).toFixed(1)}M`;
+const formatAmount = (value: number) => {
+  if (value >= 1_000_000) {
+    return `₱${(value / 1_000_000).toFixed(1)}M`;
   }
 
-  if (amount >= 1_000) {
-    return `₱${(amount / 1_000).toFixed(1)}K`;
+  if (value >= 1_000) {
+    return `₱${(value / 1_000).toFixed(1)}K`;
   }
 
-  return `₱${amount.toLocaleString()}`;
+  return `₱${value.toLocaleString()}`;
 };
 
-const getPercentage = (amount: number, total: number) => {
+const getPercentage = (value: number, total: number) => {
   if (!total) {
     return "0.0";
   }
 
-  return ((amount / total) * 100).toFixed(1);
+  return ((value / total) * 100).toFixed(1);
 };
 
-export function LoanReleases() {
-  const [position, setPosition] = React.useState("bar_chart");
+export function ChartLineLinear() {
+  const [position, setPosition] = React.useState("line_chart");
+
+  const visibleChartData = React.useMemo(() => {
+    return chartData.filter((item) => item.value > 0);
+  }, []);
 
   const totalReleases = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.amount, 0);
+    return visibleChartData.reduce((sum, item) => sum + item.value, 0);
   }, []);
 
   const tooltipContent = (
@@ -233,12 +115,13 @@ export function LoanReleases() {
   );
 
   return (
-    <Card className="flex h-full min-h-0 flex-col">
+    <Card className="flex h-120 min-w-full flex-col">
       <CardHeader className="flex flex-row items-start justify-between gap-4 mb-4">
         <CardTitle className="flex flex-col tracking-tight">
-          <h2 className="font-semibold text-[#262626]">Loan Releases</h2>
-          <p className="text-sm font-medium text-[#8c8c8c]">
-            12-Month loan disbursement volume across portfolio accounts
+          <h2 className="font-semibold text-[#262626]">Outstanding Balance</h2>
+          <p className="text-xs font-medium text-[#5a5a70]">
+            Monthly outstanding portfolio balance trend across all product
+            types.
           </p>
         </CardTitle>
 
@@ -271,13 +154,13 @@ export function LoanReleases() {
         </DropdownMenu>
       </CardHeader>
 
-      <CardContent className="min-h-0 flex-1">
+      <CardContent className="min-h-0 min-w-0 flex-1 px-6">
         {/* BAR CHART */}
         {position === "bar_chart" && (
           <ChartContainer config={chartConfig} className="h-full w-full">
             <BarChart
               accessibilityLayer
-              data={chartData}
+              data={visibleChartData}
               margin={{
                 top: 10,
                 right: 10,
@@ -318,7 +201,7 @@ export function LoanReleases() {
               </defs>
 
               <Bar
-                dataKey="amount"
+                dataKey="value"
                 fill="url(#barGradient)"
                 radius={[6, 6, 0, 0]}
               />
@@ -328,8 +211,7 @@ export function LoanReleases() {
 
         {/* PIE CHART */}
         {position === "pie_chart" && (
-          <div className="grid w-full grid-cols-1 items-center gap-8 md:grid-cols-2">
-            {/* Pie chart area */}
+          <div className="grid w-full h-full grid-cols-1 items-center gap-8 md:grid-cols-2">
             <div className="flex min-h-70 w-full items-center justify-center">
               <ChartContainer
                 config={chartConfig}
@@ -341,13 +223,13 @@ export function LoanReleases() {
                     content={<ChartTooltipContent hideLabel />}
                   />
                   <Pie
-                    data={chartData}
-                    dataKey="amount"
-                    nameKey="monthName"
+                    data={visibleChartData}
+                    dataKey="value"
+                    nameKey="month"
                     innerRadius={80}
                     outerRadius={130}
                   >
-                    {chartData.map((item) => (
+                    {visibleChartData.map((item) => (
                       <Cell key={item.id} fill={item.color} />
                     ))}
                     <Label
@@ -384,9 +266,8 @@ export function LoanReleases() {
                 </PieChart>
               </ChartContainer>
             </div>
-            {/* Pie chart legend */}
             <div className="flex min-w-0 flex-col gap-1">
-              {chartData.map((item) => (
+              {visibleChartData.map((item) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between rounded-md border border-[#191924]/8 bg-slate-50/20 px-2 py-1 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm"
@@ -399,15 +280,15 @@ export function LoanReleases() {
                       }}
                     />
                     <h4 className="truncate text-[10px] font-bold text-[#191924]">
-                      {item.monthName}
+                      {item.month}
                     </h4>
                     <p className="font-mono text-[10px] text-[#5a5a70]">
-                      {formatAmount(item.amount)} release
-                      {item.amount !== 1 ? "s" : ""}
+                      {formatAmount(item.value)} release
+                      {item.value !== 1 ? "s" : ""}
                     </p>
                   </div>
                   <span className="shrink-0 pl-2 text-[10px] font-bold text-[#191924]">
-                    {getPercentage(item.amount, totalReleases)}%
+                    {getPercentage(item.value, totalReleases)}%
                   </span>
                 </div>
               ))}
@@ -417,15 +298,18 @@ export function LoanReleases() {
 
         {/* LINE CHART */}
         {position === "line_chart" && (
-          <ChartContainer config={chartConfig} className="h-full w-full">
+          <ChartContainer
+            config={chartConfig}
+            className="h-full min-w-0 w-full"
+          >
             <LineChart
               accessibilityLayer
-              data={chartData}
+              data={visibleChartData}
               margin={{
-                top: 10,
-                right: 10,
-                left: 0,
-                bottom: 0,
+                top: 35,
+                right: 12,
+                bottom: 12,
+                left: 12,
               }}
             >
               <CartesianGrid vertical={false} />
@@ -447,14 +331,27 @@ export function LoanReleases() {
                 dataKey="month"
                 tickLine={false}
                 axisLine={false}
-                tickMargin={10}
+                tickMargin={8}
               />
 
-              <ChartTooltip cursor={false} content={tooltipContent} />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    hideLabel
+                    formatter={(value) =>
+                      Number(value).toLocaleString("en-PH", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })
+                    }
+                  />
+                }
+              />
 
               <Line
                 type="linear"
-                dataKey="amount"
+                dataKey="value"
                 stroke="#5D9762"
                 strokeWidth={3}
                 dot={{
@@ -463,9 +360,7 @@ export function LoanReleases() {
                   strokeWidth: 0,
                   stroke: "#FFFFFF",
                 }}
-                activeDot={{
-                  r: 6,
-                }}
+                activeDot={{ r: 6 }}
               />
             </LineChart>
           </ChartContainer>

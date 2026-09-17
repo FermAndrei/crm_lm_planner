@@ -33,13 +33,13 @@ export default function DateAndTime() {
   };
   return (
     <>
-      <div className="hidden items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 lg:flex">
+      <div className="hidden items-center gap-3 rounded-md border border-gray-200 bg-gray-50 px-2 py-1.5 lg:flex">
         {currentDateTime && (
           <>
             <div className="flex items-center gap-2">
-              <Calendar size={14} className="text-emerald-600" />
+              <Calendar size={14} className="text-[#1E6E25]" />
 
-              <span className="text-xs font-medium text-gray-700">
+              <span className="text-xs font-medium text-[#1E6E25]">
                 {formatDate(currentDateTime)}
               </span>
             </div>
@@ -47,9 +47,9 @@ export default function DateAndTime() {
             <div className="h-4 w-px bg-gray-300" />
 
             <div className="flex items-center gap-2">
-              <Clock size={14} className="text-emerald-600" />
+              <Clock size={14} className="text-[#1E6E25]" />
 
-              <span className="font-mono text-xs font-bold text-gray-700">
+              <span className="font-mono text-xs font-bold text-[#1E6E25]">
                 {formatTime(currentDateTime)}
               </span>
             </div>

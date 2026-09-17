@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 import {
   ChevronRight,
@@ -12,6 +13,9 @@ import {
   NotebookText,
   UserRound,
   Menu,
+  Home,
+  FileText,
+  Calculator,
 } from "lucide-react";
 
 // ============================================================
@@ -152,23 +156,42 @@ export function SidebarMobileTrigger({ className }: { className?: string }) {
 
 const defaultNavItems: NavItem[] = [
   {
+    title: "Homepage",
+    url: "/homepage",
+    icon: <Home className="size-4 shrink-0" />,
+  },
+  {
     title: "Dashboard",
     url: "/dashboard",
-    icon: <LayoutDashboard className="size-6 shrink-0" />,
+    icon: <LayoutDashboard className="size-4 shrink-0" />,
   },
-
+  // {
+  //   title: "LM Planner",
+  //   url: "#",
+  //   icon: <NotebookText className="size-6 shrink-0" />,
+  //   isActive: true,
+  //   items: [
+  //     {
+  //       title: "Client Profile",
+  //       url: "/client-profile",
+  //       icon: <UserRound className="size-5 shrink-0" />,
+  //     },
+  //   ],
+  // },
   {
-    title: "LM Planner",
-    url: "#",
-    icon: <NotebookText className="size-6 shrink-0" />,
-    isActive: true,
-    items: [
-      {
-        title: "Client Profile",
-        url: "/client-profile",
-        icon: <UserRound className="size-5 shrink-0" />,
-      },
-    ],
+    title: "Client Profile",
+    url: "/client-profile",
+    icon: <UserRound className="size-4 shrink-0" />,
+  },
+  {
+    title: "Report Modules",
+    url: "/report-modules",
+    icon: <FileText className="size-4 shrink-0" />,
+  },
+  {
+    title: "Calculator",
+    url: "/calculator",
+    icon: <Calculator className="size-4 shrink-0" />,
   },
 ];
 
@@ -209,7 +232,7 @@ function NavItemRow({
   }, [hasActiveChild]);
 
   const normalStyles = cn(
-    "text-[#1D4D3E]",
+    "text-[#333333] text-sm",
     "hover:bg-[#E6F4ED]",
     "hover:text-[#1D4D3E]",
   );
@@ -356,7 +379,7 @@ function NavItemRow({
         /*
          * Keep the icon at the same x-position.
          */
-        expanded ? "h-12 rounded-xl px-2 gap-3" : "h-12 rounded-xl px-2 gap-3",
+        expanded ? "h-12 rounded-xl px-2 gap-2" : "h-12 rounded-xl px-2 gap-2",
       )}
     >
       {/* ICON */}
@@ -367,7 +390,7 @@ function NavItemRow({
       {/* TEXT */}
       <span
         className={cn(
-          "min-w-0 truncate text-lg font-medium",
+          "min-w-0 truncate text-sm font-medium",
           "overflow-hidden",
           "transition-[opacity,max-width,transform]",
           "duration-300 ease-in-out",
@@ -424,12 +447,22 @@ export function Sidebar() {
             "bg-white",
             "shadow-lg",
             "overflow-hidden",
-            "p-3 mt-20",
+            "p-3 ",
             "transition-[width]",
             "duration-300 ease-in-out",
             isExpanded ? "w-72" : "w-18",
           )}
         >
+          <Image
+            src="/CARD_SME_Logo.png"
+            alt="Institution Logo"
+            width={180}
+            height={60}
+            className={cn(
+              "object-contain transition-all duration-300 mb-2",
+              isExpanded ? "h-14 w-auto" : "h-14 w-auto",
+            )}
+          />
           <nav className="flex w-full flex-col gap-2">
             {defaultNavItems.map((item) => (
               <NavItemRow key={item.title} item={item} expanded={isExpanded} />
