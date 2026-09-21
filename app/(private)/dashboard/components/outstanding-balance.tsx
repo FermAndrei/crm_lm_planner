@@ -36,6 +36,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import CountUp from "@/components/ui/count-up";
 
 type OutstandingBalanceMock = {
   id: number;
@@ -94,7 +95,7 @@ export function ChartLineLinear() {
   }, []);
 
   const totalReleases = React.useMemo(() => {
-    return visibleChartData.reduce((sum, item) => sum + item.value, 0);
+    return chartData.reduce((acc, curr) => acc + curr.value, 0);
   }, []);
 
   const tooltipContent = (
@@ -193,7 +194,13 @@ export function ChartLineLinear() {
               <ChartTooltip cursor={false} content={tooltipContent} />
 
               <defs>
-                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="outstandingBalanceBarGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop offset="0%" stopColor="#629966" />
 
                   <stop offset="100%" stopColor="#1E6E25" />
@@ -202,7 +209,7 @@ export function ChartLineLinear() {
 
               <Bar
                 dataKey="value"
-                fill="url(#barGradient)"
+                fill="url(#outstandingBalanceBarGradient)"
                 radius={[6, 6, 0, 0]}
               />
             </BarChart>
@@ -235,30 +242,47 @@ export function ChartLineLinear() {
                     <Label
                       content={({ viewBox }) => {
                         if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                          const cx = Number(viewBox.cx);
+                          const cy = Number(viewBox.cy);
+
                           return (
-                            <text
-                              x={viewBox.cx}
-                              y={viewBox.cy}
-                              textAnchor="middle"
-                              dominantBaseline="middle"
+                            <foreignObject
+                              x={cx - 75}
+                              y={cy - 35}
+                              width={150}
+                              height={80}
                             >
-                              <tspan
-                                x={viewBox.cx}
-                                y={(viewBox.cy || 0) - 12}
-                                className="fill-[#5a5a70] text-[11px] font-bold uppercase tracking-wider"
-                              >
-                                Total Releases
-                              </tspan>
-                              <tspan
-                                x={viewBox.cx}
-                                y={(viewBox.cy || 0) + 18}
-                                className="fill-[#191924] text-2xl font-extrabold tracking-tight"
-                              >
-                                {formatAmount(totalReleases)}
-                              </tspan>
-                            </text>
+                              <div className="flex h-full flex-col items-center justify-center text-center">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-[#5a5a70]">
+                                  Total Releases
+                                </span>
+
+                                <div className="flex items-baseline justify-center">
+                                  <span className="mr-1 text-2xl font-extrabold text-[#191924]">
+                                    ₱
+                                  </span>
+                                  <CountUp
+                                    from={0}
+                                    to={Number(
+                                      (totalReleases / 1_000_000).toFixed(1),
+                                    )}
+                                    separator=","
+                                    direction="up"
+                                    duration={0.5}
+                                    // decimals={1}
+                                    className="count-up-text text-2xl font-extrabold tracking-tight text-[#191924]"
+                                    delay={0}
+                                  />
+
+                                  <span className="ml-1 text-2xl font-extrabold text-[#191924]">
+                                    M
+                                  </span>
+                                </div>
+                              </div>
+                            </foreignObject>
                           );
                         }
+
                         return null;
                       }}
                     />

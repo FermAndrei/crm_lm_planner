@@ -91,39 +91,29 @@ export default function AllBranch() {
 
   return (
     <div className="overflow-hidden">
-      {/* Header Bar */}
-      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
-            {allBranches.length} Total Accounts
-          </span>
+      {/* Search */}
+      <form onSubmit={handleSearch} className="block">
+        <div className="relative mb-3">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
+          />
+          <input
+            type="text"
+            placeholder="Search accounts..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-72 sm:w-80 rounded-md border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
+          />
         </div>
-
-        {/* Search */}
-        <form onSubmit={handleSearch} className="block">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
-            />
-
-            <input
-              type="text"
-              placeholder="Search accounts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
-            />
-          </div>
-        </form>
-      </div>
+      </form>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
+      <div className="overflow-x-auto rounded-md border border-[#191924]/8 bg-white shadow-xs">
         <table className="w-full border-collapse text-sm">
           {/* HEADER */}
           <thead className="bg-[#05512A] text-white">
-            <tr className="bg-[#05512A] text-white">
+            <tr className="bg-[#F7F7F8] text-[#555555]">
               <th className="w-12 px-3 py-3.5 text-center">
                 <span className="sr-only">Expand</span>
               </th>

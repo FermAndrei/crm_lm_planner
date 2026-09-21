@@ -5,7 +5,6 @@ import { SegmentButton } from "@/components/ui/segment-button";
 import AllBranch from "./components/all-branch";
 import ByBranch from "./components/by-branch";
 import ProductTypePage from "./components/product-type";
-import DateAndTime from "@/components/ui/date-time";
 import PastDue from "./components/past-due";
 import WriteOff from "./components/writeoff";
 import WithCollateral from "./components/with-collateral";
@@ -25,7 +24,7 @@ export default function ClientProfilePage() {
   return (
     <div className="space-y-4 p-4 md:p-8">
       {/* Header Card */}
-      <div className="overflow-hidden rounded-3xl border border-[#191924]/8 bg-white p-6 md:p-8 shadow-cloud-card">
+      <div className="overflow-hidden rounded-md border border-[#191924]/8 bg-white p-6 shadow-cloud-card">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#F1EEF8] pb-5 mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#191924]">
@@ -40,7 +39,7 @@ export default function ClientProfilePage() {
         </div>
 
         {/* Segment Filter Tabs */}
-        <div className="mb-6">
+        <div className="mb-3">
           <SegmentButton
             tabs={tabs}
             activeTab={activeTab}

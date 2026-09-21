@@ -16,6 +16,7 @@ import {
   Home,
   FileText,
   Calculator,
+  Calendar,
 } from "lucide-react";
 
 // ============================================================
@@ -187,6 +188,11 @@ const defaultNavItems: NavItem[] = [
     title: "Report Modules",
     url: "/report-modules",
     icon: <FileText className="size-4 shrink-0" />,
+  },
+  {
+    title: "Calendar Schedule",
+    url: "/calendar-schedule",
+    icon: <Calendar className="size-4 shrink-0" />,
   },
   {
     title: "Calculator",

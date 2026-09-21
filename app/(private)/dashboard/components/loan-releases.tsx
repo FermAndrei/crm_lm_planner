@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import React from "react";
+import CountUp from "@/components/ui/count-up";
 
 export const description = "Loan releases chart";
 
@@ -310,7 +311,13 @@ export function LoanReleases() {
               <ChartTooltip cursor={false} content={tooltipContent} />
 
               <defs>
-                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="loanReleasesBarGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop offset="0%" stopColor="#629966" />
 
                   <stop offset="100%" stopColor="#1E6E25" />
@@ -319,7 +326,7 @@ export function LoanReleases() {
 
               <Bar
                 dataKey="amount"
-                fill="url(#barGradient)"
+                fill="url(#loanReleasesBarGradient)"
                 radius={[6, 6, 0, 0]}
               />
             </BarChart>
@@ -353,30 +360,45 @@ export function LoanReleases() {
                     <Label
                       content={({ viewBox }) => {
                         if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                          const cx = Number(viewBox.cx);
+                          const cy = Number(viewBox.cy);
+
                           return (
-                            <text
-                              x={viewBox.cx}
-                              y={viewBox.cy}
-                              textAnchor="middle"
-                              dominantBaseline="middle"
+                            <foreignObject
+                              x={cx - 75}
+                              y={cy - 35}
+                              width={150}
+                              height={80}
                             >
-                              <tspan
-                                x={viewBox.cx}
-                                y={(viewBox.cy || 0) - 12}
-                                className="fill-[#5a5a70] text-[11px] font-bold uppercase tracking-wider"
-                              >
-                                Total Releases
-                              </tspan>
-                              <tspan
-                                x={viewBox.cx}
-                                y={(viewBox.cy || 0) + 18}
-                                className="fill-[#191924] text-2xl font-extrabold tracking-tight"
-                              >
-                                {formatAmount(totalReleases)}
-                              </tspan>
-                            </text>
+                              <div className="flex h-full flex-col items-center justify-center text-center">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-[#5a5a70]">
+                                  Total Releases
+                                </span>
+
+                                <div className="flex items-baseline justify-center">
+                                  <span className="mr-1 text-2xl font-extrabold text-[#191924]">
+                                    ₱
+                                  </span>
+                                  <CountUp
+                                    from={0}
+                                    to={totalReleases / 1_000_000}
+                                    separator=","
+                                    direction="up"
+                                    duration={1}
+                                    // decimals={1}
+                                    className="count-up-text text-2xl font-extrabold tracking-tight text-[#191924]"
+                                    delay={0}
+                                  />
+
+                                  <span className="ml-1 text-2xl font-extrabold text-[#191924]">
+                                    M
+                                  </span>
+                                </div>
+                              </div>
+                            </foreignObject>
                           );
                         }
+
                         return null;
                       }}
                     />

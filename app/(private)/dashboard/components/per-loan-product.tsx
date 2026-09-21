@@ -35,6 +35,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import CountUp from "@/components/ui/count-up";
 
 type LoanProductBreakdown = {
   id: number;
@@ -199,15 +200,21 @@ export function PerLoanProduct() {
               <ChartTooltip cursor={false} content={tooltipContent} />
 
               <defs>
-                <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#1E6E25" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#1E6E25" stopOpacity={0.2} />
+                <linearGradient
+                  id="perLoanProductBarGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="0%" stopColor="#629966" />
+                  <stop offset="100%" stopColor="#1E6E25" />
                 </linearGradient>
               </defs>
 
               <Bar
                 dataKey="value"
-                fill="url(#barGradient)"
+                fill="url(#perLoanProductBarGradient)"
                 radius={[6, 6, 0, 0]}
               />
             </BarChart>
@@ -240,6 +247,44 @@ export function PerLoanProduct() {
                   <Label
                     content={({ viewBox }) => {
                       if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                        const cx = Number(viewBox.cx);
+                        const cy = Number(viewBox.cy);
+
+                        return (
+                          <foreignObject
+                            x={cx - 75}
+                            y={cy - 35}
+                            width={150}
+                            height={80}
+                          >
+                            <div className="flex h-full flex-col items-center justify-center text-center">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#5a5a70]">
+                                Total Releases
+                              </span>
+
+                              <div className="flex items-baseline justify-center">
+                                <CountUp
+                                  from={0}
+                                  to={totalClients}
+                                  separator=","
+                                  direction="up"
+                                  duration={1}
+                                  // decimals={1}
+                                  className="count-up-text text-3xl font-extrabold tracking-tight text-[#191924]"
+                                  delay={0}
+                                />
+                              </div>
+                            </div>
+                          </foreignObject>
+                        );
+                      }
+
+                      return null;
+                    }}
+                  />
+                  {/* <Label
+                    content={({ viewBox }) => {
+                      if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                         return (
                           <text
                             x={viewBox.cx}
@@ -266,7 +311,7 @@ export function PerLoanProduct() {
                       }
                       return null;
                     }}
-                  />
+                  /> */}
                 </Pie>
               </PieChart>
             </ChartContainer>
