@@ -56,12 +56,12 @@ export default function AccountDetailsModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100"
+        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-md bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#101828]">
+          <h2 className="text-xl sm:text-md font-bold text-[#101828]">
             Account Details
           </h2>
           <p className="mt-1 text-xs sm:text-sm text-[#667085]">
@@ -70,7 +70,7 @@ export default function AccountDetailsModal({
         </div>
 
         {/* Section 1: Account Information */}
-        <div className="mb-5 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+        <div className="mb-5 overflow-hidden rounded-md border border-gray-200/90 bg-white">
           <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
               Account Information
@@ -137,7 +137,7 @@ export default function AccountDetailsModal({
         </div>
 
         {/* Section 2: Payment Details */}
-        <div className="mb-5 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+        <div className="mb-5 overflow-hidden rounded-md border border-gray-200/90 bg-white">
           <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
               Payment Details
@@ -197,7 +197,7 @@ export default function AccountDetailsModal({
         </div>
 
         {/* Section 3: Delinquency Details */}
-        <div className="mb-6 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+        <div className="mb-6 overflow-hidden rounded-md border border-gray-200/90 bg-white">
           <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
               Delinquency Details
@@ -232,7 +232,7 @@ export default function AccountDetailsModal({
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer rounded-xl border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#05512A]/20"
+            className="cursor-pointer rounded-md border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#05512A]/20"
           >
             Close
           </button>

@@ -89,19 +89,19 @@ export default function WriteOff() {
               setSearchQuery(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full rounded-xl border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
+            className="w-full rounded-md border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
           />
         </div>
       </div>
 
       {/* Table Card */}
-      <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-xs">
+      <div className="rounded-md border border-gray-200/80 bg-white p-6 shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-left text-sm">
             {/* Header */}
             <thead>
               <tr className="bg-[#F8F9FA] text-[#475467] text-xs font-semibold">
-                <th className="whitespace-nowrap px-4 py-3.5 text-left first:rounded-l-xl">
+                <th className="whitespace-nowrap px-4 py-3.5 text-left first:rounded-l-md">
                   Branch
                 </th>
                 <th className="whitespace-nowrap px-4 py-3.5 text-left">
@@ -122,7 +122,7 @@ export default function WriteOff() {
                 <th className="whitespace-nowrap px-4 py-3.5 text-left">
                   Outstanding Principal
                 </th>
-                <th className="whitespace-nowrap px-4 py-3.5 text-center last:rounded-r-xl">
+                <th className="whitespace-nowrap px-4 py-3.5 text-center last:rounded-r-md">
                   Write-off Date
                 </th>
               </tr>

@@ -385,7 +385,7 @@ function NavItemRow({
         /*
          * Keep the icon at the same x-position.
          */
-        expanded ? "h-12 rounded-xl px-2 gap-2" : "h-12 rounded-xl px-2 gap-2",
+        expanded ? "h-12 rounded-md px-2 gap-2" : "h-12 rounded-md px-2 gap-2",
       )}
     >
       {/* ICON */}

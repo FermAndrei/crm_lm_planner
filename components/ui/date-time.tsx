@@ -66,14 +66,17 @@ export default function DateAndTime() {
     <div className="relative" ref={containerRef}>
       <div
         onClick={toggleCalendarPicker}
-        className="hidden items-center gap-3 rounded-lg border border-gray-200 bg-white hover:bg-gray-50/90 px-3 py-1.5 lg:flex cursor-pointer transition-colors shadow-2xs group"
+        className="hidden items-center gap-3 rounded-md border border-gray-200 bg-white hover:bg-gray-50/90 px-3 py-1.5 lg:flex cursor-pointer transition-colors shadow-2xs group"
         title="Click to open calendar picker"
         role="button"
         tabIndex={0}
       >
         {/* Date Section */}
         <div className="flex items-center gap-2">
-          <Calendar size={14} className="text-[#1E6E25] group-hover:scale-105 transition-transform" />
+          <Calendar
+            size={14}
+            className="text-[#1E6E25] group-hover:scale-105 transition-transform"
+          />
           <span className="text-xs font-semibold text-[#1E6E25]">
             {formatDate(displayDate)}
           </span>

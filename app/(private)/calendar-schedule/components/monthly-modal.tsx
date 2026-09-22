@@ -102,7 +102,7 @@ export function MonthlyModal({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-6 right-6 p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+          className="absolute top-6 right-6 p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <X className="size-5" />
@@ -129,12 +129,12 @@ export function MonthlyModal({
               setCurrentPage(1);
             }}
             placeholder="Search client name..."
-            className="w-full sm:w-80 rounded-xl border border-gray-200/90 pl-10 pr-4 py-2 text-sm text-[#191924] placeholder:text-gray-400 focus:outline-none focus:border-[#05512A] focus:ring-1 focus:ring-[#05512A] transition-all"
+            className="w-full sm:w-80 rounded-md border border-gray-200/90 pl-10 pr-4 py-2 text-sm text-[#191924] placeholder:text-gray-400 focus:outline-none focus:border-[#05512A] focus:ring-1 focus:ring-[#05512A] transition-all"
           />
         </div>
 
         {/* Table Container */}
-        <div className="overflow-x-auto rounded-xl border border-gray-100">
+        <div className="overflow-x-auto rounded-md border border-gray-100">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#F9FAFB] border-b border-gray-100 text-xs font-semibold text-[#555555]">
@@ -299,7 +299,7 @@ export function MonthlyModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-gray-300/90 px-6 py-1.5 text-sm font-semibold text-[#191924] hover:bg-gray-50 transition-colors cursor-pointer shadow-2xs"
+              className="rounded-md border border-gray-300/90 px-6 py-1.5 text-sm font-semibold text-[#191924] hover:bg-gray-50 transition-colors cursor-pointer shadow-2xs"
             >
               Close
             </button>

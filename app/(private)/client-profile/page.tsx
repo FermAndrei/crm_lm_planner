@@ -9,7 +9,7 @@ const ClientProfilePage = () => {
   return (
     <>
       <div className="p-8 grid grid-cols-4 gap-4 h-full">
-        <div className="col-span-1 bg-white p-6 rounded-lg h-fit shadow">
+        <div className="col-span-1 bg-white p-6 rounded-md h-fit shadow">
           <div className="mb-3">
             <h1 className="text-[#1E6E25] font-semibold text-base">
               Client Search
@@ -32,18 +32,18 @@ const ClientProfilePage = () => {
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                 }}
-                className="w-full rounded-lg border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
+                className="w-full rounded-md border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
               />
             </div>
           </div>
-          <button className="bg-[#1E6E25] flex text-white items-center justify-center gap-2 px-3.5 py-2.5 text-xs w-full rounded-lg">
+          <button className="bg-[#1E6E25] flex text-white items-center justify-center gap-2 px-3.5 py-2.5 text-xs w-full rounded-md">
             <Search className="h-3 w-3" />
             Search
           </button>
         </div>
 
         {/* Client Profile Overview */}
-        <div className="col-span-3 bg-white p-6 rounded-lg shadow">
+        <div className="col-span-3 bg-white p-6 rounded-md shadow">
           <div className="mb-4">
             <h1 className="text-[#333333] font-bold text-2xl">
               Client Profile Overview

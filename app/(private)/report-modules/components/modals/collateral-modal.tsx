@@ -55,7 +55,7 @@ export default function CollateralModal({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100"
+        className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-md bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -69,7 +69,7 @@ export default function CollateralModal({
         </div>
 
         {/* Section 1: Collateral Information */}
-        <div className="mb-5 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+        <div className="mb-5 overflow-hidden rounded-md border border-gray-200/90 bg-white">
           <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
               Collateral Information
@@ -120,7 +120,7 @@ export default function CollateralModal({
         </div>
 
         {/* Section 2: Borrower & Loan Details */}
-        <div className="mb-5 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+        <div className="mb-5 overflow-hidden rounded-md border border-gray-200/90 bg-white">
           <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
               Borrower & Loan Details
@@ -161,7 +161,7 @@ export default function CollateralModal({
         </div>
 
         {/* Section 3: Schedule & Notes */}
-        <div className="mb-6 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+        <div className="mb-6 overflow-hidden rounded-md border border-gray-200/90 bg-white">
           <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
               Appraisal & Schedule
@@ -200,7 +200,7 @@ export default function CollateralModal({
           <button
             type="button"
             onClick={onClose}
-            className="cursor-pointer rounded-xl border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#05512A]/20"
+            className="cursor-pointer rounded-md border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#05512A]/20"
           >
             Close
           </button>

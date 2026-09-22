@@ -18,7 +18,7 @@ export const SegmentButton = ({
   return (
     <div className="relative">
       {/* Desktop & Tablet Segment Pills */}
-      <div className="hidden w-fit md:flex flex-wrap items-center gap-1 rounded-full border border-gray-200/80 bg-white p-1 shadow-xs">
+      <div className="hidden w-fit lg:flex flex-wrap items-center gap-1 rounded-md border border-gray-200/80 bg-white p-1 shadow-xs">
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -27,7 +27,7 @@ export const SegmentButton = ({
               type="button"
               onClick={() => onChange(tab)}
               className={cn(
-                "cursor-pointer rounded-full px-4 py-1.5 text-xs font-medium transition-all",
+                "cursor-pointer rounded-sm px-4 py-1.5 text-xs font-medium transition-all",
                 isActive
                   ? "bg-[#05512A] font-semibold text-white shadow-xs"
                   : "text-[#555555] hover:bg-black/5 hover:text-[#191924]",
@@ -40,7 +40,7 @@ export const SegmentButton = ({
       </div>
 
       {/* Mobile Select Dropdown */}
-      <div className="flex md:hidden w-fit items-center gap-2 rounded-full border border-[#191924]/8 bg-[#FAF9FD] px-4 py-2 text-xs font-semibold text-[#5a5a70] shadow-cloud-pill">
+      <div className="flex lg:hidden w-fit items-center gap-2 rounded-md border border-[#191924]/8 bg-[#FAF9FD] px-4 py-2 text-xs font-semibold text-[#5a5a70] shadow-cloud-pill">
         <Filter size={13} className="shrink-0 text-[#2f8b23]" />
         <span className="whitespace-nowrap uppercase tracking-wider text-[10.5px] font-bold text-[#9a9ab0]">
           Filter:

@@ -1,10 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  CalendarEvent,
-  formatDateToISO,
-} from "../data/calendar-data";
+import { CalendarEvent, formatDateToISO } from "../data/calendar-data";
 import { cn } from "@/lib/utils";
 
 interface MonthlyViewProps {
@@ -41,7 +38,7 @@ export function MonthlyView({
     const currentMonthDaysCount = new Date(
       viewYear,
       viewMonth + 1,
-      0
+      0,
     ).getDate();
 
     const cells: {
@@ -59,7 +56,7 @@ export function MonthlyView({
         date: prevDate,
         dayNum,
         isCurrentMonth: false,
-        dayOfWeekIndex: (cells.length) % 7,
+        dayOfWeekIndex: cells.length % 7,
       });
     }
 
@@ -70,7 +67,7 @@ export function MonthlyView({
         date: curDate,
         dayNum: i,
         isCurrentMonth: true,
-        dayOfWeekIndex: (cells.length) % 7,
+        dayOfWeekIndex: cells.length % 7,
       });
     }
 
@@ -83,7 +80,7 @@ export function MonthlyView({
         date: nextDate,
         dayNum: i,
         isCurrentMonth: false,
-        dayOfWeekIndex: (cells.length) % 7,
+        dayOfWeekIndex: cells.length % 7,
       });
     }
 
@@ -109,7 +106,8 @@ export function MonthlyView({
       {/* Grid of Days */}
       <div className="grid grid-cols-7 gap-2 sm:gap-3">
         {grid.map((cell, idx) => {
-          const isWeekend = cell.dayOfWeekIndex === 5 || cell.dayOfWeekIndex === 6;
+          const isWeekend =
+            cell.dayOfWeekIndex === 5 || cell.dayOfWeekIndex === 6;
           const isSelected =
             cell.isCurrentMonth &&
             cell.date.getDate() === selectedDate.getDate() &&
@@ -132,28 +130,26 @@ export function MonthlyView({
                 }
               }}
               className={cn(
-                "min-h-22.5 sm:min-h-26.25 p-2 rounded-2xl transition-all relative flex flex-col",
+                "min-h-22.5 sm:min-h-26.25 p-2 rounded-md transition-all relative flex flex-col",
                 isExpandedCard
                   ? "bg-[#EAF5EE] border border-[#B7E5CD] shadow-xs cursor-pointer hover:bg-[#E2F2E7]"
                   : isWeekend
-                  ? "bg-[#F9FAFB] hover:bg-[#F3F4F6] cursor-pointer"
-                  : "hover:bg-gray-50 cursor-pointer",
-                !cell.isCurrentMonth && "opacity-40"
+                    ? "bg-[#F9FAFB] hover:bg-[#F3F4F6] cursor-pointer"
+                    : "hover:bg-gray-50 cursor-pointer",
+                !cell.isCurrentMonth && "opacity-40",
               )}
             >
               {/* Day Number / Badge */}
               <div className="flex items-center gap-1">
                 {hasEvents ? (
-                  <div className="size-6 rounded-full bg-[#05512A] text-white flex items-center justify-center text-xs font-bold shadow-2xs">
+                  <div className="size-6 rounded-md bg-[#05512A] text-white flex items-center justify-center text-xs font-bold shadow-2xs">
                     {cell.dayNum}
                   </div>
                 ) : (
                   <span
                     className={cn(
                       "text-xs sm:text-sm font-medium pl-1",
-                      !cell.isCurrentMonth
-                        ? "text-gray-400"
-                        : "text-[#191924]"
+                      !cell.isCurrentMonth ? "text-gray-400" : "text-[#191924]",
                     )}
                   >
                     {cell.dayNum}
@@ -172,8 +168,8 @@ export function MonthlyView({
                           {item.clientName.split(",")[0]}
                         </p>
                         <p className="text-[9.5px] text-gray-500 font-medium">
-                          {item.startTime.replace(" AM", "").replace(" PM", "")} -{" "}
-                          {item.endTime}
+                          {item.startTime.replace(" AM", "").replace(" PM", "")}{" "}
+                          - {item.endTime}
                         </p>
                       </div>
                     ))}

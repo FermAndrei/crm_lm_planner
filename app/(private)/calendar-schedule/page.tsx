@@ -109,7 +109,7 @@ export default function CalendarSchedulePage() {
           <button
             type="button"
             onClick={() => setIsCategoryOpen((prev) => !prev)}
-            className="flex items-center justify-between gap-4 px-4 py-2.5 bg-white rounded-xl border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50/80 transition-colors cursor-pointer shadow-2xs min-w-42.5"
+            className="flex items-center justify-between gap-4 px-4 py-2.5 bg-white rounded-md border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50/80 transition-colors cursor-pointer shadow-2xs min-w-42.5"
           >
             <span>{category}</span>
             <ChevronDown
@@ -121,7 +121,7 @@ export default function CalendarSchedulePage() {
           </button>
 
           {isCategoryOpen && (
-            <div className="absolute top-full left-0 mt-1.5 w-52 bg-white rounded-xl border border-gray-100 shadow-xl p-1.5 z-40">
+            <div className="absolute top-full left-0 mt-1.5 w-52 bg-white rounded-md border border-gray-100 shadow-xl p-1.5 z-40">
               {CATEGORY_OPTIONS.map((cat) => (
                 <button
                   key={cat}
@@ -131,7 +131,7 @@ export default function CalendarSchedulePage() {
                     setIsCategoryOpen(false);
                   }}
                   className={cn(
-                    "w-full text-left px-3 py-2 text-xs rounded-lg font-medium transition-colors cursor-pointer",
+                    "w-full text-left px-3 py-2 text-xs rounded-sm font-medium transition-colors cursor-pointer",
                     category === cat
                       ? "bg-[#05512A] text-white font-semibold"
                       : "text-[#191924] hover:bg-gray-100",
@@ -146,11 +146,11 @@ export default function CalendarSchedulePage() {
       </div>
 
       {/* Main Calendar Card Container */}
-      <div className="bg-white rounded-2xl p-5 sm:p-7 shadow-sm border border-gray-200/70">
+      <div className="bg-white rounded-md p-6 shadow-sm border border-gray-200/70">
         {/* Card Header: Segment Button on Left & Date Navigator on Right */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-gray-100">
           {/* Segment Control */}
-          <div className="bg-[#F4F4F6] p-1 rounded-xl flex items-center w-fit shadow-2xs">
+          <div className="bg-[#F4F4F6] p-1 rounded-md flex items-center w-fit shadow-2xs">
             {SEGMENT_TABS.map((tab) => {
               const isActive = activeView === tab;
               return (
@@ -159,7 +159,7 @@ export default function CalendarSchedulePage() {
                   type="button"
                   onClick={() => setActiveView(tab)}
                   className={cn(
-                    "cursor-pointer rounded-lg px-6 py-1.5 text-xs sm:text-sm font-medium transition-all",
+                    "cursor-pointer rounded-md px-6 py-1.5 text-xs sm:text-sm font-medium transition-all",
                     isActive
                       ? "bg-[#05512A] font-semibold text-white shadow-xs"
                       : "text-[#666666] hover:text-[#191924]",
@@ -173,11 +173,11 @@ export default function CalendarSchedulePage() {
 
           {/* Date Navigator & Inline Date Picker Trigger */}
           <div className="relative" ref={dateNavRef}>
-            <div className="flex items-center rounded-xl border border-gray-200/90 bg-white px-2 py-1 shadow-2xs">
+            <div className="flex items-center rounded-md border border-gray-200/90 bg-white px-2 py-1 shadow-2xs">
               <button
                 type="button"
                 onClick={handlePrevDate}
-                className="p-1 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                className="p-1 text-gray-500 hover:text-black hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
                 title="Previous"
               >
                 <ChevronLeft className="size-4" />
@@ -186,7 +186,7 @@ export default function CalendarSchedulePage() {
               <button
                 type="button"
                 onClick={() => setIsInlinePickerOpen((prev) => !prev)}
-                className="px-3 py-1 text-xs sm:text-sm font-semibold text-[#191924] hover:bg-gray-50 rounded-lg transition-colors cursor-pointer"
+                className="px-3 py-1 text-xs sm:text-sm font-semibold text-[#191924] hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
               >
                 {getDateRangeLabel()}
               </button>
@@ -194,7 +194,7 @@ export default function CalendarSchedulePage() {
               <button
                 type="button"
                 onClick={handleNextDate}
-                className="p-1 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+                className="p-1 text-gray-500 hover:text-black hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
                 title="Next"
               >
                 <ChevronRight className="size-4" />

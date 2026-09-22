@@ -62,7 +62,7 @@ export function WeeklyView({
                 className="flex flex-col items-center justify-center cursor-pointer transition-all px-1"
               >
                 {isSelected ? (
-                  <div className="w-full max-w-32.5 bg-[#05512A] text-white rounded-2xl py-2.5 px-3 flex flex-col items-center justify-center shadow-sm">
+                  <div className="w-full max-w-32.5 bg-[#05512A] text-white rounded-md py-2.5 px-3 flex flex-col items-center justify-center shadow-sm">
                     <span className="text-xs font-semibold">
                       {WEEK_DAY_LABELS[idx]}
                     </span>
@@ -71,7 +71,7 @@ export function WeeklyView({
                     </span>
                   </div>
                 ) : (
-                  <div className="w-full max-w-32.5 hover:bg-gray-50 rounded-2xl py-2.5 px-3 flex flex-col items-center justify-center">
+                  <div className="w-full max-w-32.5 hover:bg-gray-50 rounded-md py-2.5 px-3 flex flex-col items-center justify-center">
                     <span className="text-xs font-medium text-[#737373]">
                       {WEEK_DAY_LABELS[idx]}
                     </span>
@@ -120,7 +120,7 @@ export function WeeklyView({
                       {event && (
                         <div
                           onClick={() => onSelectEvent(event)}
-                          className="bg-[#F7F7F8] hover:bg-[#EEF5F1] border border-gray-200/70 hover:border-[#05512A]/40 rounded-xl p-3 shadow-2xs transition-all cursor-pointer h-full flex flex-col justify-center"
+                          className="bg-[#F7F7F8] hover:bg-[#EEF5F1] border border-gray-200/70 hover:border-[#05512A]/40 rounded-md p-3 shadow-2xs transition-all cursor-pointer h-full flex flex-col justify-center"
                         >
                           <h5 className="text-[11px] font-bold text-[#05512A] tracking-tight uppercase line-clamp-2">
                             {event.clientName}

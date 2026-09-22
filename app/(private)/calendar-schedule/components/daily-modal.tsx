@@ -36,14 +36,14 @@ export function DailyModal({ event, onClose, selectedDate }: DailyModalProps) {
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-100/90 relative animate-in zoom-in-95 duration-200"
+        className="w-full max-w-md bg-white rounded-md p-6 sm:p-8 shadow-2xl border border-gray-100/90 relative animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
           aria-label="Close dialog"
         >
           <X className="size-5" />

@@ -6,7 +6,7 @@ import AllBranch from "./components/all-branch";
 import ByBranch from "./components/by-branch";
 import ProductTypePage from "./components/product-type";
 import PastDue from "./components/past-due";
-import WriteOff from "./components/writeoff";
+import WriteOff from "./components/charged-off";
 import WithCollateral from "./components/with-collateral";
 
 export default function ReportModulePage() {

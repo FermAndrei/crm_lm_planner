@@ -162,7 +162,7 @@ export function CalendarPicker({
     <div
       ref={containerRef}
       className={cn(
-        "w-85 sm:w-92.5 bg-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-gray-100/90 select-none z-50 animate-in fade-in zoom-in-95 duration-150",
+        "w-85 sm:w-92.5 bg-white rounded-md p-5 sm:p-6 shadow-2xl border border-gray-100/90 select-none z-50 animate-in fade-in zoom-in-95 duration-150",
         className,
       )}
     >
@@ -172,7 +172,7 @@ export function CalendarPicker({
         <button
           type="button"
           onClick={handlePrevMonth}
-          className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+          className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
           aria-label="Previous month"
         >
           <ChevronLeft className="size-5" />
@@ -188,14 +188,14 @@ export function CalendarPicker({
                 setIsMonthDropdownOpen((prev) => !prev);
                 setIsYearDropdownOpen(false);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50 transition-colors cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50 transition-colors cursor-pointer shadow-2xs"
             >
               <span>{MONTH_NAMES[viewMonth]}</span>
               <ChevronDown className="size-4 text-gray-500" />
             </button>
 
             {isMonthDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 max-h-56 w-36 overflow-y-auto bg-white rounded-xl border border-gray-100 shadow-xl p-1 z-50">
+              <div className="absolute top-full left-0 mt-1 max-h-56 w-36 overflow-y-auto bg-white rounded-md border border-gray-100 shadow-xl p-1 z-50">
                 {MONTH_NAMES.map((name, idx) => (
                   <button
                     key={name}
@@ -205,7 +205,7 @@ export function CalendarPicker({
                       setIsMonthDropdownOpen(false);
                     }}
                     className={cn(
-                      "w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors",
+                      "w-full text-left px-3 py-1.5 text-xs rounded-md transition-colors",
                       viewMonth === idx
                         ? "bg-[#05512A] text-white font-bold"
                         : "text-[#191924] hover:bg-gray-100",
@@ -226,14 +226,14 @@ export function CalendarPicker({
                 setIsYearDropdownOpen((prev) => !prev);
                 setIsMonthDropdownOpen(false);
               }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50 transition-colors cursor-pointer shadow-2xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50 transition-colors cursor-pointer shadow-2xs"
             >
               <span>{viewYear}</span>
               <ChevronDown className="size-4 text-gray-500" />
             </button>
 
             {isYearDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 max-h-56 w-28 overflow-y-auto bg-white rounded-xl border border-gray-100 shadow-xl p-1 z-50">
+              <div className="absolute top-full left-0 mt-1 max-h-56 w-28 overflow-y-auto bg-white rounded-md border border-gray-100 shadow-xl p-1 z-50">
                 {years.map((y) => (
                   <button
                     key={y}
@@ -243,7 +243,7 @@ export function CalendarPicker({
                       setIsYearDropdownOpen(false);
                     }}
                     className={cn(
-                      "w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors",
+                      "w-full text-left px-3 py-1.5 text-xs rounded-md transition-colors",
                       viewYear === y
                         ? "bg-[#05512A] text-white font-bold"
                         : "text-[#191924] hover:bg-gray-100",
@@ -261,7 +261,7 @@ export function CalendarPicker({
         <button
           type="button"
           onClick={handleNextMonth}
-          className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-xl transition-colors cursor-pointer"
+          className="p-1.5 text-gray-500 hover:text-black hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
           aria-label="Next month"
         >
           <ChevronRight className="size-5" />
@@ -307,7 +307,7 @@ export function CalendarPicker({
                   onClose?.();
                 }}
                 className={cn(
-                  "size-9 sm:size-10 rounded-xl flex items-center justify-center text-sm font-medium transition-all cursor-pointer",
+                  "size-9 sm:size-10 rounded-md flex items-center justify-center text-sm font-medium transition-all cursor-pointer",
                   isSelected
                     ? "bg-[#05512A] text-white font-bold shadow-md hover:bg-[#044423]"
                     : isHighlightedWeekday

@@ -59,7 +59,7 @@ export function DailyView({
                 {event ? (
                   <div
                     onClick={() => onSelectEvent(event)}
-                    className="h-full bg-[#F7F7F8] hover:bg-[#EFF6F2] border border-gray-200/70 hover:border-[#05512A]/40 rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs transition-all cursor-pointer"
+                    className="h-full bg-[#F7F7F8] hover:bg-[#EFF6F2] border border-gray-200/70 hover:border-[#05512A]/40 rounded-md p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs transition-all cursor-pointer"
                   >
                     <div className="min-w-0 flex-1">
                       <h4 className="text-xs sm:text-sm font-bold text-[#05512A] tracking-tight uppercase truncate">

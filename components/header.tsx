@@ -35,6 +35,7 @@ const CLICKABLE_ROUTES = new Set([
   "/error-handler/stay-tuned",
   "/error-handler/404",
   "/calendar-schedule",
+  "/calculator",
 ]);
 
 // Define parent routes that should NOT be clickable
@@ -72,6 +73,7 @@ export default function Header() {
       "/error-handler/stay-tuned": { title: "Stay Tuned" },
       "/error-handler/404": { title: "404 Error Page" },
       "/calendar-schedule": { title: "Calendar Schedule" },
+      "/calculator": { title: "SME Calculator" },
     };
 
   // Generate breadcrumbs from pathname with clickable logic
@@ -95,7 +97,7 @@ export default function Header() {
       // Custom labels for specific paths
       if (path === "report-modules") label = "Report Module";
       if (path === "calendar-schedule") label = "Calendar Schedule";
-
+      if (path === "calculator") label = "SME Calculator";
 
       // Determine if this breadcrumb should be clickable
       const isClickable =
@@ -199,11 +201,11 @@ export default function Header() {
 
           {/* Profile Dropdown Menu */}
           {isProfileOpen && (
-            <div className="absolute right-0 mt-3 w-80 bg-white border border-[#191924]/8 rounded-3xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+            <div className="absolute right-0 mt-3 w-80 bg-white border border-[#191924]/8 rounded-md shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50">
               {/* Soft Cloud Gradient Banner */}
               <div className="h-24 bg-linear-to-r from-[#E4E9FF] via-[#FFE3EE] to-[#DDF6EA]" />
 
-              <div className="px-6 pb-6 -mt-10">
+              <div className="p-5 -mt-10">
                 <div className="w-20 h-20 bg-white rounded-full p-1 shadow-md mb-3">
                   <div className="w-full h-full bg-[#346006] rounded-full flex items-center justify-center text-white">
                     <UserIcon size={32} />
