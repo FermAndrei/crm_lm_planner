@@ -109,13 +109,13 @@ export default function CalendarSchedulePage() {
           <button
             type="button"
             onClick={() => setIsCategoryOpen((prev) => !prev)}
-            className="flex items-center justify-between gap-4 px-4 py-2.5 bg-white rounded-xl border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50/80 transition-colors cursor-pointer shadow-2xs min-w-[170px]"
+            className="flex items-center justify-between gap-4 px-4 py-2.5 bg-white rounded-xl border border-gray-200/90 text-sm font-semibold text-[#191924] hover:bg-gray-50/80 transition-colors cursor-pointer shadow-2xs min-w-42.5"
           >
             <span>{category}</span>
             <ChevronDown
               className={cn(
                 "size-4 text-gray-500 transition-transform duration-200",
-                isCategoryOpen && "rotate-180"
+                isCategoryOpen && "rotate-180",
               )}
             />
           </button>
@@ -134,7 +134,7 @@ export default function CalendarSchedulePage() {
                     "w-full text-left px-3 py-2 text-xs rounded-lg font-medium transition-colors cursor-pointer",
                     category === cat
                       ? "bg-[#05512A] text-white font-semibold"
-                      : "text-[#191924] hover:bg-gray-100"
+                      : "text-[#191924] hover:bg-gray-100",
                   )}
                 >
                   {cat}
@@ -162,7 +162,7 @@ export default function CalendarSchedulePage() {
                     "cursor-pointer rounded-lg px-6 py-1.5 text-xs sm:text-sm font-medium transition-all",
                     isActive
                       ? "bg-[#05512A] font-semibold text-white shadow-xs"
-                      : "text-[#666666] hover:text-[#191924]"
+                      : "text-[#666666] hover:text-[#191924]",
                   )}
                 >
                   {tab}
@@ -218,7 +218,7 @@ export default function CalendarSchedulePage() {
         </div>
 
         {/* View Body */}
-        <div className="pt-4 min-h-[420px]">
+        <div className="pt-4 min-h-105">
           {activeView === "Daily" && (
             <DailyView
               selectedDate={selectedDate}

@@ -132,7 +132,7 @@ export function MonthlyView({
                 }
               }}
               className={cn(
-                "min-h-[90px] sm:min-h-[105px] p-2 rounded-2xl transition-all relative flex flex-col",
+                "min-h-22.5 sm:min-h-26.25 p-2 rounded-2xl transition-all relative flex flex-col",
                 isExpandedCard
                   ? "bg-[#EAF5EE] border border-[#B7E5CD] shadow-xs cursor-pointer hover:bg-[#E2F2E7]"
                   : isWeekend

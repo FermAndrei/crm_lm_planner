@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, X, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
+import {
+  Search,
+  X,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
 import {
   CalendarEvent,
   formatFullDate,
@@ -58,9 +66,10 @@ export function MonthlyModal({
   const filteredEvents = useMemo(() => {
     if (!searchQuery.trim()) return dateEvents;
     const q = searchQuery.toLowerCase();
-    return dateEvents.filter((evt) =>
-      evt.clientName.toLowerCase().includes(q) ||
-      evt.productType.toLowerCase().includes(q)
+    return dateEvents.filter(
+      (evt) =>
+        evt.clientName.toLowerCase().includes(q) ||
+        evt.productType.toLowerCase().includes(q),
     );
   }, [dateEvents, searchQuery]);
 
@@ -149,7 +158,8 @@ export function MonthlyModal({
                         {itemNumber}
                       </td>
                       <td className="py-3.5 px-4 text-gray-600 font-medium">
-                        {item.modalTimeRange || `${item.startTime} - ${item.endTime}`}
+                        {item.modalTimeRange ||
+                          `${item.startTime} - ${item.endTime}`}
                       </td>
                       <td className="py-3.5 px-4 font-semibold text-[#191924] group-hover:text-[#05512A] transition-colors">
                         {item.clientName}
@@ -162,7 +172,10 @@ export function MonthlyModal({
                 })
               ) : (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-gray-400 text-sm">
+                  <td
+                    colSpan={4}
+                    className="py-8 text-center text-gray-400 text-sm"
+                  >
                     No scheduled payments found.
                   </td>
                 </tr>
@@ -173,7 +186,9 @@ export function MonthlyModal({
 
         {/* Total Amount Row */}
         <div className="flex justify-end items-center gap-2 mt-4 pt-2">
-          <span className="text-sm font-medium text-[#555555]">Total Amount:</span>
+          <span className="text-sm font-medium text-[#555555]">
+            Total Amount:
+          </span>
           <span className="text-lg sm:text-xl font-bold text-[#05512A]">
             {formatCurrency(totalAmount)}
           </span>
@@ -210,9 +225,12 @@ export function MonthlyModal({
               <span className="font-semibold text-[#191924]">
                 {totalRecords === 0 ? 0 : startIndex + 1}
               </span>
-              -
-              <span className="font-semibold text-[#191924]">{endIndex}</span> of{" "}
-              <span className="font-semibold text-[#191924]">{totalRecords}</span> records
+              -<span className="font-semibold text-[#191924]">{endIndex}</span>{" "}
+              of{" "}
+              <span className="font-semibold text-[#191924]">
+                {totalRecords}
+              </span>{" "}
+              records
             </span>
           </div>
 
@@ -238,24 +256,28 @@ export function MonthlyModal({
                 <ChevronLeft size={15} />
               </button>
 
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  type="button"
-                  onClick={() => setCurrentPage(page)}
-                  className={`h-7 w-7 rounded-md text-xs transition-all cursor-pointer ${
-                    page === currentPage
-                      ? "bg-[#05512A] text-white font-semibold shadow-2xs"
-                      : "text-[#555555] hover:bg-gray-100 hover:text-[#191924] font-medium"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => setCurrentPage(page)}
+                    className={`h-7 w-7 rounded-md text-xs transition-all cursor-pointer ${
+                      page === currentPage
+                        ? "bg-[#05512A] text-white font-semibold shadow-2xs"
+                        : "text-[#555555] hover:bg-gray-100 hover:text-[#191924] font-medium"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ),
+              )}
 
               <button
                 type="button"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
                 disabled={currentPage === totalPages || totalPages === 0}
                 className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed"
                 title="Next page"

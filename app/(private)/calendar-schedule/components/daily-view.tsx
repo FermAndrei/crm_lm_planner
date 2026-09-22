@@ -38,7 +38,7 @@ export function DailyView({
           return (
             <div
               key={hour}
-              className="group flex flex-col sm:flex-row items-stretch border-b border-gray-200/70 last:border-b-0 min-h-[64px] sm:min-h-[72px] transition-colors"
+              className="group flex flex-col sm:flex-row items-stretch border-b border-gray-200/70 last:border-b-0 min-h-16 sm:min-h-18 transition-colors"
             >
               {/* Left Hour Label */}
               <div className="w-24 sm:w-28 shrink-0 py-3 sm:py-4 pr-4">
@@ -47,7 +47,7 @@ export function DailyView({
                     "text-xs sm:text-sm font-semibold tracking-tight transition-colors",
                     hasEvent
                       ? "text-[#05512A] font-bold"
-                      : "text-gray-400 group-hover:text-gray-600"
+                      : "text-gray-400 group-hover:text-gray-600",
                   )}
                 >
                   {hour}
@@ -68,7 +68,9 @@ export function DailyView({
                       <div className="text-[11px] sm:text-xs text-gray-500 font-medium mt-1 flex flex-wrap items-center gap-1.5">
                         <span>Account: {event.accountNo}</span>
                         <span>•</span>
-                        <span>Amount: {formatSimpleCurrency(event.amount)}</span>
+                        <span>
+                          Amount: {formatSimpleCurrency(event.amount)}
+                        </span>
                         <span>•</span>
                         <span>{event.productType}</span>
                       </div>
@@ -81,7 +83,7 @@ export function DailyView({
                     </div>
                   </div>
                 ) : (
-                  <div className="h-full min-h-[36px]" />
+                  <div className="h-full min-h-9" />
                 )}
               </div>
             </div>

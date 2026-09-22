@@ -175,7 +175,7 @@ export default function WithCollateral() {
 
                       {/* Collateral Description */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
-                        <div className="text-xs sm:text-sm font-medium text-[#191924] max-w-[220px] truncate">
+                        <div className="text-xs sm:text-sm font-medium text-[#191924] max-w-55 truncate">
                           {item.collateralDescription}
                         </div>
                       </td>
@@ -190,7 +190,7 @@ export default function WithCollateral() {
                       {/* Borrower / Account */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div
-                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-[240px] truncate"
+                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-60 truncate"
                           title={item.nameOfBorrower}
                         >
                           {item.nameOfBorrower}

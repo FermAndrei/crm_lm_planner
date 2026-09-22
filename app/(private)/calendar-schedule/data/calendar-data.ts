@@ -223,7 +223,7 @@ export function getWeekDays(currentDate: Date): Date[] {
   const day = date.getDay();
   // In JS: 0 is Sunday, 1 is Monday, ..., 6 is Saturday
   const diffToMonday = day === 0 ? -6 : 1 - day;
-  
+
   const monday = new Date(date);
   monday.setDate(date.getDate() + diffToMonday);
 

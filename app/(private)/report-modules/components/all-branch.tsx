@@ -172,7 +172,7 @@ export default function AllBranch() {
                       {/* Client */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div
-                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-[240px] truncate"
+                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-60 truncate"
                           title={item.clientName}
                         >
                           {item.clientName}

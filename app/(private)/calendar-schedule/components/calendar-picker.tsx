@@ -91,7 +91,7 @@ export function CalendarPicker({
     const currentMonthDaysCount = new Date(
       viewYear,
       viewMonth + 1,
-      0
+      0,
     ).getDate();
 
     const cells: {
@@ -128,7 +128,8 @@ export function CalendarPicker({
     }
 
     // Next month leading days to complete grid (up to 35 or 42)
-    const remaining = 35 - cells.length > 0 ? 35 - cells.length : 42 - cells.length;
+    const remaining =
+      35 - cells.length > 0 ? 35 - cells.length : 42 - cells.length;
     for (let i = 1; i <= remaining; i++) {
       const nextDate = new Date(viewYear, viewMonth + 1, i);
       cells.push({
@@ -155,17 +156,14 @@ export function CalendarPicker({
 
   // Generate range of years
   const currentActualYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: 15 },
-    (_, i) => currentActualYear - 5 + i
-  );
+  const years = Array.from({ length: 15 }, (_, i) => currentActualYear - 5 + i);
 
   return (
     <div
       ref={containerRef}
       className={cn(
-        "w-[340px] sm:w-[370px] bg-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-gray-100/90 select-none z-50 animate-in fade-in zoom-in-95 duration-150",
-        className
+        "w-85 sm:w-92.5 bg-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-gray-100/90 select-none z-50 animate-in fade-in zoom-in-95 duration-150",
+        className,
       )}
     >
       {/* Header with Navigation and Dropdowns */}
@@ -210,7 +208,7 @@ export function CalendarPicker({
                       "w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors",
                       viewMonth === idx
                         ? "bg-[#05512A] text-white font-bold"
-                        : "text-[#191924] hover:bg-gray-100"
+                        : "text-[#191924] hover:bg-gray-100",
                     )}
                   >
                     {name}
@@ -248,7 +246,7 @@ export function CalendarPicker({
                       "w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors",
                       viewYear === y
                         ? "bg-[#05512A] text-white font-bold"
-                        : "text-[#191924] hover:bg-gray-100"
+                        : "text-[#191924] hover:bg-gray-100",
                     )}
                   >
                     {y}
@@ -273,10 +271,7 @@ export function CalendarPicker({
       {/* Weekdays Row */}
       <div className="grid grid-cols-7 gap-1 text-center mb-3">
         {WEEK_DAYS.map((day) => (
-          <span
-            key={day}
-            className="text-xs font-medium text-[#71717A] py-1"
-          >
+          <span key={day} className="text-xs font-medium text-[#71717A] py-1">
             {day}
           </span>
         ))}
@@ -316,10 +311,10 @@ export function CalendarPicker({
                   isSelected
                     ? "bg-[#05512A] text-white font-bold shadow-md hover:bg-[#044423]"
                     : isHighlightedWeekday
-                    ? "text-[#1E6E25] font-semibold hover:bg-emerald-50"
-                    : isMutedDays
-                    ? "text-[#A1A1AA] hover:bg-gray-100 hover:text-[#191924]"
-                    : "text-[#18181B] hover:bg-gray-100"
+                      ? "text-[#1E6E25] font-semibold hover:bg-emerald-50"
+                      : isMutedDays
+                        ? "text-[#A1A1AA] hover:bg-gray-100 hover:text-[#191924]"
+                        : "text-[#18181B] hover:bg-gray-100",
                 )}
               >
                 {cell.dayNum}

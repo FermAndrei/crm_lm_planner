@@ -92,7 +92,7 @@ function DropdownMenuItem({
       className={cn(
         "group/dropdown-menu-item relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none",
         "focus:bg-purple-100 focus:text-purple-700",
-        "data-[highlighted]:bg-[#E2F6ED] data-[highlighted]:text-[#05512A]",
+        "data-highlighted:bg-[#E2F6ED] data-highlighted:text-[#05512A]",
         "data-inset:pl-7",
         "data-[variant=destructive]:text-destructive",
         "data-[variant=destructive]:focus:bg-destructive/10",
