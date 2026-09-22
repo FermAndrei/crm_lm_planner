@@ -1,28 +1,24 @@
 "use client";
 
-import ExpandableRow from "@/components/ui/expandable-row";
-import ExpandableDetails from "@/components/ui/expandable-details";
+import React, { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Eye, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getAllBranchReports } from "@/services/reports/all-loan.services";
 import type { AllBranchReport } from "@/services/types/all-branch/all-branch";
-import { ChevronDown, Search } from "lucide-react";
-import router from "next/router";
-import React from "react";
-import { useEffect, useMemo, useState } from "react";
+import { TablePagination } from "@/components/ui/table-pagination";
+import AccountDetailsModal from "./modals/account-details-modal";
 
-const formatCurrency = (value: number) => {
-  if (value === 0) return "0";
-
-  return value.toLocaleString("en-US", {
-    minimumFractionDigits: value % 1 !== 0 ? 2 : 0,
+const formatCurrency = (val: number) => {
+  if (val === 0) return "0.00";
+  return val.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
-const formatDate = (value: string) => {
-  if (!value) return "";
-
-  return new Date(value).toLocaleDateString("en-US", {
+const formatDate = (date: string) => {
+  if (!date) return "";
+  return new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -31,15 +27,18 @@ const formatDate = (value: string) => {
 
 export default function ByBranch() {
   const [allBranch, setAllBranch] = useState<AllBranchReport[]>([]);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<AllBranchReport | null>(
+    null,
+  );
   const [selectedBranch, setSelectedBranch] = useState("General Santos");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getAllBranchReports();
-
         setAllBranch(response.allBranch);
       } catch (error) {
         console.error("Failed to fetch reports:", error);
@@ -49,368 +48,266 @@ export default function ByBranch() {
   }, []);
 
   const branches = useMemo(() => {
-    return [...new Set(allBranch.map((item) => item.branch))];
+    return ["ALL", ...new Set(allBranch.map((item) => item.branch))];
   }, [allBranch]);
 
-  const filteredBranches = useMemo(() => {
+  const branchFiltered = useMemo(() => {
     if (selectedBranch === "ALL") {
       return allBranch;
     }
-
     return allBranch.filter((item) => item.branch === selectedBranch);
   }, [allBranch, selectedBranch]);
 
-  const totalOriginalAmount = filteredBranches.reduce(
-    (sum, item) => sum + item.originalAmountGranted,
-    0,
+  const searchFiltered = useMemo(() => {
+    if (!searchQuery.trim()) return branchFiltered;
+    const q = searchQuery.toLowerCase();
+    return branchFiltered.filter(
+      (item) =>
+        item.clientName.toLowerCase().includes(q) ||
+        item.accountNumber.toLowerCase().includes(q) ||
+        item.branch.toLowerCase().includes(q) ||
+        item.brCode.toLowerCase().includes(q) ||
+        item.custId.toLowerCase().includes(q) ||
+        item.prodType.toLowerCase().includes(q) ||
+        item.loanStatus.toLowerCase().includes(q),
+    );
+  }, [branchFiltered, searchQuery]);
+
+  const totalPages = Math.ceil(searchFiltered.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedBranches = searchFiltered.slice(
+    startIndex,
+    startIndex + itemsPerPage,
   );
 
-  const totalDefPrin = filteredBranches.reduce(
-    (sum, item) => sum + item.defPrin,
-    0,
-  );
-
-  const toggleRow = (id: string) => {
-    setExpandedId((current) => (current === id ? null : id));
+  const handlePageChange = (page: number) => {
+    if (page < 1 || (totalPages > 0 && page > totalPages)) return;
+    setCurrentPage(page);
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1);
   };
 
   return (
-    <div className="overflow-hidden">
-      {/* Header Bar */}
+    <div>
+      {/* Top Filter & Search Bar */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          {/* BRANCH SELECTOR */}
-          <div className="relative flex items-center">
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Branch Selector */}
+          <div className="relative inline-flex items-center">
             <select
               value={selectedBranch}
               onChange={(e) => {
                 setSelectedBranch(e.target.value);
-                setExpandedId(null);
+                setCurrentPage(1);
               }}
-              className="cursor-pointer appearance-none rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-4 pr-9 text-xs font-bold text-[#191924] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs"
+              className="cursor-pointer appearance-none rounded-xl border border-gray-200/90 bg-white py-2 pl-4 pr-9 text-xs sm:text-sm font-semibold text-[#191924] shadow-xs focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A]"
             >
               {branches.map((branch) => (
                 <option key={branch} value={branch}>
-                  {branch}
+                  {branch === "ALL" ? "All Branches" : branch}
                 </option>
               ))}
             </select>
-
             <ChevronDown
-              size={14}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
+              size={15}
+              className="pointer-events-none absolute right-3 text-gray-400"
             />
           </div>
-
-          <span className="text-xs font-bold text-[#5a5a70] bg-[#FAF9FD] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
-            {filteredBranches.length} accounts
-          </span>
         </div>
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="block">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
-            />
-
-            <input
-              type="text"
-              placeholder="Search accounts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
-            />
-          </div>
-        </form>
+        {/* Search Input */}
+        <div className="relative w-72 sm:w-80">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full rounded-xl border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
+          />
+        </div>
       </div>
 
-      {/* TABLE */}
-      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
-        <table className="w-full border-collapse text-sm">
-          {/* HEADER */}
-          <thead className="bg-[#05512A] text-white">
-            <tr className="bg-[#05512A] text-white">
-              <th className="w-12 px-3 py-3.5 text-center">
-                <span className="sr-only">Expand</span>
-              </th>
+      {/* Table Card */}
+      <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            {/* Header */}
+            <thead>
+              <tr className="bg-[#F8F9FA] text-[#475467] text-xs font-semibold">
+                <th className="whitespace-nowrap px-4 py-3.5 text-center first:rounded-l-xl">
+                  Action
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Branch
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Client
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Account
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Product Type
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Granted
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Term Window
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Defprin
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-center last:rounded-r-xl">
+                  Loan Status
+                </th>
+              </tr>
+            </thead>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Branch
-              </th>
+            {/* Body */}
+            <tbody className="divide-y divide-gray-100">
+              {paginatedBranches.length > 0 ? (
+                paginatedBranches.map((item, index) => {
+                  const rowId = `${item.accountNumber}-${index}`;
+                  return (
+                    <tr
+                      key={rowId}
+                      className="hover:bg-gray-50/70 transition-colors"
+                    >
+                      {/* Action */}
+                      <td className="whitespace-nowrap px-4 py-4 text-center align-middle">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedItem(item)}
+                          className="inline-flex items-center justify-center rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-[#05512A] cursor-pointer"
+                          title="View Details"
+                        >
+                          <Eye size={18} />
+                        </button>
+                      </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Client
-              </th>
+                      {/* Branch */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          {item.branch}
+                        </div>
+                        <div className="mt-0.5 text-xs text-[#667085]">
+                          {item.brCode}
+                        </div>
+                      </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Account
-              </th>
+                      {/* Client */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div
+                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-[240px] truncate"
+                          title={item.clientName}
+                        >
+                          {item.clientName}
+                        </div>
+                        <div className="mt-0.5 text-xs text-[#667085]">
+                          {item.custId}
+                        </div>
+                      </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Product Type
-              </th>
+                      {/* Account */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold font-mono text-[#191924]">
+                          {item.accountNumber}
+                        </div>
+                      </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                Granted
-              </th>
+                      {/* Product Type */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-medium text-[#344054]">
+                          {item.prodType}
+                        </div>
+                      </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Term Window
-              </th>
+                      {/* Granted */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          {formatCurrency(item.originalAmountGranted)}
+                        </div>
+                        <div className="mt-0.5 text-xs text-[#667085]">
+                          {item.interestRate.toFixed(2)}%
+                        </div>
+                      </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                DefPrin
-              </th>
+                      {/* Term Window */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-medium text-[#191924]">
+                          {formatDate(item.dateGranted)}
+                        </div>
+                        <div className="mt-0.5 text-xs text-[#667085]">
+                          → {formatDate(item.maturityDate)}
+                        </div>
+                      </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-center text-xs font-bold uppercase tracking-wider">
-                Loan Status
-              </th>
-            </tr>
-          </thead>
+                      {/* Defprin */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          {formatCurrency(item.defPrin)}
+                        </div>
+                      </td>
 
-          {/* BODY */}
-          <tbody className="divide-y divide-[#F1EEF8]">
-            {filteredBranches.map((item, index) => {
-              const rowId = `${item.accountNumber}-${index}`;
-              const isExpanded = expandedId === rowId;
-
-              return (
-                <React.Fragment key={rowId}>
-                  {/* MAIN ROW */}
-                  <tr
-                    className={cn(
-                      "group transition-colors",
-                      isExpanded ? "bg-[#F3F9F5]" : "bg-white hover:bg-gray-50",
-                    )}
-                  >
-                    {/* Expand */}
-                    <td className="px-3 py-3.5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => toggleRow(rowId)}
-                        aria-expanded={isExpanded}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#9a9ab0] transition-all hover:bg-[#EBFDF4] hover:text-[#5fa53c]"
-                      >
-                        <ChevronDown
-                          size={16}
+                      {/* Loan Status */}
+                      <td className="whitespace-nowrap px-4 py-4 text-center align-top">
+                        <span
                           className={cn(
-                            "transition-transform duration-200",
-                            isExpanded && "rotate-180",
+                            "inline-block rounded-full px-3 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider",
+                            item.loanStatus === "CURRENT"
+                              ? "bg-[#DCFCE7] text-[#15803D]"
+                              : item.loanStatus === "EXPIRED"
+                                ? "bg-[#FFE4E8] text-[#E11D48]"
+                                : "bg-[#F4F2FA] text-[#5a5a70]",
                           )}
-                        />
-                      </button>
-                    </td>
+                        >
+                          {item.loanStatus}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan={9}
+                    className="px-4 py-12 text-center text-xs sm:text-sm text-gray-500"
+                  >
+                    No accounts found for the selected filter.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
-                    {/* Branch */}
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-bold text-[#191924]">
-                        {item.branch}
-                      </div>
-
-                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
-                        {item.brCode}
-                      </div>
-                    </td>
-
-                    {/* Client */}
-                    <td className="px-4 py-3.5 align-top">
-                      <div
-                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
-                        title={item.clientName}
-                      >
-                        {item.clientName}
-                      </div>
-
-                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
-                        {item.custId}
-                      </div>
-                    </td>
-
-                    {/* Account */}
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs font-semibold text-[#191924]">
-                        {item.accountNumber}
-                      </div>
-                    </td>
-
-                    {/* Product */}
-                    <td className="whitespace-nowrap px-4 py-3.5 align-top">
-                      <div className="text-xs font-medium text-[#5a5a70]">
-                        {item.prodType}
-                      </div>
-                    </td>
-
-                    {/* Granted */}
-                    <td className="px-4 py-3.5 text-right align-top">
-                      <div className="font-mono text-xs font-bold text-[#191924]">
-                        ₱ {formatCurrency(item.originalAmountGranted)}
-                      </div>
-
-                      <div className="mt-0.5 font-mono text-[11px] text-[#5a5a70]">
-                        {item.interestRate.toFixed(2)}%
-                      </div>
-                    </td>
-
-                    {/* Term */}
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="text-xs font-medium text-[#191924]">
-                        {formatDate(item.dateGranted)}
-                      </div>
-
-                      <div className="mt-0.5 text-xs text-[#5a5a70]">
-                        → {formatDate(item.maturityDate)}
-                      </div>
-
-                      <div className="mt-0.5 text-[11px] text-[#9a9ab0]">
-                        {item.term ? `${item.term} mos` : "—"}
-                      </div>
-                    </td>
-
-                    {/* DefPrin */}
-                    <td className="px-4 py-3.5 text-right align-top">
-                      <div className="font-mono text-xs font-bold text-[#191924]">
-                        ₱ {formatCurrency(item.defPrin)}
-                      </div>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-4 py-3.5 text-center align-top">
-                      <span
-                        className={cn(
-                          "inline-block rounded-full px-2.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wider",
-                          item.loanStatus === "CURRENT"
-                            ? "bg-[#E2F6ED] text-[#12946a]"
-                            : item.loanStatus === "EXPIRED"
-                              ? "bg-[#FFE3EE] text-[#E0509A]"
-                              : "bg-[#F4F2FA] text-[#5a5a70]",
-                        )}
-                      >
-                        {item.loanStatus}
-                      </span>
-                    </td>
-                  </tr>
-
-                  {/* EXPANDED ROW */}
-                  <ExpandableRow isExpanded={isExpanded} colSpan={9}>
-                    <ExpandableDetails
-                      title="Loan Account Details"
-                      fields={[
-                        {
-                          label: "BRCode",
-                          value: item.brCode,
-                        },
-                        {
-                          label: "Branch",
-                          value: item.branch,
-                        },
-                        {
-                          label: "Customer ID",
-                          value: item.custId,
-                        },
-                        {
-                          label: "Client Name",
-                          value: item.clientName,
-                        },
-                        {
-                          label: "Account Number",
-                          value: item.accountNumber,
-                        },
-                        {
-                          label: "Product Type",
-                          value: item.prodType,
-                        },
-                        {
-                          label: "Original Amount",
-                          value: `₱ ${formatCurrency(item.originalAmountGranted)}`,
-                        },
-                        {
-                          label: "Interest Rate",
-                          value: `${item.interestRate.toFixed(2)}%`,
-                        },
-                        {
-                          label: "Term",
-                          value: item.term ? `${item.term} months` : "—",
-                        },
-                        {
-                          label: "Date Granted",
-                          value: formatDate(item.dateGranted),
-                        },
-                        {
-                          label: "Maturity Date",
-                          value: formatDate(item.maturityDate),
-                        },
-                        {
-                          label: "Outstanding Balance",
-                          value: `₱ ${formatCurrency(item.outstandingBalance)}`,
-                        },
-                        {
-                          label: "Loan Status",
-                          value: item.loanStatus,
-                        },
-                        {
-                          label: "Aging Status",
-                          value: item.agingStatus,
-                        },
-                        {
-                          label: "DefPrin",
-                          value: `₱ ${formatCurrency(item.defPrin)}`,
-                        },
-                        {
-                          label: "DefInt",
-                          value: `₱ ${formatCurrency(item.defInt)}`,
-                        },
-                        {
-                          label: "Days Past Due",
-                          value: String(item.noOfDaysPastDue),
-                        },
-                      ]}
-                    />
-                  </ExpandableRow>
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-
-          {/* FOOTER */}
-          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
-            <tr className="text-xs font-extrabold text-[#191924]">
-              <td className="px-3 py-3.5 text-center" />
-
-              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
-                TOTAL
-              </td>
-
-              <td className="px-4 py-3.5 font-bold text-[#5a5a70]">
-                {filteredBranches.length} accounts
-              </td>
-
-              <td colSpan={2} className="px-4 py-3.5" />
-
-              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
-                ₱ {formatCurrency(totalOriginalAmount)}
-              </td>
-
-              <td className="px-4 py-3.5" />
-
-              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
-                ₱ {formatCurrency(totalDefPrin)}
-              </td>
-
-              <td className="px-4 py-3.5" />
-            </tr>
-          </tfoot>
-        </table>
+        {/* Pagination */}
+        <TablePagination
+          totalRecords={searchFiltered.length}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
+
+      {/* Account Details Modal */}
+      <AccountDetailsModal
+        isOpen={!!selectedItem}
+        onClose={() => setSelectedItem(null)}
+        data={selectedItem}
+      />
     </div>
   );
 }

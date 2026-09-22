@@ -1,16 +1,14 @@
-import type { PastDue } from "@/services/types/past-due/past-due";
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
+import { Eye, Search } from "lucide-react";
+import type { PastDue as PastDueType } from "@/services/types/past-due/past-due";
 import { getPastDue } from "@/services/reports/all-loan.services";
-import { useEffect, useState } from "react";
-import router from "next/router";
-import { ChevronDown, Search } from "lucide-react";
-import React from "react";
-import { cn } from "@/lib/utils";
-import ExpandableRow from "@/components/ui/expandable-row";
-import ExpandableDetails from "@/components/ui/expandable-details";
+import { TablePagination } from "@/components/ui/table-pagination";
+import PastDueModal from "./modals/past-due-modal";
 
 const formatDate = (value: string) => {
   if (!value) return "";
-
   return new Date(value).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -19,250 +17,215 @@ const formatDate = (value: string) => {
 };
 
 export default function PastDue() {
-  const [pastDue, setPastDue] = useState<PastDue[]>([]);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [pastDueList, setPastDueList] = useState<PastDueType[]>([]);
+  const [selectedItem, setSelectedItem] = useState<PastDueType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const toggleRow = (id: string) => {
-    setExpandedId((current) => (current === id ? null : id));
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getPastDue();
-        setPastDue(response.pastDue);
+        setPastDueList(response.pastDue);
       } catch (error) {
-        console.log("Failed to fetch reports:", error);
+        console.error("Failed to fetch reports:", error);
       }
     }
     fetchData();
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const filteredPastDue = useMemo(() => {
+    if (!searchQuery.trim()) return pastDueList;
+    const q = searchQuery.toLowerCase();
+    return pastDueList.filter(
+      (item) =>
+        item.memberName.toLowerCase().includes(q) ||
+        item.accountNumber.toLowerCase().includes(q) ||
+        item.branch.toLowerCase().includes(q) ||
+        item.cid.toLowerCase().includes(q) ||
+        item.productType.toLowerCase().includes(q),
+    );
+  }, [pastDueList, searchQuery]);
 
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
+  const totalPages = Math.ceil(filteredPastDue.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedPastDue = filteredPastDue.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || (totalPages > 0 && page > totalPages)) return;
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1);
   };
 
   return (
-    <div className="overflow-hidden">
-      {/* Header Bar */}
+    <div>
+      {/* Top Header & Search Bar */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
-            {pastDue.length} Past Due Accounts
-          </span>
+        {/* Search Input */}
+        <div className="relative w-72 sm:w-80">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full rounded-xl border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
+          />
+        </div>
+      </div>
+
+      {/* Table Card */}
+      <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            {/* Header */}
+            <thead>
+              <tr className="bg-[#F8F9FA] text-[#475467] text-xs font-semibold">
+                <th className="whitespace-nowrap px-4 py-3.5 text-center first:rounded-l-xl">
+                  Action
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Branch
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">CID</th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Member Name
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Account Number
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Product Type
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Date Released
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left last:rounded-r-xl">
+                  Maturity Date
+                </th>
+              </tr>
+            </thead>
+
+            {/* Body */}
+            <tbody className="divide-y divide-gray-100">
+              {paginatedPastDue.length > 0 ? (
+                paginatedPastDue.map((item, index) => {
+                  const rowId = `${item.cid}-${index}`;
+                  return (
+                    <tr
+                      key={rowId}
+                      className="hover:bg-gray-50/70 transition-colors"
+                    >
+                      {/* Action */}
+                      <td className="whitespace-nowrap px-4 py-4 text-center align-middle">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedItem(item)}
+                          className="inline-flex items-center justify-center rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-[#05512A] cursor-pointer"
+                          title="View Details"
+                        >
+                          <Eye size={18} />
+                        </button>
+                      </td>
+
+                      {/* Branch */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          {item.branch}
+                        </div>
+                      </td>
+
+                      {/* CID */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-mono text-[#5a5a70]">
+                          {item.cid}
+                        </div>
+                      </td>
+
+                      {/* Member Name */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div
+                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-[240px] truncate"
+                          title={item.memberName}
+                        >
+                          {item.memberName}
+                        </div>
+                      </td>
+
+                      {/* Account Number */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <span className="text-xs sm:text-sm font-mono font-bold text-[#191924]">
+                          {item.accountNumber}
+                        </span>
+                      </td>
+
+                      {/* Product Type */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <span className="text-xs sm:text-sm font-medium text-[#344054]">
+                          {item.productType}
+                        </span>
+                      </td>
+
+                      {/* Date Released */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-medium text-[#191924]">
+                          {formatDate(item.dateReleased)}
+                        </div>
+                      </td>
+
+                      {/* Maturity Date */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm text-[#667085]">
+                          {formatDate(item.maturityDate)}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="px-4 py-12 text-center text-xs sm:text-sm text-gray-500"
+                  >
+                    No past due accounts found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="block">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
-            />
-
-            <input
-              type="text"
-              placeholder="Search accounts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
-            />
-          </div>
-        </form>
+        {/* Pagination */}
+        <TablePagination
+          totalRecords={filteredPastDue.length}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
-        <table className="w-full border-collapse text-sm">
-          {/* Header */}
-          <thead className="bg-[#05512A] text-white">
-            <tr className="bg-[#05512A] text-white">
-              <th className="w-12 px-3 py-3.5 text-center">
-                <span className="sr-only">Expand</span>
-              </th>
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Branch
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                CID
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Member Name
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Account Number
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Product Type
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Date Released
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Maturity Date
-              </th>
-            </tr>
-          </thead>
-
-          {/* Body */}
-          <tbody className="divide-y divide-[#F1EEF8]">
-            {pastDue.map((item, index) => {
-              const rowId = `${item.cid}-${index}`;
-              const isExpanded = expandedId === rowId;
-
-              return (
-                <React.Fragment key={rowId}>
-                  {/* Main Row */}
-                  <tr
-                    className={cn(
-                      "group transition-colors",
-                      isExpanded ? "bg-[#F3F9F5]" : "bg-white hover:bg-gray-50",
-                    )}
-                  >
-                    <td className="px-3 py-3.5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => toggleRow(rowId)}
-                        aria-expanded={isExpanded}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#9a9ab0] transition-all hover:bg-[#EBFDF4] hover:text-[#5fa53c]"
-                      >
-                        <ChevronDown
-                          size={16}
-                          className={cn(
-                            "transition-transform duration-200",
-                            isExpanded && "rotate-180",
-                          )}
-                        />
-                      </button>
-                    </td>
-
-                    {/* Branch */}
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-bold text-[#191924]">
-                        {item.branch}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs text-[#5a5a70]">
-                        {item.cid}
-                      </div>
-                    </td>
-
-                    <td className="px-4 py-3.5 align-top">
-                      <div
-                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
-                        title={item.memberName}
-                      >
-                        {item.memberName}
-                      </div>
-                    </td>
-
-                    <td className="px-4 py-3.5 align-top">
-                      <span className="font-mono text-xs font-semibold text-[#191924]">
-                        {item.accountNumber}
-                      </span>
-                    </td>
-
-                    <td className="whitespace-nowrap px-4 py-3.5 align-top">
-                      <span className="text-xs font-medium text-[#5a5a70]">
-                        {item.productType}
-                      </span>
-                    </td>
-
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs text-[#191924]">
-                        {formatDate(item.dateReleased)}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs text-[#5a5a70]">
-                        {formatDate(item.maturityDate)}
-                      </div>
-                    </td>
-                  </tr>
-
-                  {/* Expanded Row */}
-                  <ExpandableRow isExpanded={isExpanded} colSpan={8}>
-                    <ExpandableDetails
-                      title="Past Due Details"
-                      fields={[
-                        { label: "Branch", value: item.branch },
-                        {
-                          label: "CID",
-                          value: item.cid,
-                        },
-                        {
-                          label: "Member Name",
-                          value: item.memberName,
-                        },
-                        {
-                          label: "Account Number",
-                          value: item.accountNumber,
-                        },
-                        {
-                          label: "Product Type",
-                          value: item.productType,
-                        },
-                        {
-                          label: "Date Released",
-                          value: formatDate(item.dateReleased),
-                        },
-                        {
-                          label: "Maturity Date",
-                          value: formatDate(item.maturityDate),
-                        },
-                        {
-                          label: "Principal Release",
-                          value: item.principalReleased,
-                        },
-                        {
-                          label: "Outstanding Principal",
-                          value: item.outstandingPrincipal,
-                        },
-                        {
-                          label: "Start Arrears",
-                          value: item.startArrears,
-                        },
-                        {
-                          label: "Days of Arrears",
-                          value: item.daysOfArrears,
-                        },
-                        {
-                          label: "PAR Amount",
-                          value: item.parAmount,
-                        },
-                        {
-                          label: "Default Principal",
-                          value: item.defaultPrincipal,
-                        },
-                        {
-                          label: "Default Interest",
-                          value: item.defaultInterest,
-                        },
-                        {
-                          label: "Date of Last Payment",
-                          value: item.dateOfLastPayment,
-                        },
-                      ]}
-                    />
-                  </ExpandableRow>
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      {/* Past Due Modal */}
+      <PastDueModal
+        isOpen={!!selectedItem}
+        onClose={() => setSelectedItem(null)}
+        data={selectedItem}
+      />
     </div>
   );
 }

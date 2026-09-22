@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -63,27 +64,33 @@ export function TablePagination({
   };
 
   return (
-    <div className="mt-4 flex flex-col items-center justify-between gap-4 border-t border-[#191924]/8 pt-4 md:flex-row">
+    <div className="pt-6 flex flex-col items-center justify-between gap-4 md:flex-row text-xs text-[#555555]">
       {/* LEFT */}
-      <div className="flex items-center gap-4 text-xs font-semibold text-[#5a5a70]">
-        <div className="flex items-center gap-2">
-          <span>Items per page:</span>
+      <div className="flex items-center gap-3 text-xs text-[#555555]">
+        <div className="flex items-center gap-1.5">
+          <span>Items:</span>
 
-          <select
-            value={itemsPerPage}
-            onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className="rounded-xl border border-[#191924]/10 bg-[#FAF9FD] px-2.5 py-1 text-xs font-bold text-[#191924] focus:outline-none focus:ring-2 focus:ring-[#6C4CF1]/20 cursor-pointer"
-          >
-            <option value={10}>10</option>
-            <option value={25}>25</option>
-            <option value={50}>50</option>
-          </select>
+          <div className="relative inline-flex items-center">
+            <select
+              value={itemsPerPage}
+              onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
+              className="cursor-pointer appearance-none rounded-md border border-gray-200/90 bg-white py-1 pl-2.5 pr-6 text-xs font-medium text-[#191924] focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs"
+            >
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
+            <ChevronDown
+              size={12}
+              className="pointer-events-none absolute right-1.5 text-gray-400"
+            />
+          </div>
         </div>
 
         <span>
-          Showing <span className="font-bold text-[#191924]">{startRecord}</span>-
-          <span className="font-bold text-[#191924]">{endRecord}</span> of{" "}
-          <span className="font-bold text-[#191924]">{totalRecords}</span> records
+          Showing <span className="font-semibold text-[#191924]">{startRecord}</span>-
+          <span className="font-semibold text-[#191924]">{endRecord}</span> of{" "}
+          <span className="font-semibold text-[#191924]">{totalRecords}</span> records
         </span>
       </div>
 
@@ -94,10 +101,10 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
           title="First page"
         >
-          <ChevronsLeft size={16} />
+          <ChevronsLeft size={15} />
         </button>
 
         {/* Previous */}
@@ -105,16 +112,19 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
           title="Previous page"
         >
-          <ChevronLeft size={16} />
+          <ChevronLeft size={15} />
         </button>
 
         {/* Pages */}
         {getPageNumbers().map((page, index) =>
           page === "..." ? (
-            <span key={`ellipsis-${index}`} className="px-2 text-xs font-bold text-[#9a9ab0]">
+            <span
+              key={`ellipsis-${index}`}
+              className="px-1.5 text-xs text-gray-400"
+            >
               ...
             </span>
           ) : (
@@ -122,10 +132,10 @@ export function TablePagination({
               type="button"
               key={page}
               onClick={() => onPageChange(page)}
-              className={`h-9 w-9 rounded-xl text-xs font-bold transition-all ${
+              className={`h-7 w-7 rounded-md text-xs transition-all cursor-pointer ${
                 page === currentPage
-                  ? "bg-[#191924] text-white shadow-xs"
-                  : "text-[#5a5a70] hover:bg-[#FAF9FD] hover:text-[#191924]"
+                  ? "bg-[#05512A] text-white font-semibold shadow-xs"
+                  : "text-[#555555] hover:bg-gray-100 hover:text-[#191924] font-medium"
               }`}
             >
               {page}
@@ -138,10 +148,10 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
           title="Next page"
         >
-          <ChevronRight size={16} />
+          <ChevronRight size={15} />
         </button>
 
         {/* Last */}
@@ -149,12 +159,13 @@ export function TablePagination({
           type="button"
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages || totalPages === 0}
-          className="rounded-xl p-2 text-[#5a5a70] transition hover:bg-[#FAF9FD] hover:text-[#191924] disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
+          className="rounded-md p-1.5 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent"
           title="Last page"
         >
-          <ChevronsRight size={16} />
+          <ChevronsRight size={15} />
         </button>
       </div>
     </div>
   );
+
 }

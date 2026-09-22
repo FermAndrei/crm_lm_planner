@@ -1,0 +1,243 @@
+"use client";
+
+import React, { useEffect } from "react";
+import type { AllBranchReport } from "@/services/types/all-branch/all-branch";
+import { cn } from "@/lib/utils";
+
+interface AccountDetailsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  data: AllBranchReport | null;
+}
+
+const formatCurrency = (val: number) => {
+  if (val === 0) return "0.00";
+  return val.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
+const formatDate = (date: string) => {
+  if (!date) return "";
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+export default function AccountDetailsModal({
+  isOpen,
+  onClose,
+  data,
+}: AccountDetailsModalProps) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !data) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 sm:p-6 backdrop-blur-[2px] animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white p-6 sm:p-8 shadow-2xl animate-in zoom-in-95 duration-200 border border-gray-100"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#101828]">
+            Account Details
+          </h2>
+          <p className="mt-1 text-xs sm:text-sm text-[#667085]">
+            View account information, payment details, and delinquency status.
+          </p>
+        </div>
+
+        {/* Section 1: Account Information */}
+        <div className="mb-5 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+          <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
+              Account Information
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 gap-y-2 gap-x-8 p-4 sm:grid-cols-3 sm:p-5">
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Date & Time</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatDate(data.dateGranted)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">BRCode</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.brCode}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Branch</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.branch}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Cust_ID</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.custId}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Client Name</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.clientName}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Account Name</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.accountNumber}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">
+                Original Amount Granted
+              </span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatCurrency(data.originalAmountGranted)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Interest Rate</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.interestRate}%
+              </span>
+            </div>
+            <div className="flex flex-col ">
+              <span className="text-xs text-[#667085]">Term</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatDate(data.dateGranted)} - {formatDate(data.maturityDate)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: Payment Details */}
+        <div className="mb-5 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+          <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
+              Payment Details
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 gap-y-3.5 gap-x-8 p-4 sm:grid-cols-3 sm:p-5">
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Date Granted</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatDate(data.dateGranted)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Maturity Date</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatDate(data.maturityDate)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">
+                Outstanding Balance
+              </span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatCurrency(data.outstandingBalance)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">ProdType</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.prodType}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Aging Status</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.agingStatus}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Loan Status</span>
+              <div className="mt-1">
+                <span
+                  className={cn(
+                    "inline-block rounded-full px-2.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wider",
+                    data.loanStatus === "CURRENT"
+                      ? "bg-[#DCFCE7] text-[#15803D]"
+                      : data.loanStatus === "EXPIRED"
+                        ? "bg-[#FFE4E8] text-[#E11D48]"
+                        : "bg-[#F4F2FA] text-[#5a5a70]",
+                  )}
+                >
+                  {data.loanStatus}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: Delinquency Details */}
+        <div className="mb-6 overflow-hidden rounded-xl border border-gray-200/90 bg-white">
+          <div className="bg-[#F8F9FA] px-4 py-2.5 border-b border-gray-200/80">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#05512A]">
+              Delinquency Details
+            </h3>
+          </div>
+          <div className="grid grid-cols-1 gap-y-3.5 gap-x-8 p-4 sm:grid-cols-3 sm:p-5">
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Defprin</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatCurrency(data.defPrin)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">Defint</span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {formatCurrency(data.defInt)}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xs text-[#667085]">
+                No of Days Past Due
+              </span>
+              <span className="mt-0.5 text-sm font-bold text-[#101828]">
+                {data.noOfDaysPastDue}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Modal Footer */}
+        <div className="flex justify-end pt-1">
+          <button
+            type="button"
+            onClick={onClose}
+            className="cursor-pointer rounded-xl border border-gray-300 bg-white px-6 py-2 text-sm font-medium text-gray-700 shadow-xs transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#05512A]/20"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

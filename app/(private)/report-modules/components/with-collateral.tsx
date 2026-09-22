@@ -1,17 +1,14 @@
 "use client";
 
-import ExpandableDetails from "@/components/ui/expandable-details";
-import ExpandableRow from "@/components/ui/expandable-row";
-import { cn } from "@/lib/utils";
+import React, { useEffect, useMemo, useState } from "react";
+import { Eye, Search } from "lucide-react";
 import { getWithCollateral } from "@/services/reports/all-loan.services";
-import type { WithCollateral } from "@/services/types/with-collateral/with-collateral";
-import { ChevronDown, Search } from "lucide-react";
-import router from "next/router";
-import React, { useEffect, useState } from "react";
+import type { WithCollateral as WithCollateralType } from "@/services/types/with-collateral/with-collateral";
+import { TablePagination } from "@/components/ui/table-pagination";
+import CollateralModal from "./modals/collateral-modal";
 
 const formatDate = (date: string) => {
   if (!date) return "";
-
   return new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -20,286 +17,242 @@ const formatDate = (date: string) => {
 };
 
 const formatCurrency = (val: number) => {
-  if (val === 0) return "0";
-
+  if (val === 0) return "0.00";
   return val.toLocaleString("en-US", {
-    minimumFractionDigits: val % 1 !== 0 ? 2 : 0,
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
 export default function WithCollateral() {
-  const [withCollateral, setWithCollateral] = useState<WithCollateral[]>([]);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [collateralList, setCollateralList] = useState<WithCollateralType[]>(
+    [],
+  );
+  const [selectedItem, setSelectedItem] = useState<WithCollateralType | null>(
+    null,
+  );
   const [searchQuery, setSearchQuery] = useState("");
-
-  const toggleRow = (id: string) => {
-    setExpandedId((current) => (current === id ? null : id));
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getWithCollateral();
-        setWithCollateral(response.withCollateral);
+        setCollateralList(response.withCollateral);
       } catch (error) {
         console.error("Failed to fetch reports:", error);
       }
     }
-
     fetchData();
   }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const filteredCollateral = useMemo(() => {
+    if (!searchQuery.trim()) return collateralList;
+    const q = searchQuery.toLowerCase();
+    return collateralList.filter(
+      (item) =>
+        item.nameOfBorrower.toLowerCase().includes(q) ||
+        item.acctNumberOfLoan.toLowerCase().includes(q) ||
+        item.branchBooked.toLowerCase().includes(q) ||
+        item.collateralDescription.toLowerCase().includes(q) ||
+        item.collateralCode.toLowerCase().includes(q),
+    );
+  }, [collateralList, searchQuery]);
 
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
+  const totalPages = Math.ceil(filteredCollateral.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedCollateral = filteredCollateral.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || (totalPages > 0 && page > totalPages)) return;
+    setCurrentPage(page);
   };
 
-  const totalAppraiseValue = withCollateral.reduce(
-    (acc, r) => acc + r.appraiseValue,
-    0,
-  );
-
-  const totalLoanValue = withCollateral.reduce(
-    (acc, r) => acc + r.loanValue,
-    0,
-  );
+  const handleItemsPerPageChange = (items: number) => {
+    setItemsPerPage(items);
+    setCurrentPage(1);
+  };
 
   return (
-    <div className="overflow-hidden">
-      {/* Header Bar */}
+    <div>
+      {/* Top Header & Search Bar */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
-            {withCollateral.length} Collateral Records
-          </span>
+        {/* Search Input */}
+        <div className="relative w-72 sm:w-80">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full rounded-xl border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
+          />
+        </div>
+      </div>
+
+      {/* Table Card */}
+      <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            {/* Header */}
+            <thead>
+              <tr className="bg-[#F8F9FA] text-[#475467] text-xs font-semibold">
+                <th className="whitespace-nowrap px-4 py-3.5 text-center first:rounded-l-xl">
+                  Action
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Branch Booked
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Collateral Type
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Collateral Description
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Sequence
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Borrower / Account
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Date Of Appraisal
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Appraise Value
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left last:rounded-r-xl">
+                  Loan Value
+                </th>
+              </tr>
+            </thead>
+
+            {/* Body */}
+            <tbody className="divide-y divide-gray-100">
+              {paginatedCollateral.length > 0 ? (
+                paginatedCollateral.map((item, index) => {
+                  const rowId = `${item.acctNumberOfLoan}-${index}`;
+                  return (
+                    <tr
+                      key={rowId}
+                      className="hover:bg-gray-50/70 transition-colors"
+                    >
+                      {/* Action */}
+                      <td className="whitespace-nowrap px-4 py-4 text-center align-middle">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedItem(item)}
+                          className="inline-flex items-center justify-center rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-[#05512A] cursor-pointer"
+                          title="View Details"
+                        >
+                          <Eye size={18} />
+                        </button>
+                      </td>
+
+                      {/* Branch Booked */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          {item.branchBooked}
+                        </div>
+                      </td>
+
+                      {/* Collateral Type */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-mono font-bold text-[#191924]">
+                          {item.collateralCode}
+                        </div>
+                      </td>
+
+                      {/* Collateral Description */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-medium text-[#191924] max-w-[220px] truncate">
+                          {item.collateralDescription}
+                        </div>
+                      </td>
+
+                      {/* Sequence */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-mono text-[#5a5a70]">
+                          {item.sequence}
+                        </div>
+                      </td>
+
+                      {/* Borrower / Account */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div
+                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-[240px] truncate"
+                          title={item.nameOfBorrower}
+                        >
+                          {item.nameOfBorrower}
+                        </div>
+                        <div className="mt-0.5 text-xs text-[#667085]">
+                          {item.acctNumberOfLoan}
+                        </div>
+                      </td>
+
+                      {/* Date Of Appraisal */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm text-[#191924]">
+                          {formatDate(item.dateOfAppraisal)}
+                        </div>
+                      </td>
+
+                      {/* Appraise Value */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          ₱ {formatCurrency(item.appraiseValue)}
+                        </div>
+                      </td>
+
+                      {/* Loan Value */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          ₱ {formatCurrency(item.loanValue)}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan={9}
+                    className="px-4 py-12 text-center text-xs sm:text-sm text-gray-500"
+                  >
+                    No collateral records found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="block">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
-            />
-
-            <input
-              type="text"
-              placeholder="Search accounts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
-            />
-          </div>
-        </form>
+        {/* Pagination */}
+        <TablePagination
+          totalRecords={filteredCollateral.length}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
-        <table className="w-full border-collapse text-sm">
-          {/* Header */}
-          <thead className="bg-[#05512A] text-white">
-            <tr className="bg-[#05512A] text-white">
-              <th className="w-12 px-3 py-3.5 text-center">
-                <span className="sr-only">Expand</span>
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Branch Booked
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Collateral Type
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Collateral Description
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Sequence
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Borrower / Account
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Date Of Appraisal
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                Appraise Value
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                Loan Value
-              </th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-[#F1EEF8]">
-            {withCollateral.map((item, index) => {
-              const rowId = `${item.acctNumberOfLoan}-${index}`;
-              const isExpanded = expandedId === rowId;
-
-              return (
-                <React.Fragment key={rowId}>
-                  <tr
-                    className={cn(
-                      "group transition-colors",
-                      isExpanded ? "bg-[#F3F9F5]" : "bg-white hover:bg-gray-50",
-                    )}
-                  >
-                    <td className="px-3 py-3.5 text-center">
-                      <button
-                        type="button"
-                        onClick={() => toggleRow(rowId)}
-                        aria-expanded={isExpanded}
-                        className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-[#9a9ab0] transition-all hover:bg-[#EBFDF4] hover:text-[#5fa53c]"
-                      >
-                        <ChevronDown
-                          size={16}
-                          className={cn(
-                            "transition-transform duration-200",
-                            isExpanded && "rotate-180",
-                          )}
-                        />
-                      </button>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-bold text-[#191924]">
-                        {item.branchBooked}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs font-semibold text-[#191924]">
-                        {item.collateralCode}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="max-w-70 truncate font-semibold text-[#191924]">
-                        {item.collateralDescription}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs text-[#5a5a70]">
-                        {item.sequence}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div
-                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
-                        title={item.nameOfBorrower}
-                      >
-                        {item.nameOfBorrower}
-                      </div>
-                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
-                        {item.acctNumberOfLoan}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs text-[#191924]">
-                        {formatDate(item.dateOfAppraisal)}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-right align-top">
-                      <div className="font-mono text-xs font-bold text-[#191924]">
-                        ₱ {formatCurrency(item.appraiseValue)}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-right align-top">
-                      <div className="font-mono text-xs font-extrabold text-[#191924]">
-                        ₱ {formatCurrency(item.loanValue)}
-                      </div>
-                    </td>
-                  </tr>
-
-                  <ExpandableRow isExpanded={isExpanded} colSpan={9}>
-                    <ExpandableDetails
-                      title="Collateral Details"
-                      fields={[
-                        {
-                          label: "Branch Booked",
-                          value: item.branchBooked,
-                        },
-                        {
-                          label: "Collateral Code",
-                          value: item.collateralCode,
-                        },
-                        {
-                          label: "Collateral Description",
-                          value: item.collateralDescription,
-                        },
-                        { label: "Sequence", value: item.sequence },
-                        {
-                          label: "Account Number",
-                          value: item.acctNumberOfLoan,
-                        },
-                        {
-                          label: "Name of Borrower",
-                          value: item.nameOfBorrower,
-                        },
-                        {
-                          label: "Date of Appraisal",
-                          value: formatDate(item.dateOfAppraisal),
-                        },
-                        {
-                          label: "Appraise Value",
-                          value: `₱ ${formatCurrency(item.appraiseValue)}`,
-                        },
-                        {
-                          label: "Loan Value",
-                          value: `₱ ${formatCurrency(item.loanValue)}`,
-                        },
-                        {
-                          label: "Collateral Code Desc.",
-                          value: item.collateralCodeDesc,
-                        },
-                        { label: "Review Date", value: item.reviewDateFqu },
-                        { label: "Value Date", value: item.valueDate },
-                        { label: "Expiry Date", value: item.expiryDate },
-                        { label: "Address", value: item.address },
-                        { label: "Notes", value: item.notes },
-                      ]}
-                    />
-                  </ExpandableRow>
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-
-          {/* Footer */}
-          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
-            <tr className="text-xs font-extrabold text-[#1D4D3E]">
-              <td className="px-3 py-3.5 text-center" />
-
-              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
-                TOTAL
-              </td>
-
-              <td colSpan={3} className="px-4 py-3.5" />
-
-              <td className="px-4 py-3.5 font-bold text-[#5a5a70]">
-                {withCollateral.length} accounts
-              </td>
-
-              <td className="px-4 py-3.5" />
-
-              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
-                ₱ {formatCurrency(totalAppraiseValue)}
-              </td>
-
-              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
-                ₱ {formatCurrency(totalLoanValue)}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      {/* Collateral Modal */}
+      <CollateralModal
+        isOpen={!!selectedItem}
+        onClose={() => setSelectedItem(null)}
+        data={selectedItem}
+      />
     </div>
   );
 }

@@ -18,7 +18,7 @@ export const SegmentButton = ({
   return (
     <div className="relative">
       {/* Desktop & Tablet Segment Pills */}
-      <div className="hidden w-fit md:flex flex-wrap items-center gap-1.5 rounded-md border order-[#191924]/8 bg-[#FCFDFC] p-0.5 shadow-cloud-pill">
+      <div className="hidden w-fit md:flex flex-wrap items-center gap-1 rounded-full border border-gray-200/80 bg-white p-1 shadow-xs">
         {tabs.map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -27,10 +27,10 @@ export const SegmentButton = ({
               type="button"
               onClick={() => onChange(tab)}
               className={cn(
-                "rounded-md px-3.5 py-1.5 text-xs font-bold transition-all",
+                "cursor-pointer rounded-full px-4 py-1.5 text-xs font-medium transition-all",
                 isActive
-                  ? "bg-[#05512A] text-white shadow-xs"
-                  : "text-[#5a5a70] hover:bg-black/5 hover:text-[#191924]",
+                  ? "bg-[#05512A] font-semibold text-white shadow-xs"
+                  : "text-[#555555] hover:bg-black/5 hover:text-[#191924]",
               )}
             >
               {tab}

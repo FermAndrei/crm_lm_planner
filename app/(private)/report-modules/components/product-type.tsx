@@ -1,139 +1,159 @@
 "use client";
 
+import React, { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { getProductType } from "@/services/reports/all-loan.services";
-import { ProductType } from "@/services/types/product-type/product-type";
-import { useEffect, useState } from "react";
+import type { ProductType } from "@/services/types/product-type/product-type";
 
 const formatCurrency = (val: number) => {
-  if (val === 0) return "0";
-
+  if (val === 0) return "0.00";
   return val.toLocaleString("en-US", {
-    minimumFractionDigits: val % 1 !== 0 ? 2 : 0,
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
 export default function ProductTypePage() {
-  const [productType, setProductType] = useState<ProductType[]>([]);
+  const [productTypes, setProductTypes] = useState<ProductType[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await getProductType();
-        setProductType(response.productType);
+        setProductTypes(response.productType);
       } catch (error) {
         console.error("Failed to fetch reports:", error);
       }
     }
-
     fetchData();
   }, []);
 
-  const totalNoOfAcc = productType.reduce((acc, r) => acc + r.noOfAccount, 0);
+  const filteredProductTypes = useMemo(() => {
+    if (!searchQuery.trim()) return productTypes;
+    const q = searchQuery.toLowerCase();
+    return productTypes.filter((item) =>
+      item.prodType.toLowerCase().includes(q),
+    );
+  }, [productTypes, searchQuery]);
 
-  const totalAmountGranted = productType.reduce(
+  const totalNoOfAcc = filteredProductTypes.reduce(
+    (acc, r) => acc + r.noOfAccount,
+    0,
+  );
+
+  const totalAmountGranted = filteredProductTypes.reduce(
     (acc, r) => acc + r.originalAmountGranted,
     0,
   );
 
-  const totalOutstandingBalance = productType.reduce(
+  const totalOutstandingBalance = filteredProductTypes.reduce(
     (acc, r) => acc + r.outstandingBalance,
     0,
   );
 
   return (
-    <div className="overflow-hidden">
-      {/* Header Bar */}
+    <div>
+      {/* Top Header & Search Bar */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[#5a5a70] bg-[#FAF9FD] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
-            {productType.length} Product Classifications
-          </span>
+        {/* Search Input */}
+        <div className="relative w-72 sm:w-80">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="Search product types..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-xl border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
+          />
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
-        <table className="w-full border-collapse text-left text-sm">
-          <thead className="bg-[#05512A] text-white">
-            <tr className="bg-[#05512A] text-white">
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Product Type
-              </th>
+      {/* Table Card */}
+      <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            {/* Header */}
+            <thead>
+              <tr className="bg-[#F8F9FA] text-[#475467] text-xs font-semibold">
+                <th className="whitespace-nowrap px-4 py-3.5 text-left first:rounded-l-xl">
+                  Product Type
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-right">
+                  No. of Accounts
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-right">
+                  Original Amount Granted
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-right last:rounded-r-xl">
+                  Outstanding Balance
+                </th>
+              </tr>
+            </thead>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                No. of Accounts
-              </th>
+            {/* Body */}
+            <tbody className="divide-y divide-gray-100">
+              {filteredProductTypes.length > 0 ? (
+                filteredProductTypes.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="hover:bg-gray-50/70 transition-colors"
+                  >
+                    <td className="whitespace-nowrap px-4 py-4">
+                      <span className="text-xs sm:text-sm font-bold text-[#191924]">
+                        {item.prodType}
+                      </span>
+                    </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                Original Amount Granted
-              </th>
+                    <td className="whitespace-nowrap px-4 py-4 text-right text-xs sm:text-sm font-semibold text-[#191924]">
+                      {item.noOfAccount.toLocaleString()}
+                    </td>
 
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                Outstanding Balance
-              </th>
-            </tr>
-          </thead>
+                    <td className="whitespace-nowrap px-4 py-4 text-right text-xs sm:text-sm font-bold text-[#191924]">
+                      ₱ {formatCurrency(item.originalAmountGranted)}
+                    </td>
 
-          <tbody className="divide-y divide-[#F1EEF8]">
-            {productType.length > 0 ? (
-              productType.map((item, index) => (
-                <tr
-                  key={index}
-                  className="group transition-colors hover:bg-gray-50"
-                >
-                  <td className="px-4 py-3.5">
-                    <span className="text-xs sm:text-sm font-bold text-[#191924]">
-                      {item.prodType}
-                    </span>
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-xs sm:text-sm font-semibold text-[#191924]">
-                    {formatCurrency(item.noOfAccount)}
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-xs sm:text-sm font-bold text-[#191924]">
-                    ₱ {formatCurrency(item.originalAmountGranted)}
-                  </td>
-
-                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-xs sm:text-sm font-extrabold text-[#191924]">
-                    ₱ {formatCurrency(item.outstandingBalance)}
+                    <td className="whitespace-nowrap px-4 py-4 text-right text-xs sm:text-sm font-bold text-[#191924]">
+                      ₱ {formatCurrency(item.outstandingBalance)}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={4}
+                    className="px-4 py-12 text-center text-xs sm:text-sm text-gray-500"
+                  >
+                    No product types found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={4}
-                  className="px-4 py-10 text-center text-xs font-medium text-[#5a5a70]"
-                >
-                  No product type data available.
-                </td>
-              </tr>
+              )}
+            </tbody>
+
+            {/* Summary Footer */}
+            {filteredProductTypes.length > 0 && (
+              <tfoot className="border-t border-gray-200 bg-[#F8F9FA]/60">
+                <tr className="text-xs font-bold text-[#191924]">
+                  <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold first:rounded-bl-xl">
+                    Total
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-semibold">
+                    {totalNoOfAcc.toLocaleString()}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-bold">
+                    ₱ {formatCurrency(totalAmountGranted)}
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3.5 text-right font-bold last:rounded-br-xl">
+                    ₱ {formatCurrency(totalOutstandingBalance)}
+                  </td>
+                </tr>
+              </tfoot>
             )}
-          </tbody>
-
-          {/* Footer */}
-          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
-            <tr className="text-xs font-extrabold text-[#191924]">
-              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
-                TOTAL
-              </td>
-
-              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-sm font-extrabold">
-                {formatCurrency(totalNoOfAcc)}
-              </td>
-
-              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-sm font-extrabold">
-                ₱ {formatCurrency(totalAmountGranted)}
-              </td>
-
-              <td className="whitespace-nowrap px-4 py-3.5 text-right font-mono text-sm font-extrabold">
-                ₱ {formatCurrency(totalOutstandingBalance)}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   );

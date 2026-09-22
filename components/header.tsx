@@ -91,10 +91,8 @@ export default function Header() {
       let label = path.charAt(0).toUpperCase() + path.slice(1);
 
       // Custom labels for specific paths
-      // if (path === "ui-test") label = "UI Components";
-      // if (path === "error-handler") label = "Error Handler";
-      // if (path === "stay-tuned") label = "Stay Tuned";
-      // if (path === "dashboard") label = "Dashboard";
+      if (path === "report-modules") label = "Report Module";
+
 
       // Determine if this breadcrumb should be clickable
       const isClickable =

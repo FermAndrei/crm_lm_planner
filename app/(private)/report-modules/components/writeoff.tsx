@@ -1,25 +1,21 @@
 "use client";
 
+import React, { useEffect, useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { TablePagination } from "@/components/ui/table-pagination";
 import { getWriteOff } from "@/services/reports/all-loan.services";
-import { WriteOffDate } from "@/services/types/writeoff/writeoff";
-import { Search } from "lucide-react";
-import router from "next/router";
-import React from "react";
-import { useEffect, useState } from "react";
+import type { WriteOffDate } from "@/services/types/writeoff/writeoff";
 
 const formatCurrency = (val: number) => {
-  if (val === 0) return "0";
-
+  if (val === 0) return "0.00";
   return val.toLocaleString("en-US", {
-    minimumFractionDigits: val % 1 !== 0 ? 2 : 0,
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
 const formatDate = (date: string) => {
   if (!date) return "";
-
   return new Date(date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -28,7 +24,7 @@ const formatDate = (date: string) => {
 };
 
 export default function WriteOff() {
-  const [writeOffDate, setWriteOffDate] = useState<WriteOffDate[]>([]);
+  const [writeOffList, setWriteOffList] = useState<WriteOffDate[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -37,7 +33,7 @@ export default function WriteOff() {
     async function fetchData() {
       try {
         const response = await getWriteOff();
-        setWriteOffDate(response.writeOffDate);
+        setWriteOffList(response.writeOffDate);
       } catch (error) {
         console.error("Failed to fetch reports:", error);
       }
@@ -45,206 +41,193 @@ export default function WriteOff() {
     fetchData();
   }, []);
 
-  const totalPages = Math.ceil(writeOffDate.length / itemsPerPage);
+  const filteredWriteOff = useMemo(() => {
+    if (!searchQuery.trim()) return writeOffList;
+    const q = searchQuery.toLowerCase();
+    return writeOffList.filter(
+      (item) =>
+        item.memberName.toLowerCase().includes(q) ||
+        item.accountNumber.toLowerCase().includes(q) ||
+        item.branch.toLowerCase().includes(q) ||
+        item.cid.toLowerCase().includes(q) ||
+        item.productType.toLowerCase().includes(q),
+    );
+  }, [writeOffList, searchQuery]);
 
+  const totalPages = Math.ceil(filteredWriteOff.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
-  const paginationWriteOff = writeOffDate.slice(startIndex, endIndex);
+  const paginatedWriteOff = filteredWriteOff.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-
-    // setExpandedId(null);
+    if (page < 1 || (totalPages > 0 && page > totalPages)) return;
     setCurrentPage(page);
   };
 
   const handleItemsPerPageChange = (items: number) => {
     setItemsPerPage(items);
     setCurrentPage(1);
-    // setExpandedId(null);
   };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
-  const totalPrincipal = writeOffDate.reduce(
-    (acc, r) => acc + r.principalReleased,
-    0,
-  );
-
-  const totalOutstandingBalance = writeOffDate.reduce(
-    (acc, r) => acc + r.outstandingPrincipal,
-    0,
-  );
 
   return (
-    <div className="overflow-hidden">
-      {/* Header Bar */}
+    <div>
+      {/* Top Header & Search Bar */}
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[#5a5a70] bg-[#FCFDFC] px-3.5 py-1.5 rounded-full border border-[#191924]/8 shadow-xs">
-            {writeOffDate.length} Charged Off Accounts
-          </span>
+        {/* Search Input */}
+        <div className="relative w-72 sm:w-80">
+          <Search
+            size={16}
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full rounded-xl border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
+          />
+        </div>
+      </div>
+
+      {/* Table Card */}
+      <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            {/* Header */}
+            <thead>
+              <tr className="bg-[#F8F9FA] text-[#475467] text-xs font-semibold">
+                <th className="whitespace-nowrap px-4 py-3.5 text-left first:rounded-l-xl">
+                  Branch
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Name / CID
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Account Number
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Product Type
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Term Window
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Principal Released
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-left">
+                  Outstanding Principal
+                </th>
+                <th className="whitespace-nowrap px-4 py-3.5 text-center last:rounded-r-xl">
+                  Write-off Date
+                </th>
+              </tr>
+            </thead>
+
+            {/* Body */}
+            <tbody className="divide-y divide-gray-100">
+              {paginatedWriteOff.length > 0 ? (
+                paginatedWriteOff.map((item, index) => {
+                  const rowId = `${item.accountNumber}-${index}`;
+                  return (
+                    <tr
+                      key={rowId}
+                      className="hover:bg-gray-50/70 transition-colors"
+                    >
+                      {/* Branch */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          {item.branch}
+                        </div>
+                      </td>
+
+                      {/* Name / CID */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div
+                          className="text-xs sm:text-sm font-bold text-[#191924] max-w-[240px] truncate"
+                          title={item.memberName}
+                        >
+                          {item.memberName}
+                        </div>
+                        <div className="mt-0.5 text-xs font-mono text-[#5a5a70]">
+                          {item.cid}
+                        </div>
+                      </td>
+
+                      {/* Account Number */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold font-mono text-[#191924]">
+                          {item.accountNumber}
+                        </div>
+                      </td>
+
+                      {/* Product Type */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-medium text-[#344054]">
+                          {item.productType}
+                        </div>
+                      </td>
+
+                      {/* Term Window */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-medium text-[#191924]">
+                          {formatDate(item.dateReleased)}
+                        </div>
+                        <div className="mt-0.5 text-xs text-[#667085]">
+                          → {formatDate(item.maturityDate)}
+                        </div>
+                      </td>
+
+                      {/* Principal Released */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#191924]">
+                          ₱ {formatCurrency(item.principalReleased)}
+                        </div>
+                      </td>
+
+                      {/* Outstanding Principal */}
+                      <td className="whitespace-nowrap px-4 py-4 align-top">
+                        <div className="text-xs sm:text-sm font-bold text-[#E11D48]">
+                          ₱ {formatCurrency(item.outstandingPrincipal)}
+                        </div>
+                      </td>
+
+                      {/* Write-off Date */}
+                      <td className="whitespace-nowrap px-4 py-4 text-center align-top">
+                        <div className="text-xs sm:text-sm text-[#5a5a70]">
+                          {formatDate(item.writeoffdate || item.dateReleased)}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="px-4 py-12 text-center text-xs sm:text-sm text-gray-500"
+                  >
+                    No charged off accounts found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {/* Search */}
-        <form onSubmit={handleSearch} className="block">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9a9ab0]"
-            />
-
-            <input
-              type="text"
-              placeholder="Search accounts..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-72 sm:w-80 rounded-full border border-[#191924]/10 bg-[#FAF9FD] py-2 pl-10 pr-4 text-xs font-semibold text-[#191924] placeholder:text-[#9a9ab0] focus:border-[#356206] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#356206]/20 shadow-xs transition-all"
-            />
-          </div>
-        </form>
+        {/* Pagination */}
+        <TablePagination
+          totalRecords={filteredWriteOff.length}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
       </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-[#191924]/8 bg-white shadow-xs">
-        <table className="w-full border-collapse text-sm">
-          {/* Header */}
-          <thead className="bg-[#05512A] text-white">
-            <tr className="bg-[#05512A] text-white">
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Branch
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Name / CID
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Account Number
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Product Type
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-left text-xs font-bold uppercase tracking-wider">
-                Term Window
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                Principal Released
-              </th>
-
-              <th className="whitespace-nowrap px-4 py-3.5 text-right text-xs font-bold uppercase tracking-wider">
-                Outstanding Principal
-              </th>
-              <th className="whitespace-nowrap px-4 py-3.5 text-center text-xs font-bold uppercase tracking-wider">
-                Write-off Date
-              </th>
-            </tr>
-          </thead>
-
-          {/* Body */}
-          <tbody className="divide-y divide-gray-100">
-            {paginationWriteOff.map((item, index) => {
-              const rowId = `${item.accountNumber}-${index}`;
-              return (
-                <React.Fragment key={rowId}>
-                  <tr className="group transition-colors hover:bg-gray-50">
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-bold text-[#191924]">
-                        {item.branch}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div
-                        className="max-w-70 truncate font-bold text-[#191924] transition-colors"
-                        title={item.memberName}
-                      >
-                        {item.memberName}
-                      </div>
-                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
-                        {item.cid}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs font-semibold text-[#191924]">
-                        {item.accountNumber}
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3.5 align-top">
-                      <div className="text-xs font-medium text-[#5a5a70]">
-                        {item.productType}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 align-top">
-                      <div className="font-mono text-xs text-[#191924]">
-                        {formatDate(item.dateReleased)}
-                      </div>
-
-                      <div className="mt-0.5 font-mono text-xs text-[#5a5a70]">
-                        → {formatDate(item.maturityDate)}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-right align-top">
-                      <div className="font-mono text-xs font-bold text-[#191924]">
-                        ₱ {formatCurrency(item.principalReleased)}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-right align-top">
-                      <div className="font-mono text-xs font-extrabold text-[#E0509A]">
-                        ₱ {formatCurrency(item.outstandingPrincipal)}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-center align-top">
-                      <div className="font-mono text-xs text-[#5a5a70]">
-                        {formatDate(item.dateReleased)}
-                      </div>
-                    </td>
-                  </tr>
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-
-          {/* Footer */}
-          <tfoot className="border-t-2 border-[#191924]/10 bg-[#D2E7C4]">
-            <tr className="text-xs font-extrabold text-[#191924]">
-              <td className="px-4 py-3.5 uppercase tracking-wider font-extrabold">
-                TOTAL
-              </td>
-
-              <td className="px-4 py-3.5 font-bold text-[#5a5a70]">
-                {writeOffDate.length} accounts
-              </td>
-
-              <td colSpan={3} className="px-4 py-3.5" />
-
-              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
-                ₱ {formatCurrency(totalPrincipal)}
-              </td>
-              <td className="px-4 py-3.5 text-right font-mono text-sm font-extrabold text-[#191924]">
-                ₱ {formatCurrency(totalOutstandingBalance)}
-              </td>
-              <td className="px-4 py-3.5" />
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <TablePagination
-        totalRecords={writeOffDate.length}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        onPageChange={handlePageChange}
-        onItemsPerPageChange={handleItemsPerPageChange}
-      />
     </div>
   );
 }
