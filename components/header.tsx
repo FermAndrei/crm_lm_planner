@@ -34,6 +34,7 @@ const CLICKABLE_ROUTES = new Set([
   "/settings",
   "/error-handler/stay-tuned",
   "/error-handler/404",
+  "/calendar-schedule",
 ]);
 
 // Define parent routes that should NOT be clickable
@@ -70,6 +71,7 @@ export default function Header() {
       "/settings": { title: "Settings" },
       "/error-handler/stay-tuned": { title: "Stay Tuned" },
       "/error-handler/404": { title: "404 Error Page" },
+      "/calendar-schedule": { title: "Calendar Schedule" },
     };
 
   // Generate breadcrumbs from pathname with clickable logic
@@ -92,6 +94,7 @@ export default function Header() {
 
       // Custom labels for specific paths
       if (path === "report-modules") label = "Report Module";
+      if (path === "calendar-schedule") label = "Calendar Schedule";
 
 
       // Determine if this breadcrumb should be clickable
@@ -182,10 +185,10 @@ export default function Header() {
             </div>
             <div className="hidden md:block text-left">
               <p className="text-sm font-bold text-[#191924] leading-none">
-                Ferm
+                John Dela Cruz
               </p>
-              <p className="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">
-                Loan Manager
+              <p className="text-[10px] text-slate-400 mt-1 font-bold tracking-wider">
+                System Admin
               </p>
             </div>
             <ChevronDown

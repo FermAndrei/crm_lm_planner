@@ -63,7 +63,7 @@ const ClientProfilePage = () => {
                 No Client Selected
               </p>
 
-              <p className="mt-2 max-w-[600px] text-[13px] text-[#7A7A7A]">
+              <p className="mt-2 max-w-150 text-[13px] text-[#7A7A7A]">
                 Search for a client using their CID number to view their profile
                 and loan information.
               </p>
