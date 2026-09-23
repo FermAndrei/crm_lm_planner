@@ -8,7 +8,7 @@ export default function StatCards() {
         return (
           <div
             key={stat.id}
-            className="bg-white rounded-md border border-[#191924]/8 shadow-cloud-card hover:shadow-cloud-card-hover transition-all p-5 flex flex-col justify-between"
+            className="bg-white shadow-xs rounded-md border border-gray-200/70 shadow-cloud-card hover:shadow-cloud-card-hover transition-all p-5 flex flex-col justify-between"
           >
             <div className="flex flex-col h-full justify-between">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-[#A3A2A2] leading-tight">

@@ -1,4 +1,3 @@
-// shared/layout/Header.tsx
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
@@ -10,7 +9,6 @@ import {
   User as UserIcon,
   Settings,
   ChevronRight,
-  House,
   Home,
 } from "lucide-react";
 
@@ -20,9 +18,7 @@ interface Breadcrumb {
   isLast: boolean;
   isClickable: boolean;
 }
-import Image from "next/image";
 import Link from "next/link";
-import { SidebarMobileTrigger } from "./sidebar";
 import DateAndTime from "./ui/date-time";
 
 // Define which routes are actual pages (leaf nodes)
@@ -120,7 +116,6 @@ export default function Header() {
   const currentPageConfig = pageConfig[pathname] || {
     title: breadcrumbs[breadcrumbs.length - 1]?.label || "Dashboard",
   };
-  const pageTitle = currentPageConfig.title;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,18 +129,6 @@ export default function Header() {
       {/* Left Section - Title & Breadcrumbs */}
       <div className="flex items-center gap-2">
         {/* <SidebarMobileTrigger /> */}
-
-        {/* <Link href="/dashboard" className="flex items-center gap-2 group">
-          <div className="relative h-14 w-36 sm:w-44">
-            <Image
-              src="/CARD_SME_Logo.png"
-              alt="CARD SME Bank Logo"
-              fill
-              priority
-              className="object-contain"
-            />
-          </div>
-        </Link> */}
         {breadcrumbs.map((crumb, idx) => (
           <React.Fragment
             key={`${String(crumb.href)}-${String(crumb.label)}-${idx}`}

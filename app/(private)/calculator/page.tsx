@@ -195,7 +195,7 @@ export default function CalculatorPage() {
   return (
     <div className="p-4 md:p-8 space-y-4">
       {/* Top Segment Control */}
-      <div className="bg-white p-1 rounded-md flex items-center w-fit shadow">
+      <div className="bg-white p-1 rounded-md flex items-center w-fit shado">
         {TABS.map((tab) => {
           const isActive = activeTab === tab;
           return (
@@ -226,7 +226,7 @@ export default function CalculatorPage() {
         {/* Left Form Card */}
         <form
           onSubmit={handleSubmit}
-          className="lg:col-span-7 bg-white rounded-md p-6 sm:p-8 shadow-sm border border-gray-200/70 space-y-6"
+          className="lg:col-span-7 bg-white rounded-md p-6 sm:p-8 shadow-xs border border-gray-200/70 space-y-6"
         >
           {/* Section: Loan Details */}
           <div>
@@ -283,31 +283,21 @@ export default function CalculatorPage() {
                   <label className="text-xs font-semibold text-[#191924] mb-1.5 block">
                     Mode of Payment
                   </label>
-                  {activeTab === "BizLoan" ? (
-                    <input
-                      type="text"
+                  <div className="relative">
+                    <select
                       value={modeOfPayment}
                       onChange={(e) => setModeOfPayment(e.target.value)}
-                      placeholder="Enter mode of payment"
-                      className="w-full rounded-md border border-gray-200/90 px-3.5 py-2.5 text-sm text-[#191924] placeholder:text-gray-400 focus:outline-none focus:border-[#05512A] focus:ring-1 focus:ring-[#05512A] transition-all bg-white"
-                    />
-                  ) : (
-                    <div className="relative">
-                      <select
-                        value={modeOfPayment}
-                        onChange={(e) => setModeOfPayment(e.target.value)}
-                        className="w-full cursor-pointer appearance-none rounded-md border border-gray-200/90 px-3.5 py-2.5 text-sm text-[#191924] focus:outline-none focus:border-[#05512A] focus:ring-1 focus:ring-[#05512A] transition-all bg-white pr-9"
-                      >
-                        <option value="">Select mode of payment</option>
-                        {PAYMENT_MODES.map((mode) => (
-                          <option key={mode} value={mode}>
-                            {mode}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
-                    </div>
-                  )}
+                      className="w-full cursor-pointer appearance-none rounded-md border border-gray-200/90 px-3.5 py-2.5 text-sm text-[#191924] focus:outline-none focus:border-[#05512A] focus:ring-1 focus:ring-[#05512A] transition-all bg-white pr-9"
+                    >
+                      <option value="">Select mode of payment</option>
+                      {PAYMENT_MODES.map((mode) => (
+                        <option key={mode} value={mode}>
+                          {mode}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+                  </div>
                 </div>
               </div>
 

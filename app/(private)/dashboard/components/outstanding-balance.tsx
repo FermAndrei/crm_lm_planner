@@ -116,7 +116,7 @@ export function ChartLineLinear() {
   );
 
   return (
-    <Card className="flex h-120 min-w-full flex-col">
+    <Card className="flex h-120 min-w-full flex-col shadow-xs border-gray-200/70">
       <CardHeader className="flex flex-row items-start justify-between gap-4 mb-4">
         <CardTitle className="flex flex-col tracking-tight">
           <h2 className="font-semibold text-[#262626]">Outstanding Balance</h2>

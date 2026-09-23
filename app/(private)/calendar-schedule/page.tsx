@@ -2,7 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
-import { useCalendar, CalendarViewType } from "@/context/calendar-context";
+import {
+  useCalendar,
+  CalendarViewType,
+} from "@/app/(private)/calendar-schedule/context/calendar-context";
 import { DailyView } from "./components/daily-view";
 import { WeeklyView } from "./components/weekly-view";
 import { MonthlyView } from "./components/monthly-view";

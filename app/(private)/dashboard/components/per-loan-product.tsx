@@ -127,7 +127,7 @@ export function PerLoanProduct() {
   );
 
   return (
-    <Card className="flex h-full min-h-0 flex-col">
+    <Card className="flex h-full min-h-0 shadow-xs border-gray-200/70 flex-col">
       <CardHeader className="flex flex-row items-start justify-between gap-4 mb-4">
         <CardTitle className="flex flex-col tracking-tight">
           <h2 className="font-semibold text-[#262626]">Per Loan Product</h2>

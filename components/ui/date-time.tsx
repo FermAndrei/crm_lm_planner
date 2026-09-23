@@ -2,7 +2,7 @@
 
 import { Calendar, Clock } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
-import { useCalendar } from "@/context/calendar-context";
+import { useCalendar } from "@/app/(private)/calendar-schedule/context/calendar-context";
 import { CalendarPicker } from "@/app/(private)/calendar-schedule/components/calendar-picker";
 
 export default function DateAndTime() {

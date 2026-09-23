@@ -98,7 +98,7 @@ export function ChartPieSimple() {
     chartData.find((d) => d.creditName === "Past Due")?.percentage ?? 16;
 
   return (
-    <Card className="flex h-full min-h-0 flex-col">
+    <Card className="flex h-full min-h-0 flex-col shadow-xs border-gray-200/70">
       <CardHeader className="flex flex-row items-start justify-between gap-4 mb-4">
         <CardTitle className="flex flex-col tracking-tight">
           <h2 className="font-semibold text-[#262626]">Past Due</h2>

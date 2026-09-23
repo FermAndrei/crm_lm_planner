@@ -2,7 +2,7 @@
 
 import Header from "@/components/header";
 import { SidebarProvider, SidebarInset, Sidebar } from "@/components/sidebar";
-import { CalendarProvider } from "@/context/calendar-context";
+import { CalendarProvider } from "@/app/(private)/calendar-schedule/context/calendar-context";
 
 export default function PrivateLayout({
   children,
