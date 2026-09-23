@@ -17,6 +17,7 @@ import {
   FileText,
   Calculator,
   Calendar,
+  X,
 } from "lucide-react";
 
 // ============================================================
@@ -108,13 +109,14 @@ export function SidebarTrigger({ className }: { className?: string }) {
 
   return (
     <button
+      type="button"
       onClick={toggleSidebar}
       className={cn(
-        "hidden md:inline-flex rounded-xl p-2.5", // hide on mobile, desktop only
+        "hidden lg:inline-flex rounded-xl p-2.5", // desktop only on lg and above
         "text-[#1E4637]",
         "transition-colors duration-200",
         "hover:bg-emerald-50",
-        "focus:outline-none",
+        "focus:outline-none cursor-pointer",
         className,
       )}
       title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -132,20 +134,24 @@ export function SidebarMobileTrigger({ className }: { className?: string }) {
 
   return (
     <button
+      type="button"
       onClick={toggleMobile}
       className={cn(
-        "md:hidden rounded-full p-2", // mobile only
+        "lg:hidden rounded-md border shadow p-1.5", // mobile/tablet only (screen < lg)
         "text-[#1E4637]",
-        "transition-colors duration-200 mb-2",
+        "transition-colors duration-200",
         "hover:bg-emerald-50",
-        "focus:outline-none",
+        "focus:outline-none cursor-pointer flex items-center justify-center mr-2",
         className,
       )}
-      title={isMobileOpen ? "Close Sidebar" : "Open Sidebar"}
     >
-      <Menu className="size-7 text-[#346006] " />
+      {isMobileOpen ? (
+        <X className="size-6 text-[#1E4637]" />
+      ) : (
+        <Menu className="size-6 text-[#1E4637]" />
+      )}
       <span className="sr-only">
-        {isMobileOpen ? "Close Sidebar" : "Open Sidebar"}
+        {isMobileOpen ? "Hide Sidebar" : "View Sidebar"}
       </span>
     </button>
   );
@@ -215,7 +221,12 @@ function NavItemRow({
   expanded?: boolean;
 }) {
   const pathname = usePathname();
-  const { isExpanded: contextExpanded } = useSidebar();
+  const { isExpanded: contextExpanded, setIsMobileOpen } = useSidebar();
+
+  const handleLinkClick = () => {
+    onNavigate?.();
+    setIsMobileOpen(false);
+  };
 
   const hasChildren = Boolean(item.items?.length);
 
@@ -341,7 +352,7 @@ function NavItemRow({
                   <Link
                     key={child.title}
                     href={child.url}
-                    onClick={onNavigate}
+                    onClick={handleLinkClick}
                     className={cn(
                       "flex h-12 items-center gap-3",
                       "rounded-xl px-3",
@@ -373,7 +384,7 @@ function NavItemRow({
   return (
     <Link
       href={item.url}
-      onClick={onNavigate}
+      onClick={handleLinkClick}
       title={!expanded ? item.title : undefined}
       className={cn(
         "flex w-full items-center",
@@ -428,26 +439,26 @@ export function Sidebar() {
       {isMobileOpen && (
         <div
           onClick={() => setIsMobileOpen(false)}
-          className="fixed inset-0 z-30 bg-black/40 md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden animate-in fade-in duration-200"
           aria-hidden="true"
         />
       )}
 
       {/* ================================================== */}
-      {/* DESKTOP SIDEBAR — hidden entirely on mobile         */}
+      {/* DESKTOP SIDEBAR — visible only on lg screens       */}
       {/* ================================================== */}
       <aside
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className={cn(
-          "relative hidden md:block h-screen shrink-0",
+          "relative hidden lg:block h-screen shrink-0",
           "transition-[width] duration-300 ease-in-out",
           isExpanded ? "w-72" : "w-18",
         )}
       >
         <div
           className={cn(
-            "fixed inset-y-0 left-0 z-40",
+            "fixed inset-y-0 left-0 z-30",
             "flex flex-col",
             "border-r border-gray-100",
             "bg-white",
@@ -478,39 +489,52 @@ export function Sidebar() {
       </aside>
 
       {/* ================================================== */}
-      {/* MOBILE DRAWER — slides in over content, no layout   */}
+      {/* MOBILE DRAWER — visible only on < lg screens       */}
       {/* ================================================== */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-72",
-          "md:hidden",
+          "fixed inset-y-0 left-0 z-50 w-72",
+          "lg:hidden",
+          "flex flex-col",
+          "bg-white",
+          "border-r border-gray-100",
+          "shadow-2xl",
+          "p-4",
           "transition-transform duration-300 ease-in-out",
           isMobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div
-          className={cn(
-            "fixed inset-y-0 left-0 z-40",
-            "flex flex-col",
-            "border-r border-gray-100",
-            "bg-white",
-            "shadow-lg",
-            "overflow-hidden",
-            "p-3 mt-20",
-            "duration-300 ease-in-out",
-          )}
-        >
-          <nav className="flex w-full flex-col gap-2">
-            {defaultNavItems.map((item) => (
-              <NavItemRow
-                key={item.title}
-                item={item}
-                expanded={true}
-                onNavigate={() => setIsMobileOpen(false)}
-              />
-            ))}
-          </nav>
-        </div>
+        {/* Drawer Header with Logo and Hide/Close Button */}
+        {/* <div className="flex items-center justify-between pb-3 mb-2 border-b border-gray-100"> */}
+        <Image
+          src="/CARD_SME_Logo.png"
+          alt="Institution Logo"
+          width={150}
+          height={50}
+          className="h-12 w-auto object-contain mb-4"
+        />
+        {/* <button
+            type="button"
+            onClick={() => setIsMobileOpen(false)}
+            className="p-2 text-gray-500 hover:text-[#1E4637] hover:bg-emerald-50 rounded-xl transition-colors cursor-pointer"
+            title="Hide Sidebar"
+            aria-label="Hide Sidebar"
+          >
+            <X className="size-6 text-[#1E4637]" />
+          </button> */}
+        {/* </div> */}
+
+        {/* Drawer Navigation Links */}
+        <nav className="flex flex-1 flex-col gap-2 overflow-y-auto">
+          {defaultNavItems.map((item) => (
+            <NavItemRow
+              key={item.title}
+              item={item}
+              expanded={true}
+              onNavigate={() => setIsMobileOpen(false)}
+            />
+          ))}
+        </nav>
       </aside>
     </>
   );

@@ -20,6 +20,7 @@ interface Breadcrumb {
 }
 import Link from "next/link";
 import DateAndTime from "./ui/date-time";
+import { SidebarMobileTrigger } from "./sidebar";
 
 // Define which routes are actual pages (leaf nodes)
 const CLICKABLE_ROUTES = new Set([
@@ -127,8 +128,8 @@ export default function Header() {
   return (
     <header className="h-19 min-h-19 px-4 md:px-8 flex items-center justify-between w-full bg-[#F7F7F8] backdrop-blur-md border-b border-[#191924]/[0.07] shadow-cloud-nav">
       {/* Left Section - Title & Breadcrumbs */}
-      <div className="flex items-center gap-2">
-        {/* <SidebarMobileTrigger /> */}
+      <div className="relative flex items-center gap-2">
+        <SidebarMobileTrigger />
         {breadcrumbs.map((crumb, idx) => (
           <React.Fragment
             key={`${String(crumb.href)}-${String(crumb.label)}-${idx}`}
