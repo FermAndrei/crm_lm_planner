@@ -193,7 +193,7 @@ export function ChartPieSimple() {
 
         {/* PIE CHART */}
         {position === "pie_chart" && (
-          <div>
+          <div className="grid grid-cols-2 min-[1260px]:grid-cols-1 items-center">
             <ChartContainer
               config={chartConfig}
               className="mx-auto aspect-square max-h-65 w-full"
@@ -258,7 +258,7 @@ export function ChartPieSimple() {
                 </Pie>
               </PieChart>
             </ChartContainer>
-            <div className="grid grid-cols-2 gap-3 mt-4">
+            <div className="grid grid-cols-1 min-[1260px]:grid-cols-2 h-fit gap-3 mt-4">
               {chartData.map((item) => {
                 const isOPB = item.creditName === "OPB";
 
@@ -282,7 +282,7 @@ export function ChartPieSimple() {
                 return (
                   <div
                     key={item.id}
-                    className={`flex items-center justify-between rounded-xl border border-[#191924]/8 bg-slate-50/20 p-2.5 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm`}
+                    className={`flex items-center justify-between rounded-md border border-[#191924]/8 bg-slate-50/20 p-2.5 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm`}
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <span

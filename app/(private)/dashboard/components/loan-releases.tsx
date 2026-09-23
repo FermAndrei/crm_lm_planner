@@ -238,7 +238,7 @@ export function LoanReleases() {
       <CardHeader className="flex flex-row items-start justify-between gap-4 mb-4">
         <CardTitle className="flex flex-col tracking-tight">
           <h2 className="font-semibold text-[#262626]">Loan Releases</h2>
-          <p className="text-sm font-medium text-[#8c8c8c]">
+          <p className="text-xs text-[#5a5a70] font-medium">
             12-Month loan disbursement volume across portfolio accounts
           </p>
         </CardTitle>

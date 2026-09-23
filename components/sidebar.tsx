@@ -493,7 +493,7 @@ export function Sidebar() {
       {/* ================================================== */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-72",
+          "fixed inset-y-0 left-0 z-70 w-72",
           "lg:hidden",
           "flex flex-col",
           "bg-white",

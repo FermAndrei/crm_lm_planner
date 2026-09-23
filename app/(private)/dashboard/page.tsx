@@ -38,10 +38,10 @@ export default function DashBoard() {
             </div>
           </div>
           <div className="grid items-stretch gap-4 grid-cols-15">
-            <div className="col-span-15 md:col-span-8 lg:col-span-6 ">
+            <div className="col-span-15 min-[1260px]:col-span-6 ">
               <ChartPieSimple />
             </div>
-            <div className="col-span-15 md:col-span-7 lg:col-span-9 ">
+            <div className="col-span-15 min-[1260px]:col-span-9 ">
               <ChartLineLinear />
             </div>
           </div>

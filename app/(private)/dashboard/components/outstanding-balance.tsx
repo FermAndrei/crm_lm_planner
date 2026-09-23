@@ -46,18 +46,18 @@ type OutstandingBalanceMock = {
 };
 
 const chartData: OutstandingBalanceMock[] = [
-  { id: 1, month: "Jan", value: 19630967.25, color: "#83AF87" },
-  { id: 2, month: "Feb", value: 6338503.93, color: "#76A77A" },
-  { id: 3, month: "Mar", value: 16565669.47, color: "#8CB590" },
-  { id: 4, month: "Apr", value: 28290238.35, color: "#5D9762" },
+  { id: 1, month: "January", value: 19630967.25, color: "#83AF87" },
+  { id: 2, month: "February", value: 6338503.93, color: "#76A77A" },
+  { id: 3, month: "March", value: 16565669.47, color: "#8CB590" },
+  { id: 4, month: "April", value: 28290238.35, color: "#5D9762" },
   { id: 5, month: "May", value: 44753530.94, color: "#6DA171" },
-  { id: 6, month: "Jun", value: 28963594.3, color: "#4D8C53" },
-  { id: 7, month: "Jul", value: 0, color: "#639B68" },
-  { id: 8, month: "Aug", value: 0, color: "#1E6E25" },
-  { id: 9, month: "Sep", value: 0, color: "#377E3D" },
-  { id: 10, month: "Oct", value: 0, color: "#1fad2f" },
-  { id: 11, month: "Nov", value: 0, color: "#3fa24a" },
-  { id: 12, month: "Dec", value: 0, color: "#0f5718" },
+  { id: 6, month: "June", value: 28963594.3, color: "#4D8C53" },
+  { id: 7, month: "July", value: 0, color: "#639B68" },
+  { id: 8, month: "August", value: 0, color: "#1E6E25" },
+  { id: 9, month: "September", value: 0, color: "#377E3D" },
+  { id: 10, month: "October", value: 0, color: "#1fad2f" },
+  { id: 11, month: "November", value: 0, color: "#3fa24a" },
+  { id: 12, month: "December", value: 0, color: "#0f5718" },
 ];
 
 const chartConfig = {
@@ -290,23 +290,23 @@ export function ChartLineLinear() {
                 </PieChart>
               </ChartContainer>
             </div>
-            <div className="flex min-w-0 flex-col gap-1">
+            <div className="flex min-w-0 flex-col gap-2">
               {visibleChartData.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-md border border-[#191924]/8 bg-slate-50/20 px-2 py-1 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm"
+                  className="flex items-center justify-between rounded-md border border-[#191924]/8 bg-slate-50/20 p-2.5 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm"
                 >
-                  <div className="flex min-w-0 items-center gap-2">
+                  <div className="flex min-w-0 items-center gap-3">
                     <span
-                      className="h-2 w-2 shrink-0 rounded-md shadow-xs"
+                      className="h-3 w-3 shrink-0 rounded-md shadow-xs"
                       style={{
                         backgroundColor: item.color,
                       }}
                     />
-                    <h4 className="truncate text-[10px] font-bold text-[#191924]">
-                      {item.month}
+                    <h4 className="truncate text-xs font-bold text-[#191924]">
+                      {item.month}:
                     </h4>
-                    <p className="font-mono text-[10px] text-[#5a5a70]">
+                    <p className="font-mono text-[11px] text-[#5a5a70]">
                       {formatAmount(item.value)} release
                       {item.value !== 1 ? "s" : ""}
                     </p>

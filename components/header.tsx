@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   ChevronDown,
   LogOut,
@@ -40,10 +40,8 @@ const NON_CLICKABLE_PARENTS = new Set(["/error-handler"]);
 
 export default function Header() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const router = useRouter();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -59,21 +57,6 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Page configuration
-  const pageConfig: Record<string, { title: string; icon?: React.ReactNode }> =
-    {
-      "/dashboard": { title: "Dashboard" },
-      "/ui-test": { title: "UI Components" },
-      "/staff": { title: "Staff Management" },
-      "/reports": { title: "Reports" },
-      "/settings": { title: "Settings" },
-      "/error-handler/stay-tuned": { title: "Stay Tuned" },
-      "/error-handler/404": { title: "404 Error Page" },
-      "/calendar-schedule": { title: "Calendar Schedule" },
-      "/calculator": { title: "SME Calculator" },
-    };
-
-  // Generate breadcrumbs from pathname with clickable logic
   const generateBreadcrumbs = (): Breadcrumb[] => {
     const paths = pathname.split("/").filter((path) => path !== "");
 
@@ -96,7 +79,6 @@ export default function Header() {
       if (path === "calendar-schedule") label = "Calendar Schedule";
       if (path === "calculator") label = "SME Calculator";
 
-      // Determine if this breadcrumb should be clickable
       const isClickable =
         CLICKABLE_ROUTES.has(currentPath) &&
         !NON_CLICKABLE_PARENTS.has(currentPath);
@@ -114,19 +96,9 @@ export default function Header() {
   };
 
   const breadcrumbs = generateBreadcrumbs();
-  const currentPageConfig = pageConfig[pathname] || {
-    title: breadcrumbs[breadcrumbs.length - 1]?.label || "Dashboard",
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-    }
-  };
 
   return (
-    <header className="h-19 min-h-19 px-4 md:px-8 flex items-center justify-between w-full bg-[#F7F7F8] backdrop-blur-md border-b border-[#191924]/[0.07] shadow-cloud-nav">
+    <header className="sticky top-0 z-40 shrink-0 h-19 min-h-19 px-4 md:px-8 flex items-center justify-between w-full bg-[#F7F7F8] backdrop-blur-md border-b border-[#191924]/[0.07] shadow-cloud-nav">
       {/* Left Section - Title & Breadcrumbs */}
       <div className="relative flex items-center gap-2">
         <SidebarMobileTrigger />

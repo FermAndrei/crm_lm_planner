@@ -320,7 +320,7 @@ export function PerLoanProduct() {
               {chartData.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between rounded-xl border border-[#191924]/8 bg-slate-50/20 p-2.5 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm"
+                  className="flex items-center justify-between rounded-md border border-[#191924]/8 bg-slate-50/20 p-2.5 shadow-xs transition-all duration-200 hover:bg-white hover:shadow-sm"
                 >
                   <div className="flex min-w-0 items-center gap-3">
                     <span
@@ -333,7 +333,6 @@ export function PerLoanProduct() {
                       <h4 className="truncate text-xs font-bold text-[#191924]">
                         {item.productName}
                       </h4>
-
                       <p className="font-mono text-[11px] text-[#5a5a70]">
                         {item.clientCount} active client
                         {item.clientCount !== 1 ? "s" : ""}
