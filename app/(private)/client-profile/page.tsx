@@ -130,7 +130,7 @@ const ClientProfilePage = () => {
 
               <input
                 type="text"
-                placeholder="CID-XXXX-XXXX-XXX"
+                placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
