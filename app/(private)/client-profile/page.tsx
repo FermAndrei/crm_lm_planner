@@ -206,7 +206,7 @@ const ClientProfilePage = () => {
 
           {/* Loading State */}
           {isLoading && (
-            <div className="flex flex-1 items-center justify-center min-h-[360px]">
+            <div className="flex flex-1 items-center justify-center min-h-90">
               <div className="flex flex-col items-center text-center">
                 <Loader2
                   size={42}
@@ -224,12 +224,12 @@ const ClientProfilePage = () => {
 
           {/* Empty / No Data / Search Failed State (Image 1) */}
           {!isLoading && !clientData && (
-            <div className="flex flex-1 items-center justify-center min-h-[360px] py-12">
+            <div className="flex flex-1 items-center justify-center min-h-90 py-12">
               <div className="flex flex-col items-center text-center max-w-md px-4">
                 {/* Document outline with folded dog-ear and minus pill */}
                 <div className="mb-5 flex items-center justify-center text-[#CBD5E1]">
                   <svg
-                    className="w-[58px] h-[72px]"
+                    className="w-14.5 h-18"
                     viewBox="0 0 64 76"
                     fill="none"
                     stroke="currentColor"

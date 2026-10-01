@@ -1,14 +1,13 @@
 "use client";
 
 import React, { useEffect } from "react";
-import type { AllBranchReport } from "@/services/types/all-branch/all-branch";
 import type { BranchReportRecord } from "@/services/api-manager/reports/branches/branches-report-type";
 import { cn } from "@/lib/utils";
 
 interface AccountDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: BranchReportRecord | AllBranchReport | null;
+  data: BranchReportRecord | null;
 }
 
 const formatCurrency = (val: number | undefined | null) => {
@@ -54,31 +53,48 @@ export default function AccountDetailsModal({
   if (!isOpen || !data) return null;
 
   const isApiRecord = (d: unknown): d is BranchReportRecord => {
-    return Boolean(d && typeof d === "object" && ("account_details" in d || "customer_id" in d));
+    return Boolean(
+      d &&
+      typeof d === "object" &&
+      ("account_details" in d || "customer_id" in d),
+    );
   };
 
   const apiRecord = isApiRecord(data) ? data : null;
-  const legacyRecord = !isApiRecord(data) ? (data as AllBranchReport) : null;
+  const legacyRecord = !isApiRecord(data) ? (data as any) : null;
 
   const accInfo = apiRecord?.account_details?.account_information;
   const payInfo = apiRecord?.account_details?.payment_details;
   const delInfo = apiRecord?.account_details?.delinquency_details;
 
   // Account Information
-  const dateTime =
-    accInfo?.date_and_time
-      ? formatDate(accInfo.date_and_time)
-      : apiRecord?.date_and_time
-        ? formatDate(apiRecord.date_and_time)
-        : legacyRecord?.dateGranted
-          ? formatDate(legacyRecord.dateGranted)
-          : "-";
+  const dateTime = accInfo?.date_and_time
+    ? formatDate(accInfo.date_and_time)
+    : apiRecord?.date_and_time
+      ? formatDate(apiRecord.date_and_time)
+      : legacyRecord?.dateGranted
+        ? formatDate(legacyRecord.dateGranted)
+        : "-";
 
-  const brCode = accInfo?.br_code || apiRecord?.br_code || legacyRecord?.brCode || "-";
-  const branch = accInfo?.branch || apiRecord?.branch || legacyRecord?.branch || "-";
-  const customerId = accInfo?.customer_id || apiRecord?.customer_id || legacyRecord?.custId || "-";
-  const clientName = accInfo?.client_name || apiRecord?.client || legacyRecord?.clientName || "-";
-  const accountName = accInfo?.account_name || apiRecord?.account || legacyRecord?.accountNumber || "-";
+  const brCode =
+    accInfo?.br_code || apiRecord?.br_code || legacyRecord?.brCode || "-";
+  const branch =
+    accInfo?.branch || apiRecord?.branch || legacyRecord?.branch || "-";
+  const customerId =
+    accInfo?.customer_id ||
+    apiRecord?.customer_id ||
+    legacyRecord?.custId ||
+    "-";
+  const clientName =
+    accInfo?.client_name ||
+    apiRecord?.client ||
+    legacyRecord?.clientName ||
+    "-";
+  const accountName =
+    accInfo?.account_name ||
+    apiRecord?.account ||
+    legacyRecord?.accountNumber ||
+    "-";
   const originalAmountGranted =
     accInfo?.original_amount_granted ??
     apiRecord?.original_amount_granted ??
@@ -119,13 +135,27 @@ export default function AccountDetailsModal({
     legacyRecord?.outstandingBalance ??
     0;
 
-  const prodType = payInfo?.product_type || apiRecord?.product_type || legacyRecord?.prodType || "-";
-  const agingStatus = payInfo?.aging_status || apiRecord?.aging_status || legacyRecord?.agingStatus || "-";
-  const loanStatus = payInfo?.loan_status || apiRecord?.loan_status || legacyRecord?.loanStatus || "-";
+  const prodType =
+    payInfo?.product_type ||
+    apiRecord?.product_type ||
+    legacyRecord?.prodType ||
+    "-";
+  const agingStatus =
+    payInfo?.aging_status ||
+    apiRecord?.aging_status ||
+    legacyRecord?.agingStatus ||
+    "-";
+  const loanStatus =
+    payInfo?.loan_status ||
+    apiRecord?.loan_status ||
+    legacyRecord?.loanStatus ||
+    "-";
 
   // Delinquency Details
-  const defprin = delInfo?.defprin ?? apiRecord?.defprin ?? legacyRecord?.defPrin ?? 0;
-  const defint = delInfo?.defint ?? apiRecord?.defint ?? legacyRecord?.defInt ?? 0;
+  const defprin =
+    delInfo?.defprin ?? apiRecord?.defprin ?? legacyRecord?.defPrin ?? 0;
+  const defint =
+    delInfo?.defint ?? apiRecord?.defint ?? legacyRecord?.defInt ?? 0;
   const noOfDaysPastDue =
     delInfo?.no_of_days_past_due ??
     apiRecord?.no_of_days_past_due ??
@@ -323,4 +353,3 @@ export default function AccountDetailsModal({
     </div>
   );
 }
-
