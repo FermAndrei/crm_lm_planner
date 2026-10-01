@@ -107,10 +107,12 @@ export interface PerLoanProductProps {
   data?: PerLoanProductData;
 }
 
-export function PerLoanProduct({ data: initialData }: PerLoanProductProps = {}) {
+export function PerLoanProduct({
+  data: initialData,
+}: PerLoanProductProps = {}) {
   const [position, setPosition] = React.useState("pie_chart");
   const [apiData, setApiData] = React.useState<PerLoanProductData | null>(
-    initialData || null
+    initialData || null,
   );
   const [isLoading, setIsLoading] = React.useState<boolean>(!initialData);
   const [error, setError] = React.useState<string | null>(null);
@@ -124,7 +126,9 @@ export function PerLoanProduct({ data: initialData }: PerLoanProductProps = {}) 
     } catch (err: unknown) {
       console.error("Failed to load per loan product:", err);
       const errMsg =
-        err instanceof Error ? err.message : "Failed to load per loan product data";
+        err instanceof Error
+          ? err.message
+          : "Failed to load per loan product data";
       setError(errMsg);
     } finally {
       setIsLoading(false);
@@ -371,7 +375,7 @@ export function PerLoanProduct({ data: initialData }: PerLoanProductProps = {}) 
                   </PieChart>
                 </ChartContainer>
 
-                <div className="flex min-w-0 flex-col gap-1 max-h-[300px] overflow-y-auto pr-1">
+                <div className="flex min-w-0 flex-col gap-1 max-h-75 overflow-y-auto pr-1">
                   {chartData.map((item) => (
                     <div
                       key={item.id}
@@ -389,7 +393,8 @@ export function PerLoanProduct({ data: initialData }: PerLoanProductProps = {}) 
                             {item.productName}
                           </h4>
                           <p className="font-mono text-[10px] text-[#5a5a70]">
-                            {item.amountFormatted} • {item.clientCount} active client
+                            {item.amountFormatted} • {item.clientCount} active
+                            client
                             {item.clientCount !== 1 ? "s" : ""}
                           </p>
                         </div>

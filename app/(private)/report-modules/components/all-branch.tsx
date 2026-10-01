@@ -1,24 +1,30 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { Eye, Search } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Eye, Search, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getAllBranchReports } from "@/services/reports/all-loan.services";
-import type { AllBranchReport } from "@/services/types/all-branch/all-branch";
+import { branchesReportApi } from "@/services/api-manager/reports/branches/branches-report-api";
+import {
+  BranchReportRecord,
+  BranchReportPagination,
+} from "@/services/api-manager/reports/branches/branches-report-type";
 import { TablePagination } from "@/components/ui/table-pagination";
 import AccountDetailsModal from "./modals/account-details-modal";
+import { ApiError } from "@/services/api-manager/baseApiEndpoint";
 
-const formatCurrency = (val: number) => {
-  if (val === 0) return "0.00";
+const formatCurrency = (val: number | undefined | null) => {
+  if (val == null || isNaN(val)) return "0.00";
   return val.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
-const formatDate = (date: string) => {
-  if (!date) return "";
-  return new Date(date).toLocaleDateString("en-US", {
+const formatDate = (date: string | undefined | null) => {
+  if (!date) return "-";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return date;
+  return d.toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -26,50 +32,133 @@ const formatDate = (date: string) => {
 };
 
 export default function AllBranch() {
-  const [allBranches, setAllBranches] = useState<AllBranchReport[]>([]);
-  const [selectedItem, setSelectedItem] = useState<AllBranchReport | null>(
+  const [records, setRecords] = useState<BranchReportRecord[]>([]);
+  const [pagination, setPagination] = useState<BranchReportPagination>({
+    current_page: 1,
+    per_page: 10,
+    total_records: 0,
+    total_pages: 0,
+  });
+  const [selectedItem, setSelectedItem] = useState<BranchReportRecord | null>(
     null,
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
+  const [noDataMessage, setNoDataMessage] = useState<{
+    title: string;
+    subtitle: string;
+  } | null>(null);
 
+  // Debounce search input per keystroke (300ms)
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+      setCurrentPage(1);
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  // Fetch data whenever debounced search, page, or per_page changes
+  useEffect(() => {
+    let isCancelled = false;
+
     async function fetchData() {
+      setIsLoading(true);
+
       try {
-        const response = await getAllBranchReports();
-        setAllBranches(response.allBranch);
-      } catch (error) {
-        console.error("Failed to fetch reports:", error);
+        const response = await branchesReportApi.fetchBranchesReport({
+          search_key: debouncedSearch.trim(),
+          branch_code: "",
+          page: currentPage,
+          per_page: itemsPerPage,
+        });
+
+        if (isCancelled) return;
+
+        if (response?.retCode === "200" && response.data?.records) {
+          setRecords(response.data.records);
+          if (response.data.pagination) {
+            setPagination(response.data.pagination);
+          }
+          if (response.data.records.length === 0) {
+            setNoDataMessage({
+              title: "No Data Available",
+              subtitle: "There are no records to display at this time.",
+            });
+          } else {
+            setNoDataMessage(null);
+          }
+        } else {
+          setRecords([]);
+          setPagination({
+            current_page: 1,
+            per_page: itemsPerPage,
+            total_records: 0,
+            total_pages: 0,
+          });
+          setNoDataMessage({
+            title: response?.message || "No Data Available",
+            subtitle:
+              response?.data?.message ||
+              "There are no records to display at this time.",
+          });
+        }
+      } catch (err: unknown) {
+        if (isCancelled) return;
+        setRecords([]);
+        setPagination({
+          current_page: 1,
+          per_page: itemsPerPage,
+          total_records: 0,
+          total_pages: 0,
+        });
+
+        if (err instanceof ApiError) {
+          const errorData = err.data as
+            | { message?: string }
+            | string
+            | undefined;
+          const subMsg =
+            typeof errorData === "object" && errorData && "message" in errorData
+              ? errorData.message
+              : typeof errorData === "string"
+                ? errorData
+                : undefined;
+
+          setNoDataMessage({
+            title: err.message || "No Data Available",
+            subtitle: subMsg || "There are no records to display at this time.",
+          });
+        } else {
+          setNoDataMessage({
+            title: "No Data Available",
+            subtitle: "There are no records to display at this time.",
+          });
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       }
     }
+
     fetchData();
-  }, []);
 
-  const filteredBranches = useMemo(() => {
-    if (!searchQuery.trim()) return allBranches;
-    const q = searchQuery.toLowerCase();
-    return allBranches.filter(
-      (item) =>
-        item.clientName.toLowerCase().includes(q) ||
-        item.accountNumber.toLowerCase().includes(q) ||
-        item.branch.toLowerCase().includes(q) ||
-        item.brCode.toLowerCase().includes(q) ||
-        item.custId.toLowerCase().includes(q) ||
-        item.prodType.toLowerCase().includes(q) ||
-        item.loanStatus.toLowerCase().includes(q),
-    );
-  }, [allBranches, searchQuery]);
-
-  const totalPages = Math.ceil(filteredBranches.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedBranches = filteredBranches.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
+    return () => {
+      isCancelled = true;
+    };
+  }, [debouncedSearch, currentPage, itemsPerPage]);
 
   const handlePageChange = (page: number) => {
-    if (page < 1 || (totalPages > 0 && page > totalPages)) return;
+    if (
+      page < 1 ||
+      (pagination.total_pages > 0 && page > pagination.total_pages)
+    )
+      return;
     setCurrentPage(page);
   };
 
@@ -91,18 +180,21 @@ export default function AllBranch() {
             type="text"
             placeholder="Search..."
             value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setCurrentPage(1);
-            }}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-md border border-gray-200/90 bg-white py-2 pl-9 pr-4 text-xs sm:text-sm font-medium text-gray-800 placeholder:text-gray-400 focus:border-[#05512A] focus:outline-none focus:ring-1 focus:ring-[#05512A] shadow-xs transition-all"
           />
+          {isLoading && (
+            <Loader2
+              size={14}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 animate-spin"
+            />
+          )}
         </div>
       </div>
 
       {/* Table Card */}
       <div className="rounded-md border border-gray-200/80 bg-white p-5 shadow-xs">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-75">
           <table className="w-full border-collapse text-left text-sm">
             {/* Header */}
             <thead>
@@ -139,9 +231,23 @@ export default function AllBranch() {
 
             {/* Body */}
             <tbody className="divide-y divide-gray-100">
-              {paginatedBranches.length > 0 ? (
-                paginatedBranches.map((item, index) => {
-                  const rowId = `${item.accountNumber}-${index}`;
+              {isLoading && records.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="py-20 text-center">
+                    <div className="flex flex-col items-center justify-center">
+                      <Loader2
+                        size={36}
+                        className="animate-spin text-[#1E6E25] mb-3"
+                      />
+                      <p className="text-xs sm:text-sm text-gray-500 font-medium">
+                        Loading reports data...
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : records.length > 0 ? (
+                records.map((item, index) => {
+                  const rowId = `${item.account}-${index}`;
                   return (
                     <tr
                       key={rowId}
@@ -162,10 +268,10 @@ export default function AllBranch() {
                       {/* Branch */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div className="text-xs sm:text-sm font-bold text-[#191924]">
-                          {item.branch}
+                          {item.branch || "-"}
                         </div>
                         <div className="mt-0.5 text-xs text-[#667085]">
-                          {item.brCode}
+                          {item.br_code || "-"}
                         </div>
                       </td>
 
@@ -173,53 +279,55 @@ export default function AllBranch() {
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div
                           className="text-xs sm:text-sm font-bold text-[#191924] max-w-60 truncate"
-                          title={item.clientName}
+                          title={item.client}
                         >
-                          {item.clientName}
+                          {item.client || "-"}
                         </div>
                         <div className="mt-0.5 text-xs text-[#667085]">
-                          {item.custId}
+                          {item.customer_id || "-"}
                         </div>
                       </td>
 
                       {/* Account */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div className="text-xs sm:text-sm font-bold font-mono text-[#191924]">
-                          {item.accountNumber}
+                          {item.account || "-"}
                         </div>
                       </td>
 
                       {/* Product Type */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div className="text-xs sm:text-sm font-medium text-[#344054]">
-                          {item.prodType}
+                          {item.product_type || "-"}
                         </div>
                       </td>
 
                       {/* Granted */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div className="text-xs sm:text-sm font-bold text-[#191924]">
-                          {formatCurrency(item.originalAmountGranted)}
+                          {formatCurrency(item.original_amount_granted)}
                         </div>
                         <div className="mt-0.5 text-xs text-[#667085]">
-                          {item.interestRate.toFixed(2)}%
+                          {(item.interest_rate ?? 0).toFixed(2)}%
                         </div>
                       </td>
 
                       {/* Term Window */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div className="text-xs sm:text-sm font-medium text-[#191924]">
-                          {formatDate(item.dateGranted)}
+                          {formatDate(
+                            item.term_window_start_date || item.granted,
+                          )}
                         </div>
                         <div className="mt-0.5 text-xs text-[#667085]">
-                          → {formatDate(item.maturityDate)}
+                          → {formatDate(item.term_window_end_date)}
                         </div>
                       </td>
 
                       {/* Defprin */}
                       <td className="whitespace-nowrap px-4 py-4 align-top">
                         <div className="text-xs sm:text-sm font-bold text-[#191924]">
-                          {formatCurrency(item.defPrin)}
+                          {formatCurrency(item.defprin)}
                         </div>
                       </td>
 
@@ -227,27 +335,56 @@ export default function AllBranch() {
                       <td className="whitespace-nowrap px-4 py-4 text-center align-top">
                         <span
                           className={cn(
-                            "inline-block rounded-full px-3 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider ",
-                            item.loanStatus === "CURRENT"
+                            "inline-block rounded-full px-3 py-0.5 text-[10.5px] font-semibold uppercase tracking-wider",
+                            item.loan_status === "CURRENT"
                               ? "bg-[#DCFCE7] text-[#15803D]"
-                              : item.loanStatus === "EXPIRED"
+                              : item.loan_status === "EXPIRED"
                                 ? "bg-[#FFE4E8] text-[#E11D48]"
                                 : "bg-[#F4F2FA] text-[#5a5a70]",
                           )}
                         >
-                          {item.loanStatus}
+                          {item.loan_status || "-"}
                         </span>
                       </td>
                     </tr>
                   );
                 })
               ) : (
+                /* 404 / No Data Available State (matches Client Profile Image 1) */
                 <tr>
-                  <td
-                    colSpan={9}
-                    className="px-4 py-12 text-center text-xs sm:text-sm text-gray-500"
-                  >
-                    No accounts found.
+                  <td colSpan={9} className="py-16">
+                    <div className="flex flex-col items-center justify-center text-center px-4">
+                      <div className="mb-5 flex items-center justify-center text-[#CBD5E1]">
+                        <svg
+                          className="w-14.5 h-18"
+                          viewBox="0 0 64 76"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="3.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M40 6H16C11.5 6 8 9.5 8 14V62C8 66.5 11.5 70 16 70H48C52.5 70 56 66.5 56 62V22L40 6Z" />
+                          <path d="M40 6V20C40 21.1 40.9 22 42 22H56" />
+                          <line
+                            x1="24"
+                            y1="46"
+                            x2="40"
+                            y2="46"
+                            strokeWidth="4.5"
+                          />
+                        </svg>
+                      </div>
+
+                      <h3 className="text-xl font-bold text-[#333333]">
+                        {noDataMessage?.title || "No Data Available"}
+                      </h3>
+
+                      <p className="mt-2 text-sm text-[#7A7A7A]">
+                        {noDataMessage?.subtitle ||
+                          "There are no records to display at this time."}
+                      </p>
+                    </div>
                   </td>
                 </tr>
               )}
@@ -256,13 +393,15 @@ export default function AllBranch() {
         </div>
 
         {/* Pagination */}
-        <TablePagination
-          totalRecords={filteredBranches.length}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
+        {records.length > 0 && (
+          <TablePagination
+            totalRecords={pagination.total_records}
+            currentPage={pagination.current_page}
+            itemsPerPage={pagination.per_page}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        )}
       </div>
 
       {/* Account Details Modal */}

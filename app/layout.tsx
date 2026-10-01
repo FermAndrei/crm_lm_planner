@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import UrlTokenHandler from "@/components/url-token-handler";
+
 export const metadata: Metadata = {
   title: "LM Planner — Loan Portfolio & Risk Platform",
   description:
@@ -38,7 +40,10 @@ export default function RootLayout({
         inter.variable,
       )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <UrlTokenHandler />
+        {children}
+      </body>
     </html>
   );
 }

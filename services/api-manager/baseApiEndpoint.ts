@@ -1,3 +1,17 @@
+import { getStoredToken } from "./token-storage";
+
+export class ApiError<T = unknown> extends Error {
+  retCode?: string;
+  data?: T;
+
+  constructor(message: string, retCode?: string, data?: T) {
+    super(message);
+    this.name = "ApiError";
+    this.retCode = retCode;
+    this.data = data;
+  }
+}
+
 // Shared across all BaseApiManager instances for in-flight deduplication and caching
 const inFlightRequests = new Map<string, Promise<unknown>>();
 const responseCache = new Map<string, { data: unknown; expiry: number }>();
@@ -10,14 +24,7 @@ export class BaseApiManager {
     process.env.NEXT_PUBLIC_ROUTE || "/api/public/v1/dev/";
 
   protected getToken(): string | undefined {
-    const env = process.env as Record<string, string | undefined>;
-    const token =
-      process.env.API_BEARER_TOKEN ||
-      process.env.NEXT_PUBLIC_API_TOKEN ||
-      process.env.NEXT_PUBLIC_API_BEARER_TOKEN ||
-      env["NEXT_PUBLIC_API_TOKE"];
-
-    return token?.trim() || undefined;
+    return getStoredToken();
   }
 
   protected buildUrl(endpoint: string): string {
@@ -93,6 +100,21 @@ export class BaseApiManager {
 
         if (!response.ok) {
           const errorText = await response.text().catch(() => "");
+          let errorJson: { message?: string; retCode?: string; data?: unknown } | null = null;
+          try {
+            errorJson = JSON.parse(errorText);
+          } catch {
+            // Not a JSON error
+          }
+
+          if (errorJson && (errorJson.message || errorJson.retCode || errorJson.data)) {
+            throw new ApiError(
+              errorJson.message || `GET request failed with status ${response.status}`,
+              errorJson.retCode || String(response.status),
+              errorJson.data,
+            );
+          }
+
           throw new Error(
             `GET request failed: ${response.status} ${response.statusText} - ${errorText}`,
           );
@@ -101,8 +123,10 @@ export class BaseApiManager {
         const json = await response.json();
 
         if (json?.retCode && json.retCode !== "200") {
-          throw new Error(
+          throw new ApiError(
             json.message || `Request failed with code ${json.retCode}`,
+            json.retCode,
+            json.data,
           );
         }
 
@@ -151,6 +175,21 @@ export class BaseApiManager {
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => "");
+      let errorJson: { message?: string; retCode?: string; data?: unknown } | null = null;
+      try {
+        errorJson = JSON.parse(errorText);
+      } catch {
+        // Not a JSON error
+      }
+
+      if (errorJson && (errorJson.message || errorJson.retCode || errorJson.data)) {
+        throw new ApiError(
+          errorJson.message || `POST request failed with status ${response.status}`,
+          errorJson.retCode || String(response.status),
+          errorJson.data,
+        );
+      }
+
       throw new Error(
         `POST request failed: ${response.status} ${response.statusText} - ${errorText}`,
       );
@@ -159,7 +198,11 @@ export class BaseApiManager {
     const json = await response.json();
 
     if (json?.retCode && json.retCode !== "200") {
-      throw new Error(json.message || `POST failed with code ${json.retCode}`);
+      throw new ApiError(
+        json.message || `POST failed with code ${json.retCode}`,
+        json.retCode,
+        json.data,
+      );
     }
 
     return json as T;

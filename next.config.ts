@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   env: {
     API_BEARER_TOKEN: process.env.API_BEARER_TOKEN,
+    NEXT_PUBLIC_API_TOKEN: process.env.NEXT_PUBLIC_API_TOKEN,
   },
   async rewrites() {
     const backendUrl =

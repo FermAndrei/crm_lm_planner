@@ -2,25 +2,28 @@
 
 import React, { useEffect } from "react";
 import type { AllBranchReport } from "@/services/types/all-branch/all-branch";
+import type { BranchReportRecord } from "@/services/api-manager/reports/branches/branches-report-type";
 import { cn } from "@/lib/utils";
 
 interface AccountDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: AllBranchReport | null;
+  data: BranchReportRecord | AllBranchReport | null;
 }
 
-const formatCurrency = (val: number) => {
-  if (val === 0) return "0.00";
+const formatCurrency = (val: number | undefined | null) => {
+  if (val == null || isNaN(val)) return "0.00";
   return val.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
-const formatDate = (date: string) => {
-  if (!date) return "";
-  return new Date(date).toLocaleDateString("en-US", {
+const formatDate = (date: string | undefined | null) => {
+  if (!date) return "-";
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return date;
+  return d.toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
@@ -50,6 +53,85 @@ export default function AccountDetailsModal({
 
   if (!isOpen || !data) return null;
 
+  const isApiRecord = (d: unknown): d is BranchReportRecord => {
+    return Boolean(d && typeof d === "object" && ("account_details" in d || "customer_id" in d));
+  };
+
+  const apiRecord = isApiRecord(data) ? data : null;
+  const legacyRecord = !isApiRecord(data) ? (data as AllBranchReport) : null;
+
+  const accInfo = apiRecord?.account_details?.account_information;
+  const payInfo = apiRecord?.account_details?.payment_details;
+  const delInfo = apiRecord?.account_details?.delinquency_details;
+
+  // Account Information
+  const dateTime =
+    accInfo?.date_and_time
+      ? formatDate(accInfo.date_and_time)
+      : apiRecord?.date_and_time
+        ? formatDate(apiRecord.date_and_time)
+        : legacyRecord?.dateGranted
+          ? formatDate(legacyRecord.dateGranted)
+          : "-";
+
+  const brCode = accInfo?.br_code || apiRecord?.br_code || legacyRecord?.brCode || "-";
+  const branch = accInfo?.branch || apiRecord?.branch || legacyRecord?.branch || "-";
+  const customerId = accInfo?.customer_id || apiRecord?.customer_id || legacyRecord?.custId || "-";
+  const clientName = accInfo?.client_name || apiRecord?.client || legacyRecord?.clientName || "-";
+  const accountName = accInfo?.account_name || apiRecord?.account || legacyRecord?.accountNumber || "-";
+  const originalAmountGranted =
+    accInfo?.original_amount_granted ??
+    apiRecord?.original_amount_granted ??
+    legacyRecord?.originalAmountGranted ??
+    0;
+  const interestRate =
+    accInfo?.interest_rate ??
+    apiRecord?.interest_rate ??
+    legacyRecord?.interestRate ??
+    0;
+  const term =
+    accInfo?.term ||
+    apiRecord?.term_window ||
+    (legacyRecord?.dateGranted
+      ? `${formatDate(legacyRecord.dateGranted)} - ${formatDate(legacyRecord.maturityDate)}`
+      : "-");
+
+  // Payment Details
+  const dateGranted = payInfo?.date_granted
+    ? formatDate(payInfo.date_granted)
+    : apiRecord?.granted
+      ? formatDate(apiRecord.granted)
+      : legacyRecord?.dateGranted
+        ? formatDate(legacyRecord.dateGranted)
+        : "-";
+
+  const maturityDate = payInfo?.maturity_date
+    ? formatDate(payInfo.maturity_date)
+    : apiRecord?.term_window_end_date
+      ? formatDate(apiRecord.term_window_end_date)
+      : legacyRecord?.maturityDate
+        ? formatDate(legacyRecord.maturityDate)
+        : "-";
+
+  const outstandingBalance =
+    payInfo?.outstanding_balance ??
+    apiRecord?.outstanding_balance ??
+    legacyRecord?.outstandingBalance ??
+    0;
+
+  const prodType = payInfo?.product_type || apiRecord?.product_type || legacyRecord?.prodType || "-";
+  const agingStatus = payInfo?.aging_status || apiRecord?.aging_status || legacyRecord?.agingStatus || "-";
+  const loanStatus = payInfo?.loan_status || apiRecord?.loan_status || legacyRecord?.loanStatus || "-";
+
+  // Delinquency Details
+  const defprin = delInfo?.defprin ?? apiRecord?.defprin ?? legacyRecord?.defPrin ?? 0;
+  const defint = delInfo?.defint ?? apiRecord?.defint ?? legacyRecord?.defInt ?? 0;
+  const noOfDaysPastDue =
+    delInfo?.no_of_days_past_due ??
+    apiRecord?.no_of_days_past_due ??
+    legacyRecord?.noOfDaysPastDue ??
+    0;
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 sm:p-6 backdrop-blur-[2px] animate-in fade-in duration-200"
@@ -76,41 +158,41 @@ export default function AccountDetailsModal({
               Account Information
             </h3>
           </div>
-          <div className="grid grid-cols-1 gap-y-2 gap-x-8 p-4 sm:grid-cols-3 sm:p-5">
+          <div className="grid grid-cols-1 gap-y-3 gap-x-8 p-4 sm:grid-cols-3 sm:p-5">
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Date & Time</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatDate(data.dateGranted)}
+                {dateTime}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">BRCode</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.brCode}
+                {brCode}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Branch</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.branch}
+                {branch}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Cust_ID</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.custId}
+                {customerId}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Client Name</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.clientName}
+                {clientName}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Account Name</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.accountNumber}
+                {accountName}
               </span>
             </div>
             <div className="flex flex-col">
@@ -118,19 +200,19 @@ export default function AccountDetailsModal({
                 Original Amount Granted
               </span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatCurrency(data.originalAmountGranted)}
+                {formatCurrency(originalAmountGranted)}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Interest Rate</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.interestRate}%
+                {interestRate}%
               </span>
             </div>
-            <div className="flex flex-col ">
+            <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Term</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatDate(data.dateGranted)} - {formatDate(data.maturityDate)}
+                {term}
               </span>
             </div>
           </div>
@@ -147,13 +229,13 @@ export default function AccountDetailsModal({
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Date Granted</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatDate(data.dateGranted)}
+                {dateGranted}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Maturity Date</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatDate(data.maturityDate)}
+                {maturityDate}
               </span>
             </div>
             <div className="flex flex-col">
@@ -161,19 +243,19 @@ export default function AccountDetailsModal({
                 Outstanding Balance
               </span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatCurrency(data.outstandingBalance)}
+                {formatCurrency(outstandingBalance)}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">ProdType</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.prodType}
+                {prodType}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Aging Status</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.agingStatus}
+                {agingStatus}
               </span>
             </div>
             <div className="flex flex-col">
@@ -182,14 +264,14 @@ export default function AccountDetailsModal({
                 <span
                   className={cn(
                     "inline-block rounded-full px-2.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wider",
-                    data.loanStatus === "CURRENT"
+                    loanStatus === "CURRENT"
                       ? "bg-[#DCFCE7] text-[#15803D]"
-                      : data.loanStatus === "EXPIRED"
+                      : loanStatus === "EXPIRED"
                         ? "bg-[#FFE4E8] text-[#E11D48]"
                         : "bg-[#F4F2FA] text-[#5a5a70]",
                   )}
                 >
-                  {data.loanStatus}
+                  {loanStatus}
                 </span>
               </div>
             </div>
@@ -207,13 +289,13 @@ export default function AccountDetailsModal({
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Defprin</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatCurrency(data.defPrin)}
+                {formatCurrency(defprin)}
               </span>
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-[#667085]">Defint</span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {formatCurrency(data.defInt)}
+                {formatCurrency(defint)}
               </span>
             </div>
             <div className="flex flex-col">
@@ -221,7 +303,7 @@ export default function AccountDetailsModal({
                 No of Days Past Due
               </span>
               <span className="mt-0.5 text-sm font-bold text-[#101828]">
-                {data.noOfDaysPastDue}
+                {noOfDaysPastDue}
               </span>
             </div>
           </div>
@@ -241,3 +323,4 @@ export default function AccountDetailsModal({
     </div>
   );
 }
+

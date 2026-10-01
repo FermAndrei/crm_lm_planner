@@ -124,7 +124,7 @@ interface MonthlyLinePoint {
 
 export function ChartPieSimple({
   data: initialData,
-  defaultView = "line_chart",
+  defaultView = "pie_chart",
 }: PastDueProps = {}) {
   const [position, setPosition] = React.useState<string>(defaultView);
   const [apiData, setApiData] = React.useState<PastDueData | null>(
@@ -337,8 +337,7 @@ export function ChartPieSimple({
     }
 
     const step =
-      Math.ceil(maxVal / 4 / 10_000_000) * 10_000_000 ||
-      Math.ceil(maxVal / 4);
+      Math.ceil(maxVal / 4 / 10_000_000) * 10_000_000 || Math.ceil(maxVal / 4);
     return {
       domain: [0, step * 4] as [number, number],
       ticks: [0, step, step * 2, step * 3, step * 4],
@@ -408,8 +407,7 @@ export function ChartPieSimple({
     }
 
     const step =
-      Math.ceil(maxVal / 4 / 10_000_000) * 10_000_000 ||
-      Math.ceil(maxVal / 4);
+      Math.ceil(maxVal / 4 / 10_000_000) * 10_000_000 || Math.ceil(maxVal / 4);
     return {
       domain: [0, step * 4] as [number, number],
       ticks: [0, step, step * 2, step * 3, step * 4],
@@ -532,7 +530,11 @@ export function ChartPieSimple({
               Retry
             </button>
           </div>
-        ) : (position === "line_chart" ? monthlyLineChartData.length === 0 : chartData.length === 0) ? (
+        ) : (
+            position === "line_chart"
+              ? monthlyLineChartData.length === 0
+              : chartData.length === 0
+          ) ? (
           <div className="flex h-full w-full items-center justify-center p-6 text-xs text-[#5a5a70]">
             {position === "line_chart"
               ? "No past due breakdown data available."
@@ -801,7 +803,8 @@ export function ChartPieSimple({
                   </div>
 
                   <p className="text-xs font-medium text-[#5a5a70] text-center">
-                    PAR Rate: {summaryParRate} &bull; {summaryClients} Past Due Client
+                    PAR Rate: {summaryParRate} &bull; {summaryClients} Past Due
+                    Client
                     {summaryClients !== 1 ? "s" : ""}
                   </p>
                 </div>
